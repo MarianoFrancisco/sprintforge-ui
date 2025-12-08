@@ -45,15 +45,8 @@ function App() {
   const data = useLoaderData();
   const [theme] = useTheme();
 
-const className =
-  theme === "dark"
-    ? "dark"
-    : theme === "light"
-    ? ""
-    : ""; // System media query
-
   return (
-    <html lang="en" data-theme={theme ?? ""} className={className ?? ""}>
+    <html lang="en" data-theme={theme ?? ""} >
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
