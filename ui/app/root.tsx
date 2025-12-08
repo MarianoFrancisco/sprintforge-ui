@@ -13,6 +13,7 @@ import type { Route } from "./+types/root";
 import "./app.css";
 import { themeSessionResolver } from "./sessions.server";
 import { PreventFlashOnWrongTheme, ThemeProvider, useTheme } from "remix-themes";
+import { Toaster } from "./components/ui/sonner";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -25,7 +26,7 @@ export const links: Route.LinksFunction = () => [
     rel: "stylesheet",
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
-      // Favicons
+  // Favicons
   { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" },
   { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon-16x16.png" },
   { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
@@ -56,6 +57,7 @@ function App() {
       </head>
       <body>
         <Outlet />
+        <Toaster position="top-center" richColors={true} closeButton={true} swipeDirections={['left', 'right']} />
         <ScrollRestoration />
         <Scripts />
       </body>
