@@ -47,7 +47,6 @@ class PositionService {
   async create(request: CreatePositionRequest): Promise<PositionResponseDTO> {
     try {
       const created = await apiClient.post<PositionResponseDTO>(this.basePath, request);
-      console.log("heccho")
       return created;
     } catch (error) {
       return this.handleError(error);
