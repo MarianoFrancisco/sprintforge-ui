@@ -1,19 +1,10 @@
-import { Outlet } from "react-router"
-import { AppSidebar } from "~/components/app-sidebar"
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "~/components/ui/breadcrumb"
-import { Separator } from "~/components/ui/separator"
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "~/components/ui/sidebar"
+import type { Route } from "./+types/dashboard";
+
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "Dashboard" },
+  ];
+}
 
 export default function Page() {
   return (

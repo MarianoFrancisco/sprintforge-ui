@@ -1,5 +1,11 @@
 import { LoginForm } from "~/components/login-form"
-import { ModeToggle } from "~/components/ui/mode-toggle"
+import type { Route } from "./+types/login";
+
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "Login" },
+  ];
+}
 
 export default function LoginPage() {
   return (

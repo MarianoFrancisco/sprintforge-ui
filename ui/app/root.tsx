@@ -14,6 +14,7 @@ import "./app.css";
 import { themeSessionResolver } from "./sessions.server";
 import { PreventFlashOnWrongTheme, ThemeProvider, useTheme } from "remix-themes";
 import { Toaster } from "./components/ui/sonner";
+import { ErrorPage } from "./routes/error";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -32,6 +33,13 @@ export const links: Route.LinksFunction = () => [
   { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
   { rel: "icon", href: "/favicon.ico" },
 ];
+
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "Sprint Forge" },
+    { name: "description", content: "Bienvenido a Sprint Forge" },
+  ];
+}
 
 
 // Return the theme from the session storage using the loader
@@ -74,31 +82,46 @@ export default function AppWithProviders() {
   )
 }
 
+// TODO fix the theme loading in error boundary
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-  let message = "Oops!";
-  let details = "An unexpected error occurred.";
-  let stack: string | undefined;
+  let data: any = {};
+  try {
+    data = useLoaderData();
+  } catch {
+    data = { theme: "light" }; // fallback seguro
+  }
+
+  const theme = data?.theme ?? "light"; // fallback obligatorio
+
+  let title = "Algo salió mal";
+  let message = "Ocurrió un error inesperado.";
 
   if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? "404" : "Error";
-    details =
-      error.status === 404
-        ? "The requested page could not be found."
-        : error.statusText || details;
-  } else if (import.meta.env.DEV && error && error instanceof Error) {
-    details = error.message;
-    stack = error.stack;
+    if (error.status === 404) {
+      title = "Página no encontrada";
+      message = "No pudimos encontrar la página que buscas.";
+    } else {
+      title = `Error ${error.status}`;
+      message = error.statusText || message;
+    }
+  } else if (error instanceof Error) {
+    title = "Error en la aplicación";
+    message = error.message;
   }
 
   return (
-    <main className="pt-16 p-4 container mx-auto">
-      <h1>{message}</h1>
-      <p>{details}</p>
-      {stack && (
-        <pre className="w-full p-4 overflow-x-auto">
-          <code>{stack}</code>
-        </pre>
-      )}
-    </main>
+    <html lang="en" data-theme={theme}>
+      <head>
+        <Meta />
+        <Links />
+      </head>
+
+      <body>
+        <ErrorPage title={title} message={message} />
+        <ScrollRestoration />
+        <Scripts />
+      </body>
+    </html>
   );
 }
+
