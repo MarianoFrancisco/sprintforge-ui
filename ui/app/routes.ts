@@ -7,9 +7,9 @@ export default [
         route("dashboard", "routes/dashboard.tsx"),
 
         ...prefix("employees", [
-            
+
             ...prefix("positions", [
-                // index("routes/employees/positions/positions-list.tsx"),
+                index("routes/employees/positions/index-position.tsx"),
                 route("create", "routes/employees/positions/create-position.tsx"),
                 // route("edit/:id", "routes/employees/positions/edit-position.tsx"),
             ]),
