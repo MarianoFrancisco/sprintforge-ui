@@ -30,14 +30,14 @@ const data = {
   },
   navMain: [
     {
-      title: "Playground",
-      url: "/holaasd",
+      title: "Cargos",
+      url: "/employees/positions",
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Nuevo cargo",
+          url: "/employees/positions/create",
         },
         {
           title: "Starred",

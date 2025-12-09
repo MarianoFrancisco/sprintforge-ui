@@ -3,10 +3,8 @@ import { Button } from "~/components/ui/button"
 import { Card, CardContent } from "~/components/ui/card"
 import {
   Field,
-  FieldDescription,
   FieldGroup,
   FieldLabel,
-  FieldSeparator,
 } from "~/components/ui/field"
 import { Input } from "~/components/ui/input"
 import { ModeToggle } from "./ui/mode-toggle"
@@ -22,7 +20,7 @@ export function LoginForm({
         <CardContent className="grid p-0 md:grid-cols-2">
           <form className="p-6 md:p-8">
             <FieldGroup>
-                <ModeToggle />
+              <ModeToggle />
               <div className="flex flex-col items-center gap-2 text-center">
                 <h1 className="text-2xl font-bold">Bienvenido</h1>
                 <p className="text-muted-foreground text-balance">
@@ -58,24 +56,24 @@ export function LoginForm({
               </FieldDescription> */}
             </FieldGroup>
           </form>
-<div className="relative hidden md:block bg-muted">
-  {/* Imagen normal */}
-  <img
-    src="/mountains.jpg"
-    alt="Background"
-    className="absolute inset-0 h-full w-full object-cover"
-  />
+          <div className="relative hidden md:block bg-muted">
+            {/* Imagen normal */}
+            <img
+              src="/mountains.jpg"
+              alt="Background"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
 
-  {/* Capa enmascarada con el logo y efecto naranja */}
-  <div
-    className="
+            {/* Capa enmascarada con el logo y efecto naranja */}
+            <div
+              className="
       absolute inset-0 h-full w-full 
       mask-[url('/logo.svg')] mask-no-repeat mask-center mask-contain
       bg-[url('/mountains.jpg')] bg-cover bg-center
       mix-blend-multiply
     "
-  />
-</div>
+            />
+          </div>
 
 
 
