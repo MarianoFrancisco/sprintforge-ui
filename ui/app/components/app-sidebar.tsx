@@ -2,15 +2,8 @@
 
 import * as React from "react"
 import {
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
   LifeBuoy,
-  Map,
-  PieChart,
   Send,
-  Settings2,
   SquareTerminal,
 } from "lucide-react"
 
@@ -119,7 +112,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <ModeToggle />
         <NavUser user={data.user} />
       </SidebarFooter>
     </Sidebar>
