@@ -34,7 +34,7 @@ export const links: Route.LinksFunction = () => [
   { rel: "icon", href: "/favicon.ico" },
 ];
 
-export function meta({}: Route.MetaArgs) {
+export function meta({ }: Route.MetaArgs) {
   return [
     { title: "Sprint Forge" },
     { name: "description", content: "Bienvenido a Sprint Forge" },
@@ -49,6 +49,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     theme: getTheme(),
   }
 }
+
 
 function App() {
   const data = useLoaderData();
@@ -65,7 +66,13 @@ function App() {
       </head>
       <body>
         <Outlet />
-        <Toaster position="top-center" richColors={true} closeButton={true} swipeDirections={['left', 'right']} />
+        <Toaster
+          position="top-center"
+          richColors={true}
+          closeButton={true}
+          swipeDirections={["left", "right"]}
+        />
+
         <ScrollRestoration />
         <Scripts />
       </body>

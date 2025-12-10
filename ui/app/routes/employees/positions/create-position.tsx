@@ -1,4 +1,4 @@
-import { redirect, useActionData, type ActionFunctionArgs } from "react-router";
+import { useActionData, useNavigate, type ActionFunctionArgs } from "react-router";
 import type { CreatePositionRequest } from "~/types/employees/position";
 import { ApiError } from "~/lib/api-client";
 import { positionService } from "~/services/employees/position-service";
@@ -45,13 +45,21 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function CreatePositionPage() {
     const actionData = useActionData();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (actionData?.error) {
             toast.error(actionData.error);
         }
         if (actionData?.success) {
-            toast.success(actionData.success);
+            toast.success(actionData.success, {
+                action: {
+                    label: "Ver cargos",
+                    onClick: () => {
+                        navigate("/employees/positions");
+                    },
+                },
+            });
         }
     }, [actionData]);
     return (

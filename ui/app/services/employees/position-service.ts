@@ -53,7 +53,7 @@ class PositionService {
     }
   }
 
-  async updateDetails(id: string, request: UpdatePositionDetailRequest): Promise<PositionResponseDTO> {
+  async update(id: string, request: UpdatePositionDetailRequest): Promise<PositionResponseDTO> {
     try {
       const updated = await apiClient.patch<PositionResponseDTO>(
         `${this.basePath}?id=${id}`,

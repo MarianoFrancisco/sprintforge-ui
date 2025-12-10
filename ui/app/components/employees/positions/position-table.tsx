@@ -118,11 +118,10 @@ export function PositionsTable({ data }: PositionsTableProps) {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-32">
-                            <DropdownMenuItem onClick={() => navigate(`/employees/positions/${position.id}/edit`)}>Edit</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => navigate(`/employees/positions/${position.id}/edit`)}>Editar</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => handleActivation(position.id, !isActive)} >{isActive ? "Desactivar" : "Activar"}</DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem variant="destructive" onClick={() => navigate(`/employees/positions/${position.id}/delete`)} >Eliminar</DropdownMenuItem>
-
                         </DropdownMenuContent>
                     </DropdownMenu>
                 );

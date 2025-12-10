@@ -11,7 +11,7 @@ export default [
             ...prefix("positions", [
                 index("routes/employees/positions/index-position.tsx"),
                 route("create", "routes/employees/positions/create-position.tsx"),
-                // route("edit/:id", "routes/employees/positions/edit-position.tsx"),
+                route(":id/edit", "routes/employees/positions/edit-position.tsx"),
             ]),
         ]),
     ]

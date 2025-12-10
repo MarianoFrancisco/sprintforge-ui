@@ -66,7 +66,7 @@ export default function PositionsPage() {
 
         <div className="flex lg:justify-start justify-end">
           <Button asChild>
-            <Link to="/positions/create">Nuevo Puesto</Link>
+            <Link to="/employees/positions/create">Nuevo Puesto</Link>
           </Button>
         </div>
       </div>

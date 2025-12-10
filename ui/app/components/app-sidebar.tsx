@@ -2,9 +2,10 @@
 
 import * as React from "react"
 import {
+  BriefcaseBusiness,
   LifeBuoy,
   Send,
-  SquareTerminal,
+  Users,
 } from "lucide-react"
 
 import { NavMain } from "~/components/nav-main"
@@ -32,40 +33,30 @@ const data = {
     {
       title: "Cargos",
       url: "/employees/positions",
-      icon: SquareTerminal,
-      isActive: true,
+      icon: Users,
       items: [
         {
           title: "Nuevo cargo",
           url: "/employees/positions/create",
         },
         {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
+          title: "Listado",
+          url: "/employees/positions",
         },
       ],
     },
      {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
+      title: "Empleados",
+      url: "/employees",
+      icon: BriefcaseBusiness,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Contratar empleado",
+          url: "/employees/hire",
         },
         {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
+          title: "Listado",
+          url: "/employees",
         },
       ],
     },
