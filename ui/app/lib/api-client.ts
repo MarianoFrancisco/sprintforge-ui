@@ -67,4 +67,18 @@ export const apiClient = {
   async delete(endpoint: string): Promise<void> {
     await api.delete(endpoint);
   },
+  async postForm<T>(endpoint: string, formData: FormData): Promise<T> {
+    const response = await api.post<T>(endpoint, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data;
+  },
+
+  async patchForm<T>(endpoint: string, formData: FormData): Promise<T> {
+    const response = await api.patch<T>(endpoint, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data;
+  },
+
 };
