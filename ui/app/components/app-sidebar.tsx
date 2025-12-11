@@ -20,7 +20,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "~/components/ui/sidebar"
-import { ModeToggle } from "./ui/mode-toggle"
 import { Link } from "react-router"
 
 const data = {

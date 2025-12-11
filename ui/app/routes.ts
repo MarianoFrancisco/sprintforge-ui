@@ -7,6 +7,7 @@ export default [
         route("dashboard", "routes/dashboard.tsx"),
 
         ...prefix("employees", [
+            route("hire", "routes/employees/hire-employee.tsx"),
 
             ...prefix("positions", [
                 index("routes/employees/positions/index-position.tsx"),

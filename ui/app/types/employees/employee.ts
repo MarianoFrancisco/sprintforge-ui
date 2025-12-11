@@ -1,5 +1,4 @@
 
-export type EmployeeWorkloadType = "FULL_TIME" | "PART_TIME" | "TEMPORARY";
 
 export interface EmployeePosition {
   name: string;
@@ -19,7 +18,7 @@ export interface EmployeeResponseDTO {
   birthDate: string;
 
   positionId: string;
-  workloadType: EmployeeWorkloadType;
+  workloadType: string;
 
   salary: string;
   igssPercentage: string;
@@ -47,7 +46,7 @@ export interface HireEmployeeRequest {
   birthDate: string;
 
   positionId: string;
-  workloadType: EmployeeWorkloadType;
+  workloadType: string;
 
   salary: string;
   igssPercentage: string;
