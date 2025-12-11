@@ -59,6 +59,21 @@ const data = {
         },
       ],
     },
+         {
+      title: "Roles",
+      url: "/identity/roles",
+      icon: BriefcaseBusiness,
+      items: [
+        {
+          title: "Crear rol",
+          url: "/identity/roles/create",
+        },
+        {
+          title: "Listado",
+          url: "/identity/roles",
+        },
+      ],
+    },
   ],
   navSecondary: [
     {

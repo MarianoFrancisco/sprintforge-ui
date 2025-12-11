@@ -1,8 +1,5 @@
 import {
-    ArrowUpDown,
     Pencil,
-    CheckCircle2,
-    XCircle,
     Activity,
     BadgeInfo,
     EllipsisVertical,
@@ -15,6 +12,7 @@ import { useFetcher, useNavigate } from "react-router";
 import { DataTable } from "~/components/common/data-table";
 import { StatusBadge } from "~/components/common/status-badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "~/components/ui/dropdown-menu";
+import { DataTableColumnHeader } from "~/components/common/data-table-column-header";
 
 interface PositionsTableProps {
     data: PositionResponseDTO[];
@@ -43,17 +41,7 @@ export function PositionsTable({ data }: PositionsTableProps) {
         {
             accessorKey: "name",
             header: ({ column }) => (
-                <Button
-                    variant="ghost"
-                    onClick={() =>
-                        column.toggleSorting(column.getIsSorted() === "asc")
-                    }
-                    className="flex items-center gap-2 font-semibold"
-                >
-                    <BadgeInfo className="h-4 w-4" />
-                    Nombre
-                    <ArrowUpDown className="ml-1 h-4 w-4" />
-                </Button>
+                <DataTableColumnHeader column={column} title="Nombre" icon={<BadgeInfo />} />
             ),
             cell: (info) => info.getValue(),
         },
@@ -62,17 +50,7 @@ export function PositionsTable({ data }: PositionsTableProps) {
         {
             accessorKey: "description",
             header: ({ column }) => (
-                <Button
-                    variant="ghost"
-                    onClick={() =>
-                        column.toggleSorting(column.getIsSorted() === "asc")
-                    }
-                    className="flex items-center gap-2 font-semibold"
-                >
-                    <BadgeInfo className="h-4 w-4" />
-                    Descripción
-                    <ArrowUpDown className="ml-1 h-4 w-4" />
-                </Button>
+                <DataTableColumnHeader column={column} title="Descripción" icon={<Pencil />} />
             ),
             cell: (info) => info.getValue() || "—",
         },
@@ -81,17 +59,7 @@ export function PositionsTable({ data }: PositionsTableProps) {
         {
             accessorKey: "isActive",
             header: ({ column }) => (
-                <Button
-                    variant="ghost"
-                    onClick={() =>
-                        column.toggleSorting(column.getIsSorted() === "asc")
-                    }
-                    className="flex items-center gap-2 font-semibold"
-                >
-                    <Activity className="h-4 w-4" />
-                    Estado
-                    <ArrowUpDown className="ml-1 h-4 w-4" />
-                </Button>
+                <DataTableColumnHeader column={column} title="Estado" icon={<Activity />} />
             ),
             cell: ({ getValue }) => (
                 <StatusBadge status={Boolean(getValue())} />
@@ -101,6 +69,7 @@ export function PositionsTable({ data }: PositionsTableProps) {
         // Acciones
         {
             id: "actions",
+            header: () => <span>Acciones</span>,
             cell: ({ row }) => {
                 const position = row.original;
                 const isActive = position.isActive;
