@@ -13,13 +13,8 @@ import { EmployeeForm } from "~/components/employees/employee-form";
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "Contratar empleado" },
-    { name: "description", content: "Página para contratar nuevos empleados" },
   ];
 }
-
-export const handle = {
-  crumb: "Contratar empleado",
-};
 
 export async function loader({}: LoaderFunctionArgs) {
   try {

@@ -15,8 +15,13 @@ export default [
                 route(":id/edit", "routes/employees/positions/edit-position.tsx"),
             ]),
         ]),
-    ]
-
-    ),
+        ...prefix("identity", [
+            ...prefix("roles", [
+                // index("routes/identity/roles/index-role.tsx"),
+                route("create", "routes/identity/roles/create-role.tsx"),
+                // route(":id/edit", "routes/identity/roles/edit-role.tsx"),
+            ]),
+        ]),
+    ]),
     route("action/set-theme", "routes/action/set-theme.ts"),
 ] satisfies RouteConfig;
