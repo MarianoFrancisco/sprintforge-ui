@@ -1,11 +1,11 @@
 import {
-  EllipsisVertical,
   User,
   Phone,
   Briefcase,
   DollarSign,
   Activity,
   BadgeInfo,
+  Ellipsis,
 } from "lucide-react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useFetcher, useNavigate } from "react-router";
@@ -153,7 +153,7 @@ export function EmployeesTable({ data }: EmployeesTableProps) {
                 size="icon"
                 className="data-[state=open]:bg-muted text-muted-foreground"
               >
-                <EllipsisVertical />
+                <Ellipsis />
                 <span className="sr-only">Abrir menú</span>
               </Button>
             </DropdownMenuTrigger>
