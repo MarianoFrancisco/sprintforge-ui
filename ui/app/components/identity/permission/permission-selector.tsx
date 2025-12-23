@@ -1,10 +1,14 @@
 import React from "react";
-import { Command, CommandGroup, CommandItem, CommandList } from "~/components/ui/command";
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "~/components/ui/collapsible";
-import { Checkbox } from "~/components/ui/checkbox";
-import { Button } from "~/components/ui/button";
-import { ChevronsUpDown } from "lucide-react";
-import { CommandInput } from "cmdk";
+import {
+  Command,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+  CommandInput,
+  CommandEmpty,
+  CommandSeparator,
+} from "~/components/ui/command";
+import { PermissionItem } from "./permission-item";
 
 export type Permission = {
   id: string;
@@ -15,12 +19,16 @@ export type Permission = {
 };
 
 interface PermissionSelectorProps {
-  permissions: Permission[]; // lista total de permisos
-  selected: string[]; // ids seleccionados
+  permissions: Permission[];
+  selected: string[];
   onChange: (next: string[]) => void;
 }
 
-export default function PermissionSelector({ permissions, selected, onChange }: PermissionSelectorProps) {
+export default function PermissionSelector({
+  permissions,
+  selected,
+  onChange,
+}: PermissionSelectorProps) {
   const permissionsByCategory = React.useMemo(() => {
     const map: Record<string, Permission[]> = {};
     permissions.forEach((p) => {
@@ -31,45 +39,43 @@ export default function PermissionSelector({ permissions, selected, onChange }: 
   }, [permissions]);
 
   const togglePermission = (id: string) => {
-    const exists = selected.includes(id);
-    if (exists) onChange(selected.filter((x) => x !== id));
-    else onChange([...selected, id]);
+    onChange(
+      selected.includes(id)
+        ? selected.filter((x) => x !== id)
+        : [...selected, id]
+    );
   };
 
-  return (
-    <Command className="rounded-lg border shadow-sm w-full">
-        {/* <CommandInput placeholder="Buscar permisos..." className="border-b" /> */}
-      <CommandList>
-        {Object.entries(permissionsByCategory).map(([category, items]) => (
-          <Collapsible key={category} defaultOpen className="border-b last:border-none">
-            <div className="flex items-center justify-between px-4 py-2">
-              <h4 className="text-sm font-semibold">{category}</h4>
-              <CollapsibleTrigger asChild>
-                <Button variant="ghost" size="icon" className="size-8">
-                  <ChevronsUpDown />
-                </Button>
-              </CollapsibleTrigger>
-            </div>
+  const categories = Object.entries(permissionsByCategory);
 
-            <CollapsibleContent>
-              <CommandGroup className="px-2">
-                {items.map((p) => (
-                  <CommandItem key={p.id} className="flex items-center gap-3 py-3">
-                    <Checkbox
-                      checked={selected.includes(p.id)}
-                      onCheckedChange={() => togglePermission(p.id)}
-                    />
-                    <div className="flex flex-col">
-                      <span className="text-sm font-medium">{p.name}</span>
-                      {p.description && (
-                        <span className="text-xs text-muted-foreground">{p.description}</span>
-                      )}
-                    </div>
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CollapsibleContent>
-          </Collapsible>
+  return (
+    <Command className="rounded-lg border shadow-md w-full">
+      {/* EXACTAMENTE como la doc */}
+      <CommandInput placeholder="Buscar permisos..." />
+
+      <CommandList>
+        <CommandEmpty>No se encontraron permisos.</CommandEmpty>
+
+        {categories.map(([category, items], index) => (
+          <React.Fragment key={category}>
+            <CommandGroup heading={category}>
+              {items.map((p) => (
+                <CommandItem
+                  key={p.id}
+                  value={`${p.name} ${p.code}`}
+                >
+                  <PermissionItem
+                    name={p.name}
+                    description={p.description}
+                    checked={selected.includes(p.id)}
+                    onCheckedChange={() => togglePermission(p.id)}
+                  />
+                </CommandItem>
+              ))}
+            </CommandGroup>
+
+            {index < categories.length - 1 && <CommandSeparator />}
+          </React.Fragment>
         ))}
       </CommandList>
     </Command>

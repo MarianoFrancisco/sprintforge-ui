@@ -38,13 +38,18 @@ export function RoleForm({ permissions, defaultRole }: RoleFormProps) {
   );
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      <Card>
-        <CardContent className="p-6">
-          <Form method="post" className="space-y-6">
-            <h2 className="text-2xl font-semibold text-center">
-              {isEditMode ? "Editar Rol" : "Crear Rol"}
-            </h2>
+<div className="mx-auto max-w-2xl space-y-6">
+  <Card
+    className="
+      border-0 shadow-none rounded-none bg-transparent
+      sm:border sm:shadow-sm sm:rounded-xl sm:bg-card
+    "
+  >
+    <CardContent className="p-0 sm:p-6">
+      <Form method="post" className="space-y-6">
+        <h2 className="text-2xl font-semibold text-center">
+          {isEditMode ? "Editar Rol" : "Crear Rol"}
+        </h2>
 
             {/* ID oculto para edición */}
             {isEditMode && <input type="hidden" name="id" value={defaultRole?.id} />}
@@ -78,16 +83,6 @@ export function RoleForm({ permissions, defaultRole }: RoleFormProps) {
               {actionData?.errors?.description && (
                 <p className="text-sm text-red-500">{actionData.errors.description}</p>
               )}
-            </div>
-
-            {/* isDefault */}
-            <div className="flex items-center gap-3">
-              <Checkbox
-                id="isDefault"
-                name="isDefault"
-                defaultChecked={defaultRole?.isDefault ?? false}
-              />
-              <Label htmlFor="isDefault">Rol predeterminado</Label>
             </div>
 
             {/* Selector de Permisos */}
