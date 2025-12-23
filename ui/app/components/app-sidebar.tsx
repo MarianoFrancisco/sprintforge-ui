@@ -21,6 +21,7 @@ import {
   SidebarMenuItem,
 } from "~/components/ui/sidebar"
 import { Link } from "react-router"
+import { Theme, useTheme } from "remix-themes"
 
 const data = {
   user: {
@@ -90,6 +91,7 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const [theme] = useTheme();
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -101,11 +103,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <img
                     src="/logo.svg"
                     alt="Sprint Forge Logo"
-                    className="h-10 w-10 rounded-lg object-contain"
+                    className={`h-10 w-10 rounded-lg object-contain ${theme === Theme.LIGHT && 'bg-background'}`}
                   />
                 </div>
                 <div className="grid flex-1 text-left leading-tight">
-                  <span className="truncate text-base font-bold">SPRINT FORGE</span>
+                  <span className="truncate text-xl font-bold">SPRINT FORGE</span>
                 </div>
               </Link>
             </SidebarMenuButton>
