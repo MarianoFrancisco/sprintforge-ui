@@ -1,15 +1,10 @@
 import { Link, useLoaderData } from "react-router";
 import type { Route } from "../+types/home";
-
 import { Button } from "~/components/ui/button";
-
-import type {
-  EmployeeResponseDTO,
-  FindEmployeesRequest,
-} from "~/types/employees/employee";
-
 import { employeeService } from "~/services/employees/employee-service";
 import { EmployeesTable } from "~/components/employees/employee-table";
+import { EmployeeFilter } from "~/components/employees/employee-filters";
+import type { EmployeeStatus, EmployeeWorkloadType } from "~/types/employees/employee";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -22,44 +17,33 @@ export const handle = {
   crumb: "Empleados",
 };
 
-/**
- * Loader
- * - Lee query params opcionales
- * - Construye el DTO solo con valores válidos
- * - Retorna la lista de empleados
- */
 export async function loader({ request }: { request: Request }) {
   const url = new URL(request.url);
-  const searchParams = url.searchParams;
+  
+  // Parsear los parámetros del filtro
+  const searchTerm = url.searchParams.get("searchTerm") || undefined;
+  const position = url.searchParams.get("position") || undefined;
+  const workloadType = url.searchParams.get("workloadType") as EmployeeWorkloadType | undefined;
+  const status = url.searchParams.get("status") as EmployeeStatus | undefined;
 
-  const filters: FindEmployeesRequest = {};
+  // Construir el objeto de filtros
+  const filters = {
+    searchTerm,
+    position,
+    workloadType,
+    status,
+  };
+  // Obtener empleados filtrados
+  const employees = await employeeService.getAll(filters);
 
-//   const q = searchParams.get("q");
-//   if (q?.trim()) {
-//     filters.q = q.trim();
-//   }
-
-//   const department = searchParams.get("department");
-//   if (department?.trim()) {
-//     filters.department = department.trim();
-//   }
-
-//   const isActive = searchParams.get("isActive");
-//   if (isActive && isActive !== "all") {
-//     filters.isActive = isActive === "true";
-//   }
-
-  try {
-    const employees = await employeeService.getAll(filters);
-    return employees;
-  } catch (error) {
-    console.error("Error al cargar empleados:", error);
-    return [];
-  }
+  return {
+    employees,
+    filters
+  };
 }
 
 export default function EmployeesPage() {
-  const employees = useLoaderData<typeof loader>() as EmployeeResponseDTO[];
+  const { employees } = useLoaderData<typeof loader>();
 
   return (
     <section className="space-y-6">
@@ -71,11 +55,17 @@ export default function EmployeesPage() {
         </p>
       </header>
 
-      {/* Acciones superiores */}
-      <div className="flex justify-end">
-        <Button asChild>
-          <Link to="/employees/hire">Contratar empleado</Link>
-        </Button>
+      {/* Filtros + botón crear */}
+      <div className="flex flex-col lg:flex-row lg:items-end lg:gap-4 w-full">
+        <div className="flex-1">
+          <EmployeeFilter />
+        </div>
+
+        <div className="flex lg:justify-start justify-end mt-4 lg:mt-0">
+          <Button asChild>
+            <Link to="/employees/hire">Contratar empleado</Link>
+          </Button>
+        </div>
       </div>
 
       {/* Tabla */}

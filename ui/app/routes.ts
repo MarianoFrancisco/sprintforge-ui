@@ -9,6 +9,7 @@ export default [
         ...prefix("employees", [
             index("routes/employees/index-employee.tsx"),
             route("hire", "routes/employees/hire-employee.tsx"),
+            route("history", "routes/employees/employment-history.tsx"),
             route(":id/edit", "routes/employees/edit-employee.tsx"),
             route(":id/salary/increase", "routes/employees/increase-salary.tsx"),
             route(":cui/suspend", "routes/employees/suspend-employee.tsx"),

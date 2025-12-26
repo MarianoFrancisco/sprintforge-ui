@@ -2,18 +2,14 @@ import {
   User,
   Phone,
   Briefcase,
-  DollarSign,
   Activity,
-  BadgeInfo,
   Banknote,
   IdCard,
   Mail,
 } from "lucide-react";
 import type { ColumnDef } from "@tanstack/react-table";
-import { useFetcher, useNavigate } from "react-router";
 
 import { DataTable } from "~/components/common/data-table";
-import { StatusBadge } from "~/components/common/status-badge";
 import { DataTableColumnHeader } from "~/components/common/data-table-column-header";
 
 import {

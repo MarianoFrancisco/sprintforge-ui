@@ -12,3 +12,11 @@ export interface EmploymentHistoryResponseDTO {
   salary: string;
   notes: string;
 }
+
+export interface GetAllEmploymentHistoriesQuery {
+  employee?: string;
+  position?: string;
+  type?: EmploymentHistoryType;
+  startDateFrom?: string;
+  startDateTo?: string;
+}

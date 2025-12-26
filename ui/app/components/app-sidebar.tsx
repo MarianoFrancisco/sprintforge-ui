@@ -31,12 +31,12 @@ const data = {
   },
   navMain: [
     {
-      title: "Cargos",
+      title: "Puestos",
       url: "/employees/positions",
       icon: Users,
       items: [
         {
-          title: "Nuevo cargo",
+          title: "Nuevo puesto",
           url: "/employees/positions/create",
         },
         {
@@ -57,6 +57,10 @@ const data = {
         {
           title: "Listado",
           url: "/employees",
+        },
+        {
+          title: "Historial laboral",
+          url: "/employees/history",
         },
       ],
     },

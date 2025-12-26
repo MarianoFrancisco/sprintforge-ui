@@ -9,6 +9,7 @@ import type {
   SuspendEmployeeRequest,
   TerminateEmployeeRequest
 } from "~/types/employees/employee";
+import type { EmploymentHistoryResponseDTO, GetAllEmploymentHistoriesQuery } from "~/types/employees/employment-history";
 
 class EmployeeService {
   private basePath = "/api/v1/employee";
@@ -152,6 +153,26 @@ class EmployeeService {
         `${this.basePath}/${cui}/terminate`,
         request
       );
+    } catch (e) {
+      return this.handleError(e);
+    }
+  }
+
+    async getAllHistories(params?: GetAllEmploymentHistoriesQuery): Promise<EmploymentHistoryResponseDTO[]> {
+    try {
+      const query = new URLSearchParams();
+      
+      if (params?.employee) query.append("employee", params.employee);
+      if (params?.position) query.append("position", params.position);
+      if (params?.type) query.append("type", params.type);
+      if (params?.startDateFrom) query.append("startDateFrom", params.startDateFrom);
+      if (params?.startDateTo) query.append("startDateTo", params.startDateTo);
+
+      const endpoint = query.toString()
+        ? `${this.basePath}/history?${query.toString()}`
+        : `${this.basePath}/history`;
+
+      return await apiClient.get<EmploymentHistoryResponseDTO[]>(endpoint);
     } catch (e) {
       return this.handleError(e);
     }
