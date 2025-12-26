@@ -1,5 +1,4 @@
 // ~/components/filters/AdvancedFiltersDialog.tsx
-import { Form } from "react-router";
 import { Button } from "~/components/ui/button";
 import { Filter } from "lucide-react";
 import {
@@ -15,7 +14,6 @@ import { useFilters } from "~/hooks/use-filters";
 import type { FilterConfig } from "~/types/filters";
 import { FilterControls } from "./filter-controls";
 
-// ¡IMPORTANTE! Esta interfaz debe estar definida
 interface AdvancedFiltersDialogProps {
   filters: FilterConfig[];
   title?: string;
@@ -24,8 +22,17 @@ interface AdvancedFiltersDialogProps {
 export function AdvancedFiltersDialog({ 
   filters, 
   title = "Filtros avanzados" 
-}: AdvancedFiltersDialogProps) { // <-- Acepta las props
+}: AdvancedFiltersDialogProps) {
   const { activeFiltersCount } = useFilters();
+
+  // Esta función se encarga de enviar el formulario principal PARPADEO
+  const handleApplyFilters = () => {
+    // Encontrar y enviar el formulario principal
+    const form = document.querySelector('form[method="get"]') as HTMLFormElement;
+    if (form) {
+      form.requestSubmit();
+    }
+  };
 
   return (
     <Dialog>
@@ -49,22 +56,24 @@ export function AdvancedFiltersDialog({
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
         
-        <Form method="get">
-          <FilterControls filters={filters} />
-          
-          <DialogFooter className="gap-2 pt-4">
-            <DialogClose asChild>
-              <Button type="button" variant="outline">
-                Cancelar
-              </Button>
-            </DialogClose>
-            <DialogClose asChild>
-              <Button type="submit">
-                Aplicar filtros
-              </Button>
-            </DialogClose>
-          </DialogFooter>
-        </Form>
+        {/* NO usar Form aquí, solo controles */}
+        <FilterControls filters={filters} />
+        
+        <DialogFooter className="gap-2 pt-4">
+          <DialogClose asChild>
+            <Button type="button" variant="outline">
+              Cancelar
+            </Button>
+          </DialogClose>
+          <DialogClose asChild>
+            <Button 
+              type="button" 
+              onClick={handleApplyFilters}
+            >
+              Aplicar filtros
+            </Button>
+          </DialogClose>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

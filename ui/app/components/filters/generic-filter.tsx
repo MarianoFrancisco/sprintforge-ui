@@ -52,6 +52,19 @@ export function GenericFilter({
             Limpiar todo
           </Button>
         )}
+
+        {/* Inputs hidden para mantener los filtros cuando se usa el Form principal */}
+        {filters.map(filter => {
+          const value = searchParams.get(filter.name) || '';
+          return (
+            <input
+              key={filter.name}
+              type="hidden"
+              name={filter.name}
+              value={value}
+            />
+          );
+        })}
       </Form>
     </div>
   );

@@ -1,3 +1,5 @@
+// ~/components/filters/FilterControls.tsx
+import * as React from "react";
 import { useSearchParams } from "react-router";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
@@ -19,6 +21,24 @@ interface FilterControlsProps {
 export function FilterControls({ filters }: FilterControlsProps) {
   const [searchParams] = useSearchParams();
 
+  // Función para actualizar un campo en el Form principal
+  const updateFormField = (name: string, value: string) => {
+    const form = document.querySelector('form[method="get"]') as HTMLFormElement;
+    if (form) {
+      let input = form.querySelector(`[name="${name}"]`) as HTMLInputElement;
+      
+      // Si no existe el input, crearlo
+      if (!input) {
+        input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = name;
+        form.appendChild(input);
+      }
+      
+      input.value = value;
+    }
+  };
+
   const renderFilterControl = (filter: FilterConfig) => {
     const defaultValue = searchParams.get(filter.name) || filter.defaultValue || '';
 
@@ -27,7 +47,11 @@ export function FilterControls({ filters }: FilterControlsProps) {
         return (
           <div key={filter.name} className="space-y-2">
             <Label htmlFor={filter.name}>{filter.label}</Label>
-            <Select name={filter.name} defaultValue={defaultValue}>
+            <Select 
+              name={filter.name} 
+              defaultValue={defaultValue}
+              onValueChange={(value) => updateFormField(filter.name, value)}
+            >
               <SelectTrigger id={filter.name}>
                 <SelectValue placeholder={filter.placeholder || `Selecciona ${filter.label.toLowerCase()}`} />
               </SelectTrigger>
@@ -52,22 +76,14 @@ export function FilterControls({ filters }: FilterControlsProps) {
               options={filter.options || []}
               value={currentValue}
               onChange={(value) => {
-                // Actualizar input hidden
-                const input = document.querySelector(`input[name="${filter.name}"]`) as HTMLInputElement;
-                if (input) input.value = value;
+                updateFormField(filter.name, value);
               }}
               placeholder={filter.placeholder || `Buscar ${filter.label.toLowerCase()}...`}
-            />
-            <input 
-              type="hidden" 
-              name={filter.name} 
-              value={currentValue} 
             />
           </div>
         );
 
       case 'date':
-        // Para fechas, usar formato YYYY-MM-DD que es compatible con Java LocalDate
         const dateValue = searchParams.get(filter.name) || '';
         
         return (
@@ -79,6 +95,7 @@ export function FilterControls({ filters }: FilterControlsProps) {
               type="date"
               defaultValue={dateValue}
               placeholder={filter.placeholder}
+              onChange={(e) => updateFormField(filter.name, e.target.value)}
             />
           </div>
         );
@@ -96,31 +113,30 @@ export function FilterControls({ filters }: FilterControlsProps) {
               min={filter.min}
               max={filter.max}
               step="any"
+              onChange={(e) => updateFormField(filter.name, e.target.value)}
             />
           </div>
         );
 
       case 'checkbox':
         const isChecked = defaultValue === 'true';
+        const [checked, setChecked] = React.useState(isChecked);
+        
         return (
           <div key={filter.name} className="flex items-center space-x-2 space-y-0">
             <Checkbox
               id={filter.name}
               name={filter.name}
-              defaultChecked={isChecked}
-              onCheckedChange={(checked) => {
-                const input = document.querySelector(`input[name="${filter.name}"]`) as HTMLInputElement;
-                if (input) input.value = checked ? "true" : "false";
+              checked={checked}
+              onCheckedChange={(isChecked) => {
+                const value = isChecked ? "true" : "false";
+                setChecked(!!isChecked);
+                updateFormField(filter.name, value);
               }}
             />
             <Label htmlFor={filter.name} className="cursor-pointer">
               {filter.label}
             </Label>
-            <input 
-              type="hidden" 
-              name={filter.name} 
-              value={isChecked ? "true" : "false"} 
-            />
           </div>
         );
 
@@ -134,6 +150,7 @@ export function FilterControls({ filters }: FilterControlsProps) {
               name={filter.name}
               defaultValue={defaultValue}
               placeholder={filter.placeholder}
+              onChange={(e) => updateFormField(filter.name, e.target.value)}
             />
           </div>
         );
