@@ -2,6 +2,7 @@ import { ArrowLeftCircle } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Outlet, useNavigate } from "react-router"
 import { AppSidebar } from "~/components/app-sidebar"
+import { ProtectedRoute } from "~/components/auth/protected-route"
 import { Button } from "~/components/ui/button"
 import { ModeToggle } from "~/components/ui/mode-toggle"
 import { Separator } from "~/components/ui/separator"
@@ -31,6 +32,7 @@ export default function SidebarLayout() {
     }
   }
   return (
+    <ProtectedRoute>
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
@@ -60,5 +62,6 @@ export default function SidebarLayout() {
         </div>
       </SidebarInset>
     </SidebarProvider>
+    </ProtectedRoute>
   )
 }

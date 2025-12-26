@@ -8,17 +8,22 @@ import {
 } from "~/components/ui/field"
 import { Input } from "~/components/ui/input"
 import { ModeToggle } from "./ui/mode-toggle"
-import { Link } from "react-router"
+import { Form, Link, useActionData } from "react-router"
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "./ui/input-group"
+import { Eye, EyeOff } from "lucide-react"
+import React from "react"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [showPassword, setShowPassword] = React.useState(false)
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          <Form method="post" className="p-6 md:p-8">
             <FieldGroup>
               <ModeToggle />
               <div className="flex flex-col items-center gap-2 text-center">
@@ -32,6 +37,7 @@ export function LoginForm({
                 <Input
                   id="email"
                   type="email"
+                  name="email"
                   placeholder="m@example.com"
                   required
                 />
@@ -46,16 +52,32 @@ export function LoginForm({
                     ¿Olvidaste tu contraseña?
                   </Link>
                 </div>
-                <Input id="password" type="password" required />
+                <InputGroup>
+                  <InputGroupInput
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    required
+                  />
+
+                  <InputGroupAddon align="inline-end">
+                    <InputGroupButton
+                      type="button"
+                      variant="ghost"
+                      size="icon-xs"
+                      aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                      onClick={() => setShowPassword((prev) => !prev)}
+                    >
+                      {showPassword ? <EyeOff /> : <Eye />}
+                    </InputGroupButton>
+                  </InputGroupAddon>
+                </InputGroup>
               </Field>
               <Field>
                 <Button type="submit">Iniciar Sesión</Button>
               </Field>
-              {/* <FieldDescription className="text-center">
-                Sin cuenta? <Link to="#">Crear cuenta</Link>
-              </FieldDescription> */}
             </FieldGroup>
-          </form>
+          </Form>
           <div className="relative hidden md:block bg-muted">
             {/* Imagen normal */}
             <img
@@ -74,16 +96,8 @@ export function LoginForm({
     "
             />
           </div>
-
-
-
-
         </CardContent>
       </Card>
-      {/* <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
-      </FieldDescription> */}
     </div>
   )
 }

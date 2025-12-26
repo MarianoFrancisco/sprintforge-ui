@@ -11,10 +11,12 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
-import { themeSessionResolver } from "./sessions.server";
+import { getSession, themeSessionResolver } from "./sessions.server";
 import { PreventFlashOnWrongTheme, ThemeProvider, useTheme } from "remix-themes";
 import { Toaster } from "./components/ui/sonner";
 import { ErrorPage } from "./routes/error";
+import { AuthProvider } from "./context/auth-context";
+import { authService } from "./services/identity/auth-service";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -84,7 +86,9 @@ export default function AppWithProviders() {
   const data = useLoaderData();
   return (
     <ThemeProvider specifiedTheme={data.theme} themeAction="/action/set-theme" disableTransitionOnThemeChange={true}>
-      <App />
+      <AuthProvider initialUser={null}>
+        <App />
+      </AuthProvider>
     </ThemeProvider>
   )
 }
