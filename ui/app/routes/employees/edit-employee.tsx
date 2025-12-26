@@ -5,43 +5,47 @@ import {
   useLoaderData,
   useActionData,
   useNavigate,
+  useParams,
 } from "react-router";
 import { ApiError } from "~/lib/api-client";
-import type { Route } from "../+types/home";
 import { positionService } from "~/services/employees/position-service";
 import { employeeService } from "~/services/employees/employee-service";
 import { EmployeeForm } from "~/components/employees/employee-form";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import type { EmployeeWorkloadType } from "~/types/employees/employee";
+import { EmployeeUpdateForm } from "~/components/employees/employee-update-form";
 
-export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "Contratar empleado" },
-  ];
+export function meta({}: any) {
+  return [{ title: "Editar empleado" }];
 }
 
-export async function loader({}: LoaderFunctionArgs) {
-  try {
-    const positions = await positionService.getAll();
+export async function loader({ params }: LoaderFunctionArgs) {
+  const { id } = params;
+  if (!id) throw new Error("ID del empleado no proporcionado");
 
-    return { positions };
-  } catch (_) {
-    return { positions: [] };
+  try {
+    const employee = await employeeService.getById(id);
+
+    return { employee };
+  } catch (error) {
+    throw new Error("Error al cargar los datos del empleado");
   }
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request, params }: ActionFunctionArgs) {
+  const { id } = params;
+  if (!id) throw new Error("ID del empleado no proporcionado");
+
   const formData = await request.formData();
 
-  // Detectar si existe un file real
   const file = formData.get("profileImage");
   const profileImage =
     file instanceof File && file.size > 0 && file.name
       ? file
       : null;
 
-  const hireEmployeeRequest = {
+  const updateEmployeeRequest = {
     cui: formData.get("cui") as string,
     email: formData.get("email") as string,
     firstName: formData.get("firstName") as string,
@@ -56,11 +60,9 @@ export async function action({ request }: ActionFunctionArgs) {
     notes: (formData.get("notes") as string) || "",
   };
 
-  console.log("ACTION RECEIVED: ", hireEmployeeRequest);
-
   try {
-    await employeeService.hire(hireEmployeeRequest);
-    return {success: "Empleado contratado exitosamente"};
+    await employeeService.update(id, updateEmployeeRequest);
+    return { success: "Empleado actualizado exitosamente" };
   } catch (error: any) {
     if (error instanceof ApiError && error.response) {
       const err = error.response as any;
@@ -69,12 +71,11 @@ export async function action({ request }: ActionFunctionArgs) {
         error: err.detail || err.message || `Error ${error.status}`,
       };
     }
-
-    return { error: error.message || "Error al contratar empleado" };
+    return { error: error.message || "Error al actualizar empleado" };
   }
 }
 
-export default function HireEmployeePage() {
+export default function EditEmployeePage() {
   const data = useLoaderData<typeof loader>();
   const actionData = useActionData();
   const navigate = useNavigate();
@@ -90,14 +91,12 @@ export default function HireEmployeePage() {
           onClick: () => navigate("/employees"),
         },
       });
-      // navigate("/employees");
     }
   }, [actionData, navigate]);
 
-
   return (
     <section className="p-6">
-      <EmployeeForm positions={data.positions} />
+      <EmployeeUpdateForm employee={data.employee} />
     </section>
   );
 }

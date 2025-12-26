@@ -7,31 +7,44 @@ import { StepWork } from "./steps/step-work";
 import { StepOther } from "./steps/step-other";
 import { Form } from "react-router";
 
+const initialFormState = (employee?: any) => ({
+  cui: employee?.cui ?? "",
+  email: employee?.email ?? "",
+  firstName: employee?.firstName ?? "",
+  lastName: employee?.lastName ?? "",
+  phoneNumber: employee?.phoneNumber ?? "",
+  birthDate: employee?.birthDate ?? "",
+  profileImageUrl: employee?.profileImageUrl ?? "",
+  positionId: employee?.positionId ?? "",
+  workloadType: employee?.workloadType ?? "",
+  salary: employee?.salary ?? "",
+  startDate: "",
+  notes: "",
+});
+
+
 export function EmployeeForm({ employee, positions }: any) {
   const [currentStep, setCurrentStep] = useState(1);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [form, setForm] = useState({
-    cui: employee?.cui ?? "",
-    email: employee?.email ?? "",
-    firstName: employee?.firstName ?? "",
-    lastName: employee?.lastName ?? "",
-    phoneNumber: employee?.phoneNumber ?? "",
-    birthDate: employee?.birthDate ?? "",
-    profileImageUrl: employee?.profileImageUrl ?? "",
-    positionId: employee?.positionId ?? "",
-    workloadType: employee?.workloadType ?? "",
-    salary: employee?.salary ?? "",
-    igssPercentage: employee?.igssPercentage ?? "",
-    irtraPercentage: employee?.irtraPercentage ?? "",
-    startDate: "",
-    notes: "",
-  });
+  const [form, setForm] = useState(() => initialFormState(employee));
+
 
   const updateField = (field: string, value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));
 
   const progress = (currentStep / 3) * 100;
+
+  const resetForm = () => {
+    setForm(initialFormState());
+    setCurrentStep(1);
+
+    // Limpia el input file
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -73,13 +86,22 @@ export function EmployeeForm({ employee, positions }: any) {
 
               {currentStep < 3 ? (
                 <>
-                <Button type="button" onClick={() => setCurrentStep(s => s + 1)}>
-                  Siguiente
-                </Button>
-                <Button type="submit" variant="outline" hidden>Submit hidden</Button>
+                  <Button type="button" onClick={() => setCurrentStep(s => s + 1)}>
+                    Siguiente
+                  </Button>
+                  <Button type="submit" variant="outline" hidden>Submit hidden</Button>
                 </>
               ) : (
-                <Button type="submit">Contratar</Button>
+                // <Button type="submit">Contratar</Button>
+                <div className="flex gap-2">
+                  <Button type="button" variant="secondary" onClick={resetForm}>
+                    Limpiar
+                  </Button>
+
+                  <Button type="submit">
+                    Contratar
+                  </Button>
+                </div>
               )}
             </div>
           </CardContent>

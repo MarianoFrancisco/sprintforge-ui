@@ -5,7 +5,7 @@ import { Button } from "~/components/ui/button";
 import { X, ImagePlus } from "lucide-react";
 import { cn } from "~/lib/utils";
 
-export function StepPersonal({ form, updateField, fileInputRef }: any) {
+export function StepPersonal({ form, updateField, fileInputRef, isEditMode }: any) {
   const clearImage = () => {
     updateField("profileImageUrl", "");
     if (fileInputRef.current) {
@@ -55,6 +55,7 @@ export function StepPersonal({ form, updateField, fileInputRef }: any) {
               value={form.cui}
               maxLength={13}
               onChange={(e) => updateField("cui", e.target.value)}
+              disabled={isEditMode}
             />
           </div>
 
@@ -100,6 +101,7 @@ export function StepPersonal({ form, updateField, fileInputRef }: any) {
               type="email"
               value={form.email}
               onChange={(e) => updateField("email", e.target.value)}
+              disabled={isEditMode}
             />
           </div>
         </div>

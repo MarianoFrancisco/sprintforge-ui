@@ -5,21 +5,15 @@ import {
   DollarSign,
   Activity,
   BadgeInfo,
-  Ellipsis,
+  Banknote,
+  IdCard,
+  Mail,
 } from "lucide-react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useFetcher, useNavigate } from "react-router";
 
-import { Button } from "~/components/ui/button";
 import { DataTable } from "~/components/common/data-table";
 import { StatusBadge } from "~/components/common/status-badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "~/components/common/data-table-column-header";
 
 import {
@@ -28,42 +22,23 @@ import {
   AvatarImage,
 } from "~/components/ui/avatar";
 
-import type { EmployeeResponseDTO } from "~/types/employees/employee";
+import type { EmployeeResponseDTO, EmployeeStatus } from "~/types/employees/employee";
+import { EmployeeActions } from "./employee-actions";
+import { formatGTQ } from "~/util/currency-formatter";
+import { EmployeeStatusBadge } from "./employee-status-badge";
 
 interface EmployeesTableProps {
   data: EmployeeResponseDTO[];
 }
 
 export function EmployeesTable({ data }: EmployeesTableProps) {
-  const navigate = useNavigate();
-  const fetcher = useFetcher();
-
-  const handleActivation = (id: string, activate: boolean) => {
-    fetcher.submit(
-      { activate: String(activate) },
-      {
-        method: "POST",
-        action: `/employees/${id}/activation`,
-      }
-    );
-  };
-
-  const handleTermination = (id: string, rehire: boolean) => {
-    fetcher.submit(
-      { rehire: String(rehire) },
-      {
-        method: "POST",
-        action: `/employees/${id}/termination`,
-      }
-    );
-  };
 
   const columns: ColumnDef<EmployeeResponseDTO>[] = [
     // CUI
     {
       accessorKey: "cui",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="CUI" icon={<BadgeInfo />} />
+        <DataTableColumnHeader column={column} title="CUI" icon={<IdCard />} />
       ),
       cell: ({ getValue }) => (
         <span className="font-mono text-sm">{getValue() as string}</span>
@@ -95,6 +70,13 @@ export function EmployeesTable({ data }: EmployeesTableProps) {
         );
       },
     },
+    {
+      accessorKey: "email",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Correo Electrónico" icon={<Mail />} />
+      ),
+      cell: ({ getValue }) => getValue() || "—",
+    },
 
     // Teléfono
     {
@@ -118,21 +100,25 @@ export function EmployeesTable({ data }: EmployeesTableProps) {
     {
       accessorKey: "salary",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Salario" icon={<DollarSign />} />
+        <DataTableColumnHeader column={column} title="Salario" icon={<Banknote />} />
       ),
       cell: ({ getValue }) => (
-        <span className="font-medium">Q {getValue() as number}</span>
+        formatGTQ(Number(getValue()))
       ),
     },
 
     // Estado
     {
-      accessorKey: "isActive",
+      accessorKey: "status",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Estado" icon={<Activity />} />
+        <DataTableColumnHeader
+          column={column}
+          title="Estado"
+          icon={<Activity />}
+        />
       ),
       cell: ({ getValue }) => (
-        <StatusBadge status={Boolean(getValue())} />
+        <EmployeeStatusBadge status={getValue() as EmployeeStatus} />
       ),
     },
 
@@ -142,55 +128,9 @@ export function EmployeesTable({ data }: EmployeesTableProps) {
       header: () => <span>Acciones</span>,
       cell: ({ row }) => {
         const employee = row.original;
-        const isActive = employee.isActive;
-        const isDeleted = employee.isDeleted;
 
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="data-[state=open]:bg-muted text-muted-foreground"
-              >
-                <Ellipsis />
-                <span className="sr-only">Abrir menú</span>
-              </Button>
-            </DropdownMenuTrigger>
-
-            <DropdownMenuContent align="end" className="w-52">
-              <DropdownMenuItem
-                onClick={() => navigate(`/employees/${employee.id}`)}
-              >
-                Ver detalle
-              </DropdownMenuItem>
-
-              <DropdownMenuItem
-                onClick={() => navigate(`/employees/${employee.id}/edit`)}
-              >
-                Editar datos personales
-              </DropdownMenuItem>
-
-              <DropdownMenuItem
-                onClick={() => handleActivation(employee.id, !isActive)}
-              >
-                {isActive ? "Suspender" : "Activar"}
-              </DropdownMenuItem>
-
-              <DropdownMenuSeparator />
-
-              <DropdownMenuItem
-                variant={isDeleted ? "default" : "destructive"}
-                onClick={() =>
-                  handleTermination(employee.id, isDeleted)
-                }
-              >
-                {isDeleted
-                  ? "Recontratar"
-                  : "Despedir / Registrar renuncia"}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <EmployeeActions employee={employee} />
         );
       },
     },

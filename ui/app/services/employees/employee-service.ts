@@ -4,6 +4,10 @@ import type {
   HireEmployeeRequest,
   UpdateEmployeeDetailRequest,
   FindEmployeesRequest,
+  IncreaseEmployeeSalaryRequest,
+  ReinstateEmployeeRequest,
+  SuspendEmployeeRequest,
+  TerminateEmployeeRequest
 } from "~/types/employees/employee";
 
 class EmployeeService {
@@ -18,8 +22,9 @@ class EmployeeService {
     try {
       const query = new URLSearchParams();
       if (params?.searchTerm) query.append("searchTerm", params.searchTerm);
-      if (params?.isActive !== undefined) query.append("isActive", String(params.isActive));
-      if (params?.isDeleted !== undefined) query.append("isDeleted", String(params.isDeleted));
+      if (params?.position) query.append("position", params.position);
+      if (params?.workloadType) query.append("workloadType", params.workloadType);
+      if (params?.status) query.append("status", params.status);
 
       const endpoint = query.toString()
         ? `${this.basePath}?${query.toString()}`
@@ -58,21 +63,33 @@ class EmployeeService {
   async hire(request: HireEmployeeRequest): Promise<EmployeeResponseDTO> {
     try {
       const formData = new FormData();
-      Object.entries(request).forEach(([k, v]) => {
-        if (v !== undefined && v !== null) formData.append(k, v as any);
+
+      Object.entries(request).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formData.append(key, value as any);
+        }
       });
 
-      return await apiClient.postForm<EmployeeResponseDTO>(this.basePath, formData);
+      return await apiClient.postForm<EmployeeResponseDTO>(
+        this.basePath,
+        formData
+      );
     } catch (e) {
       return this.handleError(e);
     }
   }
 
-  async update(id: string, request: UpdateEmployeeDetailRequest): Promise<EmployeeResponseDTO> {
+  async update(
+    id: string,
+    request: UpdateEmployeeDetailRequest
+  ): Promise<EmployeeResponseDTO> {
     try {
       const formData = new FormData();
-      Object.entries(request).forEach(([k, v]) => {
-        if (v !== undefined && v !== null) formData.append(k, v as any);
+
+      Object.entries(request).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formData.append(key, value as any);
+        }
       });
 
       return await apiClient.patchForm<EmployeeResponseDTO>(
@@ -84,25 +101,57 @@ class EmployeeService {
     }
   }
 
-  async activate(id: string): Promise<EmployeeResponseDTO> {
+  async increaseSalary(
+    cui: string,
+    request: IncreaseEmployeeSalaryRequest
+  ): Promise<EmployeeResponseDTO> {
     try {
-      return await apiClient.patch<EmployeeResponseDTO>(`${this.basePath}/${id}:activate`);
+      return await apiClient.post<EmployeeResponseDTO>(
+        `${this.basePath}/${cui}/salary/increase`,
+        request
+      );
     } catch (e) {
       return this.handleError(e);
     }
   }
 
-  async deactivate(id: string): Promise<EmployeeResponseDTO> {
+  async reinstate(
+    cui: string,
+    request: ReinstateEmployeeRequest
+  ): Promise<EmployeeResponseDTO> {
     try {
-      return await apiClient.patch<EmployeeResponseDTO>(`${this.basePath}/${id}:deactivate`);
+      return await apiClient.post<EmployeeResponseDTO>(
+        `${this.basePath}/${cui}/reinstate`,
+        request
+      );
     } catch (e) {
       return this.handleError(e);
     }
   }
 
-  async delete(id: string): Promise<void> {
+  async suspend(
+    cui: string,
+    request: SuspendEmployeeRequest
+  ): Promise<EmployeeResponseDTO> {
     try {
-      await apiClient.delete(`${this.basePath}/${id}`);
+      return await apiClient.post<EmployeeResponseDTO>(
+        `${this.basePath}/${cui}/suspend`,
+        request
+      );
+    } catch (e) {
+      return this.handleError(e);
+    }
+  }
+
+  async terminate(
+    cui: string,
+    request: TerminateEmployeeRequest
+  ): Promise<EmployeeResponseDTO> {
+    try {
+      return await apiClient.post<EmployeeResponseDTO>(
+        `${this.basePath}/${cui}/terminate`,
+        request
+      );
     } catch (e) {
       return this.handleError(e);
     }

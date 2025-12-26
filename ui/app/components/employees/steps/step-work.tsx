@@ -45,7 +45,6 @@ export function StepWork({ form, updateField, positions }: any) {
             <SelectContent>
               <SelectItem value="FULL_TIME">Tiempo completo</SelectItem>
               <SelectItem value="PART_TIME">Medio tiempo</SelectItem>
-              <SelectItem value="TEMPORAL">Temporal</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -72,36 +71,6 @@ export function StepWork({ form, updateField, positions }: any) {
             placeholder="0.00"
             value={form.salary}
             onChange={(e) => updateField("salary", e.target.value)}
-          />
-        </div>
-
-        {/* IGSS */}
-        <div className="space-y-2">
-          <Label htmlFor="igssPercentage">IGSS (%)</Label>
-          <Input
-            id="igssPercentage"
-            type="number"
-            min={0}
-            max={10}
-            step="0.01"
-            placeholder="2.5"
-            value={form.igssPercentage}
-            onChange={(e) => updateField("igssPercentage", e.target.value)}
-          />
-        </div>
-
-        {/* IRTRA */}
-        <div className="space-y-2">
-          <Label htmlFor="irtraPercentage">IRTRA (%)</Label>
-          <Input
-            id="irtraPercentage"
-            type="number"
-            min={0}
-            max={10}
-            step="0.01"
-            placeholder="2.5"
-            value={form.irtraPercentage}
-            onChange={(e) => updateField("irtraPercentage", e.target.value)}
           />
         </div>
       </div>
