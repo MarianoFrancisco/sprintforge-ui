@@ -16,6 +16,9 @@ export default [
             route(":cui/reinstate", "routes/employees/reinstate-employee.tsx"),
             route(":cui/terminate", "routes/employees/terminate-employee.tsx"),
 
+            route(":cui/pay", "routes/employees/payments/pay-employee.tsx"),
+            route("payments", "routes/employees/payments/employee-payments-history.tsx"),
+
             ...prefix("positions", [
                 index("routes/employees/positions/index-position.tsx"),
                 route("create", "routes/employees/positions/create-position.tsx"),

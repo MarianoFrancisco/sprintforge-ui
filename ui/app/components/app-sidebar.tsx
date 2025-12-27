@@ -62,6 +62,10 @@ const data = {
           title: "Historial laboral",
           url: "/employees/history",
         },
+        {
+          title: "Historial de pagos",
+          url: "/employees/payments",
+        },
       ],
     },
          {

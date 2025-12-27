@@ -58,6 +58,12 @@ export function EmployeeActions({ employee }: EmployeeActionsProps) {
             >
               Aumentar salario
             </DropdownMenuItem>
+
+            <DropdownMenuItem
+              onClick={() => navigate(`/employees/${cui}/pay`)}
+            >
+              Realizar pago
+            </DropdownMenuItem>
           </>
         )}
 
