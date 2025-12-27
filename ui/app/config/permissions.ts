@@ -24,6 +24,10 @@ export const PERMS = {
   ROLE_EDIT: "ROLE:EDIT",
   ROLE_ACTIVATE: "ROLE:ACTIVATE",
   ROLE_DEACTIVATE: "ROLE:DEACTIVATE",
+
+  // USERS
+  USER_VIEW: "USER:VIEW",
+  USER_CHANGE_ROLE: "USER:CHANGE_ROLE",
 } as const;
 
 export type PermissionCode = typeof PERMS[keyof typeof PERMS];

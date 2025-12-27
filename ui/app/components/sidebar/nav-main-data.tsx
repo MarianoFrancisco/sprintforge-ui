@@ -35,4 +35,13 @@ export const navMainData: NavItem[] = [
       { title: "Listado", url: "/identity/roles", permission: PERMS.ROLE_VIEW },
     ],
   },
+  {
+    title: "Usuarios",
+    url: "/identity/users",
+    icon: Users,
+    // permission: PERMS.USER_VIEW,
+    items: [
+      { title: "Listado", url: "/identity/users", permission: PERMS.USER_VIEW },
+    ],
+  },
 ];

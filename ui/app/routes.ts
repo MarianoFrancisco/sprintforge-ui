@@ -34,6 +34,11 @@ export default [
                 route(":id/activate", "routes/identity/roles/activate-role.tsx"),
                 route(":id/deactivate", "routes/identity/roles/deactivate-role.tsx"),
             ]),
+
+            ...prefix("users", [
+                index("routes/identity/users/index-user.tsx"),
+                route(":id/change-role", "routes/identity/users/change-user-role.tsx"),
+            ])
         ]),
     ]),
     route("action/set-theme", "routes/action/set-theme.ts"),
