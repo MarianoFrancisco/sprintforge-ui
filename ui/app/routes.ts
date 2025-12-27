@@ -27,9 +27,11 @@ export default [
         ]),
         ...prefix("identity", [
             ...prefix("roles", [
-                // index("routes/identity/roles/index-role.tsx"),
+                index("routes/identity/roles/index-role.tsx"),
                 route("create", "routes/identity/roles/create-role.tsx"),
-                // route(":id/edit", "routes/identity/roles/edit-role.tsx"),
+                route(":id/edit", "routes/identity/roles/edit-role.tsx"),
+                route(":id/activate", "routes/identity/roles/activate-role.tsx"),
+                route(":id/deactivate", "routes/identity/roles/deactivate-role.tsx"),
             ]),
         ]),
     ]),

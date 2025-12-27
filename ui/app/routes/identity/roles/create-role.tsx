@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import {
-  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
   useLoaderData,
   useActionData,
+  useNavigate,
 } from "react-router";
 import { toast } from "sonner";
 import type { Permission } from "~/components/identity/permission/permission-selector";
@@ -46,6 +46,7 @@ export async function action({ request }: ActionFunctionArgs) {
 export default function CreateRolePage() {
   const data = useLoaderData<typeof loader>();
   const actionData = useActionData();
+  const navigate = useNavigate();
 
     useEffect(() => {
         if (actionData?.error) {
@@ -54,16 +55,12 @@ export default function CreateRolePage() {
         if (actionData?.success) {
             toast.success(actionData.success, {
                 action: {
-                    label: "Ver cargos",
-                    onClick: async () => {
-                      const roles = await roleService.getAll();
-                        // console.log("Navigate to /identity/roles");
-                        console.log("Roles after creation:", roles);
-                    },
+                    label: "Ver roles",
+                    onClick: () => navigate("/identity/roles"),
                 },
             });
         }
-    }, [actionData]);
+    }, [actionData, navigate]);
 
   return (
     <section className="p-6">

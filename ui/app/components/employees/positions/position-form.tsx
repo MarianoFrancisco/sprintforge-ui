@@ -37,7 +37,7 @@ export function PositionForm({ position }: PositionFormProps) {
 
                         <div className="flex flex-col items-center gap-2 text-center">
                             <h2 className="text-2xl font-semibold tracking-tight">
-                                {isEditMode ? "Editar Cargo" : "Crear Cargo"}
+                                {isEditMode ? "Editar Puesto" : "Crear Puesto"}
                             </h2>
                         </div>
 

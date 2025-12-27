@@ -11,6 +11,10 @@ import {
   SidebarTrigger,
 } from "~/components/ui/sidebar"
 
+export function HydrateFallback() {
+  return <div>Loading...</div>;
+}
+
 export default function SidebarLayout() {
 
       const navigate = useNavigate()
