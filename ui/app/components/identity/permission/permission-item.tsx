@@ -17,7 +17,10 @@ export function PermissionItem({
     onCheckedChange,
 }: PermissionItemProps) {
     return (
-        <div className="flex items-center gap-3">
+        <div
+            className="flex items-center gap-3 w-full"
+            onClick={(e) => e.preventDefault()}
+        >
             <Checkbox checked={checked} onCheckedChange={onCheckedChange} />
 
             <span className="text-sm font-medium">{name}</span>
