@@ -1,4 +1,19 @@
+import { redirect, type LoaderFunctionArgs } from "react-router";
 import { Welcome } from "../welcome/welcome";
+import { getAuthSession } from "~/sessions.server";
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  const session = await getAuthSession(request);
+
+  const userId = session.get("userId");
+  const employeeId = session.get("employeeId");
+
+  if (userId && employeeId) {
+    return redirect("/dashboard");
+  }
+
+  return {userId};
+}
 
 export default function Home() {
   return (

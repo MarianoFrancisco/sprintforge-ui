@@ -1,7 +1,8 @@
 import { ArrowLeftCircle } from "lucide-react"
 import { useEffect, useState } from "react"
-import { Outlet, useNavigate } from "react-router"
-import { AppSidebar } from "~/components/app-sidebar"
+import { Outlet, useNavigate, type LoaderFunctionArgs } from "react-router"
+import { requireIdentity } from "~/auth.server"
+import { AppSidebar } from "~/components/sidebar/app-sidebar"
 import { Button } from "~/components/ui/button"
 import { ModeToggle } from "~/components/ui/mode-toggle"
 import { Separator } from "~/components/ui/separator"
@@ -10,9 +11,20 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "~/components/ui/sidebar"
+import { authService } from "~/services/identity/auth-service"
 
 export function HydrateFallback() {
   return <div>Loading...</div>;
+}
+export async function loader({ request }: LoaderFunctionArgs) {
+  const { userId } = await requireIdentity(request, {
+    redirectTo: "/login",
+    flashMessage: "Necesitas iniciar sesión.",
+  });
+
+  const user = await authService.getCurrentUser(userId);
+
+  return {user};
 }
 
 export default function SidebarLayout() {

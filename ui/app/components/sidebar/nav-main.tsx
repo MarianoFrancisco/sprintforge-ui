@@ -17,20 +17,12 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "~/components/ui/sidebar"
+import type { NavItem } from "~/types/navbar/nav-item"
 
 export function NavMain({
   items,
 }: {
-  items: {
-    title: string
-    url: string
-    icon: LucideIcon
-    isActive?: boolean
-    items?: {
-      title: string
-      url: string
-    }[]
-  }[]
+  items: NavItem[]
 }) {
   return (
     <SidebarGroup>

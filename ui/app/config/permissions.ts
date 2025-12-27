@@ -1,0 +1,10 @@
+export const PERMS = {
+  EMPLOYEE_CREATE: "EMPLOYEE:CREATE",
+  EMPLOYEE_LIST: "EMPLOYEE:LIST",
+  POSITION_CREATE: "POSITION:CREATE",
+  POSITION_LIST: "POSITION:LIST",
+  ROLE_CREATE: "ROLE:CREATE",
+  ROLE_LIST: "ROLE:LIST",
+} as const;
+
+export type PermissionCode = typeof PERMS[keyof typeof PERMS];
