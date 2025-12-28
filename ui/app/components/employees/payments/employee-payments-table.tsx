@@ -14,6 +14,8 @@ import {
 } from "~/components/ui/dialog";
 import { formatGTQ } from "~/util/currency-formatter";
 import type { PaymentResponseDTO } from "~/types/employees/employee-payment";
+import { MoneyCell } from "~/components/common/money-cell";
+import { Badge } from "~/components/ui/badge";
 
 interface EmployeePaymentsTableProps {
   data: PaymentResponseDTO[];
@@ -81,11 +83,11 @@ export function EmployeePaymentsTable({ data }: EmployeePaymentsTableProps) {
       cell: ({ getValue }) => <span className="truncate">{getValue() as string}</span>,
     },
 
-    // Cargo
+    // Puesto
     {
       accessorKey: "positionName",
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Cargo" />,
-      cell: ({ getValue }) => <span className="truncate">{getValue() as string}</span>,
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Puesto" />,
+      cell: ({ getValue }) => <Badge variant="secondary">{getValue() as string}</Badge>,
     },
 
     // Salario base
@@ -95,7 +97,7 @@ export function EmployeePaymentsTable({ data }: EmployeePaymentsTableProps) {
         <DataTableColumnHeader column={column} title="Salario base" />
       ),
       cell: ({ getValue }) => (
-        <span className="font-mono font-medium">{formatGTQ(Number(getValue()))}</span>
+        <MoneyCell value={Number(getValue())} />
       ),
     },
 
@@ -104,7 +106,7 @@ export function EmployeePaymentsTable({ data }: EmployeePaymentsTableProps) {
       accessorKey: "bonus",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Bono" />,
       cell: ({ getValue }) => (
-        <span className="font-mono">{formatGTQ(Number(getValue() ?? 0))}</span>
+        <MoneyCell value={Number(getValue() ?? 0)} />
       ),
     },
 
@@ -115,7 +117,7 @@ export function EmployeePaymentsTable({ data }: EmployeePaymentsTableProps) {
         <DataTableColumnHeader column={column} title="Descuento" />
       ),
       cell: ({ getValue }) => (
-        <span className="font-mono">{formatGTQ(Number(getValue() ?? 0))}</span>
+        <MoneyCell value={Number(getValue() ?? 0)} />
       ),
     },
 
@@ -124,7 +126,7 @@ export function EmployeePaymentsTable({ data }: EmployeePaymentsTableProps) {
       accessorKey: "total",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Total" />,
       cell: ({ getValue }) => (
-        <span className="font-mono font-semibold">{formatGTQ(Number(getValue()))}</span>
+        <MoneyCell value={Number(getValue())} className="font-bold" />
       ),
     },
 

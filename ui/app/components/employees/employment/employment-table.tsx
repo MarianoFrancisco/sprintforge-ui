@@ -18,6 +18,7 @@ import type {
   EmploymentHistoryResponseDTO, 
   EmploymentHistoryType 
 } from "~/types/employees/employment-history";
+import { MoneyCell } from "~/components/common/money-cell";
 
 interface EmploymentHistoryTableProps {
   data: EmploymentHistoryResponseDTO[];
@@ -147,9 +148,7 @@ export function EmploymentHistoryTable({ data }: EmploymentHistoryTableProps) {
       cell: ({ getValue }) => {
         const salary = getValue() as string;
         return (
-          <span className="font-mono font-medium">
-            {formatGTQ(Number(salary))}
-          </span>
+          <MoneyCell value={Number(salary)} />
         );
       },
     },

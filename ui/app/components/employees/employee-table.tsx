@@ -22,6 +22,7 @@ import type { EmployeeResponseDTO, EmployeeStatus } from "~/types/employees/empl
 import { EmployeeActions } from "./employee-actions";
 import { formatGTQ } from "~/util/currency-formatter";
 import { EmployeeStatusBadge } from "./employee-status-badge";
+import { MoneyCell } from "../common/money-cell";
 
 interface EmployeesTableProps {
   data: EmployeeResponseDTO[];
@@ -99,7 +100,7 @@ export function EmployeesTable({ data }: EmployeesTableProps) {
         <DataTableColumnHeader column={column} title="Salario" icon={<Banknote />} />
       ),
       cell: ({ getValue }) => (
-        formatGTQ(Number(getValue()))
+        <MoneyCell value={Number(getValue())} />
       ),
     },
 

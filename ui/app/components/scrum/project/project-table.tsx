@@ -2,6 +2,7 @@ import type { ColumnDef } from "@tanstack/react-table"
 
 import { DataTable } from "~/components/common/data-table"
 import { DataTableColumnHeader } from "~/components/common/data-table-column-header"
+import { MoneyCell } from "~/components/common/money-cell"
 import { Badge } from "~/components/ui/badge"
 import type { ProjectResponseDTO } from "~/types/scrum/project"
 import { formatGTQ } from "~/util/currency-formatter"
@@ -18,16 +19,6 @@ function StatusBadge({ isClosed }: { isClosed: boolean }) {
     <Badge variant={isClosed ? "secondary" : "default"}>
       {isClosed ? "Cerrado" : "Abierto"}
     </Badge>
-  )
-}
-
-function MoneyCell({ value }: { value: number }) {
-  if (!value) return <span>—</span>
-
-  return (
-    <span className="font-mono text-sm">
-      {formatGTQ(value)}
-    </span>
   )
 }
 
