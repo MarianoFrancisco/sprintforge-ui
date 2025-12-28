@@ -1,10 +1,12 @@
-import { Link, useLoaderData } from "react-router";
+import { Link, useLoaderData, type MiddlewareFunction } from "react-router";
 import type { Route } from "../+types/home";
 import { Button } from "~/components/ui/button";
 import { employeeService } from "~/services/employees/employee-service";
 import { EmployeesTable } from "~/components/employees/employee-table";
 import { EmployeeFilter } from "~/components/employees/employee-filters";
 import type { EmployeeStatus, EmployeeWorkloadType } from "~/types/employees/employee";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
+import { PERMS } from "~/config/permissions";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -16,6 +18,13 @@ export function meta({}: Route.MetaArgs) {
 export const handle = {
   crumb: "Empleados",
 };
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.EMPLOYEE_VIEW], {
+    redirectTo: "/dashboard",
+    flashMessage: "No tienes permiso para ver Empleados.",
+  }),
+];
 
 export async function loader({ request }: { request: Request }) {
   const url = new URL(request.url);

@@ -1,5 +1,3 @@
-import type { PermissionResponseDTO } from "./permission";
-
 export interface User {
     id: string;
     employeeId: string;

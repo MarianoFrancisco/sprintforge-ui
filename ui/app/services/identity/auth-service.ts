@@ -50,6 +50,7 @@ class AuthService {
   }
 
 async getCurrentUser(userId: string): Promise<User> {
+  console.log("AuthService.getCurrentUser called with userId:", userId);
   try {
     const user = await userService.getById(userId);
     const employee = await employeeService.getById(user.employeeId);
