@@ -1,6 +1,6 @@
 import type { ProjectResponseDTO } from "./project"
 
-export type PaymentMethod = "CASH" | "TRANSFER" | "CARD"
+export type PaymentMethod = "CASH" | "TRANSFER"
 
 export interface GetAllPaymentsQuery {
   searchTerm?: string
@@ -23,7 +23,7 @@ export interface CreatePaymentRequestDTO {
 export interface PaymentResponseDTO {
   id: string
   date: string
-  amount: string // BigDecimal
+  amount: number // BigDecimal
   method: PaymentMethod
   reference?: string
   note?: string
