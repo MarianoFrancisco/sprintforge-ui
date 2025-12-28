@@ -25,8 +25,8 @@ export interface CreateProjectRequestDTO {
   description?: string
   client: string
   area: string
-  budgetAmount: string
-  contractAmount: string
+  budgetAmount: number
+  contractAmount: number
   employeeIds: string[]
 }
 
@@ -68,8 +68,8 @@ export interface ProjectResultResponseDTO {
   description?: string
   client: string
   area: string
-  budgetAmount: string
-  contractAmount: string
+  budgetAmount: number
+  contractAmount: number
   isClosed: boolean
   isDeleted: boolean
   createdAt: string
@@ -99,6 +99,6 @@ export interface UpdateProjectAreaRequestDTO {
 
 export interface UpdateProjectAmountsRequestDTO {
   employeeId: string
-  budgetAmount: string
-  contractAmount: string
+  budgetAmount: number
+  contractAmount: number
 }

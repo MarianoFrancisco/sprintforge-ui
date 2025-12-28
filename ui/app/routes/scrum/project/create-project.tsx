@@ -53,8 +53,8 @@ export async function action({ request }: ActionFunctionArgs) {
         : undefined,
       client: String(formData.get("client") ?? ""),
       area: String(formData.get("area") ?? ""),
-      budgetAmount: String(formData.get("budgetAmount") ?? ""),
-      contractAmount: String(formData.get("contractAmount") ?? ""),
+      budgetAmount: Number(formData.get("budgetAmount")),
+      contractAmount: Number(formData.get("contractAmount")),
       employeeIds: JSON.parse(String(formData.get("employeeIds") ?? "[]")),
     }
 

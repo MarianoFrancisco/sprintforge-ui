@@ -1,5 +1,5 @@
 import { Form, useNavigate } from "react-router"
-import { Ellipsis, Eye, Lock, Unlock, Trash2 } from "lucide-react"
+import { Ellipsis, Eye, Lock, Unlock, Trash2, BanknoteArrowUp } from "lucide-react"
 
 import {
   DropdownMenu,
@@ -50,6 +50,14 @@ export function ProjectActions({ project }: ProjectActionsProps) {
             </DropdownMenuItem>
           </Form>
         ) : (
+          <>
+                      <DropdownMenuItem
+              onClick={() => navigate(`/projects/${id}/payment`)}
+            >
+              <BanknoteArrowUp className="mr-2 h-4 w-4" />
+              Abonar pago
+            </DropdownMenuItem>
+
           <Form method="post" action={`/projects/${id}/close`}>
             <DropdownMenuItem asChild>
               <button type="submit" className="flex w-full items-center">
@@ -58,6 +66,7 @@ export function ProjectActions({ project }: ProjectActionsProps) {
               </button>
             </DropdownMenuItem>
           </Form>
+          </>
         )}
 
         {/* <DropdownMenuSeparator /> */}

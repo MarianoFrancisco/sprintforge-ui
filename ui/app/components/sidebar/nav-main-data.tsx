@@ -17,7 +17,7 @@ export const navMainData: NavItem[] = [
     title: "Empleados",
     url: "/employees",
     icon: BriefcaseBusiness,
-    permission: PERMS.EMPLOYEE_VIEW,
+    // permission: PERMS.EMPLOYEE_VIEW,
     items: [
       { title: "Contratar empleado", url: "/employees/hire", permission: PERMS.EMPLOYEE_HIRE },
       { title: "Listado", url: "/employees", permission: PERMS.EMPLOYEE_VIEW },
