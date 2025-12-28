@@ -6,7 +6,7 @@ export interface User {
     email: string;
     fullname: string;
     role: string;
-    permissions: PermissionResponseDTO[];
+    permissions: Set<string>;
     profileImage: string | null;
 };
 

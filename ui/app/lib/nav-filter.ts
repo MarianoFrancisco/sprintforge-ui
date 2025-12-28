@@ -1,38 +1,37 @@
 import type { User } from "~/types/identity/auth";
-import type { PermissionResponseDTO } from "~/types/identity/permission";
-import type { NavItem } from "~/types/navbar/nav-item";
+import type { NavItem, NavSubItem } from "~/types/navbar/nav-item";
 
-function toPermissionSet(perms: PermissionResponseDTO[]) {
-  return new Set(perms.map((p) => p.code));
-}
-
-function isAllowed(item: NavItem, permSet: Set<string>) {
+function isAllowed(
+  item: Pick<NavSubItem, "permission" | "anyOf">,
+  permSet: Set<string>
+) {
   if (item.anyOf?.length) return item.anyOf.some((c) => permSet.has(c));
   if (item.permission) return permSet.has(item.permission);
-  return true; // sin permiso requerido => visible
+  return true;
+}
+
+function notNull<T>(value: T | null | undefined): value is T {
+  return value != null;
 }
 
 export function filterNavByPermissions(nav: NavItem[], user: User): NavItem[] {
-  const permSet = toPermissionSet(user.permissions);
+  const permSet = user.permissions;
 
-  const walk = (items: NavItem[]): NavItem[] =>
-    items
-      .map((item) => {
-        const children = item.items ? walk(item.items) : undefined;
-        const allowedSelf = isAllowed(item, permSet);
+  return nav
+    .map((item): NavItem | null => {
+      const filteredChildren: NavSubItem[] | undefined = item.items
+        ? item.items.filter((sub) => isAllowed(sub, permSet))
+        : undefined;
 
-        // Si el padre no está permitido pero tiene hijos permitidos,
-        // lo dejamos para que el grupo exista (opcional).
-        const allowedByChildren = Boolean(children && children.length > 0);
+      const allowedSelf = isAllowed(item, permSet);
+      const allowedByChildren = Boolean(filteredChildren?.length);
 
-        if (!allowedSelf && !allowedByChildren) return null;
+      if (!allowedSelf && !allowedByChildren) return null;
 
-        return {
-          ...item,
-          items: children,
-        };
-      })
-      .filter(Boolean) as NavItem[];
-
-  return walk(nav);
+      return {
+        ...item,
+        items: allowedByChildren ? filteredChildren : undefined,
+      };
+    })
+    .filter(notNull);
 }

@@ -8,5 +8,7 @@ export type NavItem = {
   // si no tiene permission => público dentro del layout
   permission?: PermissionCode;
   anyOf?: PermissionCode[];
-  items?: NavItem[];
+  items?: NavSubItem[];
 };
+
+export type NavSubItem = Omit<NavItem, "items">;

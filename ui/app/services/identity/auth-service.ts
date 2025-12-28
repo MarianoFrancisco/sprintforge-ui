@@ -3,6 +3,7 @@ import { apiClient, ApiError } from "~/lib/api-client";
 import { userService } from "./user-service";
 import { employeeService } from "../employees/employee-service";
 import { decodeJWTModern } from "~/lib/jwt";
+import type { RolePermissionDTO } from "~/types/identity/role";
 
 class AuthService {
   private basePath = "/api/v1/auth";
@@ -48,25 +49,29 @@ class AuthService {
     }
   }
 
-  async getCurrentUser(userId: string): Promise<User> {
-    try {
-      const user = await userService.getById(userId);
-      const employee = await employeeService.getById(user.employeeId);
-      
-      return {
-        id: user.id,
-        employeeId: user.employeeId,
-        email: user.email,
-        fullname: employee.fullName,
-        role: user.role.name,
-        permissions: user.role.permissions,
-        profileImage: employee.profileImage || null,
-      };
+async getCurrentUser(userId: string): Promise<User> {
+  try {
+    const user = await userService.getById(userId);
+    const employee = await employeeService.getById(user.employeeId);
 
-    } catch (error) {
-      return this.handleError(error);
-    }
+    const permissionCodes = new Set<string>(
+      (user.role.permissions ?? []).map((p: RolePermissionDTO) => p.code)
+    );
+
+    return {
+      id: user.id,
+      employeeId: user.employeeId,
+      email: user.email,
+      fullname: employee.fullName,
+      role: user.role.name,
+      permissions: permissionCodes,
+      profileImage: employee.profileImage || null,
+    };
+  } catch (error) {
+    return this.handleError(error);
   }
+}
+
 }
 
 export const authService = new AuthService();
