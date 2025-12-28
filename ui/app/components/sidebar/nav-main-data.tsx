@@ -17,7 +17,7 @@ export const navMainData: NavItem[] = [
     title: "Empleados",
     url: "/employees",
     icon: BriefcaseBusiness,
-    // permission: PERMS.EMPLOYEE_VIEW,
+    permission: PERMS.EMPLOYEE_VIEW,
     items: [
       { title: "Contratar empleado", url: "/employees/hire", permission: PERMS.EMPLOYEE_HIRE },
       { title: "Listado", url: "/employees", permission: PERMS.EMPLOYEE_VIEW },
@@ -39,7 +39,7 @@ export const navMainData: NavItem[] = [
     title: "Usuarios",
     url: "/identity/users",
     icon: Users,
-    // permission: PERMS.USER_VIEW,
+    permission: PERMS.USER_VIEW,
     items: [
       { title: "Listado", url: "/identity/users", permission: PERMS.USER_VIEW },
     ],
@@ -48,10 +48,11 @@ export const navMainData: NavItem[] = [
     title: "Proyectos",
     url: "/projects",
     icon: Users,
-    // permission: PERMS.USER_VIEW,
+    permission: PERMS.PROJECT_VIEW,
     items: [
-      { title: "Crear proyecto", url: "/projects/create" },
-      { title: "Listado", url: "/projects" },
+      { title: "Crear proyecto", url: "/projects/create", permission: PERMS.PROJECT_CREATE },
+      { title: "Listado", url: "/projects", permission: PERMS.PROJECT_VIEW },
+      { title: "Historial de pagos", url: "/projects/payments", permission: PERMS.PROJECT_VIEW_PAYMENT_HISTORY },
     ],
   },
 ];
