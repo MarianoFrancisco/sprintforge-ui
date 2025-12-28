@@ -24,6 +24,7 @@ type AuthSessionData = {
 
 type AuthSessionFlashData = {
   authError: string;
+  apiError: string;
 };
 
 export const authSessionStorage = createCookieSessionStorage<

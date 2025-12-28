@@ -1,4 +1,5 @@
 import {
+  data,
   isRouteErrorResponse,
   Links,
   Meta,
@@ -11,10 +12,12 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
-import { themeSessionResolver } from "./sessions.server";
+import { commitAuthSession, getAuthSession, themeSessionResolver } from "./sessions.server";
 import { PreventFlashOnWrongTheme, ThemeProvider, useTheme } from "remix-themes";
 import { Toaster } from "./components/ui/sonner";
 import { ErrorPage } from "./routes/error";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -45,9 +48,15 @@ export function meta({ }: Route.MetaArgs) {
 // Return the theme from the session storage using the loader
 export async function loader({ request }: LoaderFunctionArgs) {
   const { getTheme } = await themeSessionResolver(request)
-  return {
+  const session = await getAuthSession(request);
+  return data({
     theme: getTheme(),
-  }
+    authError: session.get("authError"),
+  }, {
+    headers: {
+      "Set-Cookie": await commitAuthSession(session),
+    },
+  });
 }
 
 
@@ -82,6 +91,12 @@ function App() {
 
 export default function AppWithProviders() {
   const data = useLoaderData();
+
+  useEffect(() => {
+    if (data.authError) {
+      toast.error(data.authError);
+    }
+  }, [data.authError]);
   return (
     <ThemeProvider specifiedTheme={data.theme} themeAction="/action/set-theme" disableTransitionOnThemeChange={true}>
       <App />
