@@ -9,8 +9,8 @@ export interface ProjectResponseDTO {
   description?: string
   client: string
   area: string
-  budgetAmount: string
-  contractAmount: string
+  budgetAmount: number
+  contractAmount: number
   isClosed: boolean
   isDeleted: boolean
   createdAt: string
@@ -50,7 +50,7 @@ export interface OpenProjectRequestDTO {
 
 export interface FindProjectsRequestDTO {
   searchTerm?: string
-  isActive?: boolean
+  isClosed?: boolean
 }
 
 export interface EmployeeResultResponseDTO {

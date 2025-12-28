@@ -33,14 +33,14 @@ class ProjectService {
     );
   }
 
-  /** GET /api/v1/project?searchTerm&isActive */
+  /** GET /api/v1/project?searchTerm&isClosed */
   async getAll(params?: FindProjectsRequestDTO): Promise<ProjectResponseDTO[]> {
     try {
       const queryParams = new URLSearchParams();
 
       if (params?.searchTerm) queryParams.append("searchTerm", params.searchTerm);
-      if (params?.isActive !== undefined)
-        queryParams.append("isActive", String(params.isActive));
+      if (params?.isClosed !== undefined)
+        queryParams.append("isClosed", String(params.isClosed));
 
       const qs = queryParams.toString();
       const endpoint = qs ? `${this.basePath}?${qs}` : this.basePath;

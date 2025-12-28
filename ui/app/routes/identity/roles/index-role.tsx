@@ -9,13 +9,8 @@ import type { FindRolesRequest, RoleResponseDTO } from "~/types/identity/role";
 export function meta() {
   return [
     { title: "Roles" },
-    { name: "description", content: "Gestión de roles del sistema" },
   ];
 }
-
-export const handle = {
-  crumb: "Listado de roles",
-};
 
 export async function loader({ request }: { request: Request }) {
   const url = new URL(request.url);
