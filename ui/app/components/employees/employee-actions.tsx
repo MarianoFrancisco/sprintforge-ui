@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router";
-import { Ellipsis } from "lucide-react";
+import { BanknoteArrowUp, Ellipsis, Pencil, UserCheck, UserMinus, UserX, Wallet } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -50,30 +50,32 @@ export function EmployeeActions({ employee }: EmployeeActionsProps) {
             <DropdownMenuItem
               onClick={() => navigate(`/employees/${id}/edit`)}
             >
+              <Pencil className="mr-2 h-4 w-4" />
               Editar datos personales
             </DropdownMenuItem>
 
             <DropdownMenuItem
               onClick={() => navigate(`/employees/${cui}/salary/increase`)}
             >
+            <BanknoteArrowUp className="mr-2 h-4 w-4" />
               Aumentar salario
             </DropdownMenuItem>
 
             <DropdownMenuItem
               onClick={() => navigate(`/employees/${cui}/pay`)}
             >
+            <Wallet className="mr-2 h-4 w-4" />
               Realizar pago
             </DropdownMenuItem>
           </>
         )}
-
-        <DropdownMenuSeparator />
 
         {/* Cambios de estado */}
         {isActive && (
           <DropdownMenuItem
             onClick={() => navigate(`/employees/${employee.cui}/suspend`)}
           >
+            <UserX className="mr-2 h-4 w-4" />
             Suspender
           </DropdownMenuItem>
         )}
@@ -82,6 +84,7 @@ export function EmployeeActions({ employee }: EmployeeActionsProps) {
           <DropdownMenuItem
             onClick={() => navigate(`/employees/${employee.cui}/reinstate`)}
           >
+            <UserCheck className="mr-2 h-4 w-4" />
             Reincorporar
           </DropdownMenuItem>
         )}
@@ -95,6 +98,7 @@ export function EmployeeActions({ employee }: EmployeeActionsProps) {
                 navigate(`/employees/${employee.cui}/terminate`)
               }
             >
+              <UserMinus className="mr-2 h-4 w-4" />
               Terminar
             </DropdownMenuItem>
           </>

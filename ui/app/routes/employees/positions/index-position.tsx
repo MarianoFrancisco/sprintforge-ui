@@ -1,4 +1,4 @@
-import { Link, useFetcher, useLoaderData, useNavigate } from "react-router";
+import { Link, useLoaderData } from "react-router";
 import { PositionFilter } from "~/components/employees/positions/position-filter";
 import { PositionsTable } from "~/components/employees/positions/position-table";
 import { Button } from "~/components/ui/button";
@@ -44,8 +44,6 @@ export async function loader({ request }: { request: Request }) {
 }
 
 export default function PositionsPage() {
-  const navigate = useNavigate();
-  const fetcher = useFetcher();
   const positions = useLoaderData<typeof loader>() as PositionResponseDTO[];
 
   return (

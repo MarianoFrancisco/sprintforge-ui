@@ -1,6 +1,6 @@
 // ~/components/roles/role-actions.tsx
 import { Form, useNavigate } from "react-router";
-import { Ellipsis } from "lucide-react";
+import { Ban, CheckCircle, Ellipsis, Pencil } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -37,6 +37,7 @@ export function RoleActions({ role }: RoleActionsProps) {
       <DropdownMenuContent align="end" className="w-44">
         {/* Editar */}
         <DropdownMenuItem onClick={() => navigate(`/identity/roles/${id}/edit`)}>
+          <Pencil  className="mr-2 h-4 w-4" />
           Editar
         </DropdownMenuItem>
 
@@ -45,6 +46,7 @@ export function RoleActions({ role }: RoleActionsProps) {
           <Form method="post" action={`/identity/roles/${id}/deactivate`}>
             <DropdownMenuItem asChild>
               <button type="submit" className="w-full text-left">
+                <Ban className="mr-2 h-4 w-4" />
                 Desactivar
               </button>
             </DropdownMenuItem>
@@ -53,6 +55,7 @@ export function RoleActions({ role }: RoleActionsProps) {
           <Form method="post" action={`/identity/roles/${id}/activate`}>
             <DropdownMenuItem asChild>
               <button type="submit" className="w-full text-left">
+                <CheckCircle className="mr-2 h-4 w-4" />
                 Activar
               </button>
             </DropdownMenuItem>
