@@ -65,8 +65,6 @@ export async function action({ request }: ActionFunctionArgs) {
     notes: (formData.get("notes") as string) || "",
   };
 
-  console.log("ACTION RECEIVED: ", hireEmployeeRequest);
-
   try {
     await employeeService.hire(hireEmployeeRequest);
     return {success: "Empleado contratado exitosamente"};

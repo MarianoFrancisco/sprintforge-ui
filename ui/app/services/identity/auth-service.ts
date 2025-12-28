@@ -19,8 +19,6 @@ class AuthService {
   }
 
   async login(email: string, password: string): Promise<{userId: string, authSessionId: string, employeeId: string}> {
-    console.log("AuthService.login called with email:", email);
-    console.log("Password :", password);
     try {
       const response = await apiClient.post<TokenPairResponseDTO>(`${this.basePath}/login`, { email, password });
 
