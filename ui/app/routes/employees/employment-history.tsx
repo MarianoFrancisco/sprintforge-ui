@@ -1,7 +1,15 @@
-import { useLoaderData } from "react-router";
+import { useLoaderData, type MiddlewareFunction } from "react-router";
 import { employeeService } from "~/services/employees/employee-service";
 import { EmploymentHistoryFilter } from "~/components/employees/employment/employment-filters";
 import { EmploymentHistoryTable } from "~/components/employees/employment/employment-table";
+import { PERMS } from "~/config/permissions";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.EMPLOYEE_VIEW, PERMS.EMPLOYEE_VIEW_WORK_HISTORY], {
+    flashMessage: "No tienes permiso para ver el historial laboral de empleados."
+  }),
+];
 
 export async function loader({ request }: { request: Request }) {
   try {

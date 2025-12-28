@@ -5,6 +5,7 @@ import {
   useLoaderData,
   useActionData,
   useNavigate,
+  type MiddlewareFunction,
 } from "react-router";
 import { ApiError } from "~/lib/api-client";
 import type { Route } from "../+types/home";
@@ -14,12 +15,20 @@ import { EmployeeForm } from "~/components/employees/employee-form";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import type { EmployeeWorkloadType } from "~/types/employees/employee";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
+import { PERMS } from "~/config/permissions";
 
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "Contratar empleado" },
   ];
 }
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.EMPLOYEE_HIRE], {
+    flashMessage: "No tienes permiso para contratar Empleados."
+  }),
+];
 
 export async function loader({}: LoaderFunctionArgs) {
   try {

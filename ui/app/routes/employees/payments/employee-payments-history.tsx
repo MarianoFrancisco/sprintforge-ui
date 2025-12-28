@@ -1,8 +1,16 @@
 // ~/routes/employees/payments/index.tsx
-import { useLoaderData } from "react-router";
+import { useLoaderData, type MiddlewareFunction } from "react-router";
 import { EmployeePaymentsFilter } from "~/components/employees/payments/employee-payments-filters";
 import { EmployeePaymentsTable } from "~/components/employees/payments/employee-payments-table";
+import { PERMS } from "~/config/permissions";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
 import { employeePaymentService } from "~/services/employees/employee-payment-service";
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.EMPLOYEE_VIEW, PERMS.EMPLOYEE_VIEW_PAYMENT_HISTORY], {
+    flashMessage: "No tienes permiso para ver el historial de pagos de Empleados."
+  }),
+];
 
 export async function loader({ request }: { request: Request }) {
   try {

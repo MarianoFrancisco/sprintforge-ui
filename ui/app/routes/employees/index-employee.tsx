@@ -21,7 +21,6 @@ export const handle = {
 
 export const middleware: MiddlewareFunction[] = [
   permissionMiddleware([PERMS.EMPLOYEE_VIEW], {
-    redirectTo: "/dashboard",
     flashMessage: "No tienes permiso para ver Empleados.",
   }),
 ];

@@ -5,6 +5,7 @@ import {
   useLoaderData,
   useActionData,
   useNavigate,
+  type MiddlewareFunction,
 } from "react-router";
 import { ApiError } from "~/lib/api-client";
 import { employeeService } from "~/services/employees/employee-service";
@@ -13,11 +14,17 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import type { EmployeeResponseDTO } from "~/types/employees/employee";
 import { EmployeeCard } from "~/components/employees/cards/employee-card";
+import { PERMS } from "~/config/permissions";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
 
 export function meta({}: any) {
   return [{ title: "Aumentar salario" }];
 }
-
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.EMPLOYEE_VIEW, PERMS.EMPLOYEE_INCREASE_SALARY], {
+    flashMessage: "No tienes permiso para aumentar salarios de Empleados."
+  }),
+];
 // Loader: carga el empleado por id
 export async function loader({ params }: LoaderFunctionArgs) {
   const { id } = params;

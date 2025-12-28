@@ -4,6 +4,7 @@ import {
   useLoaderData,
   useActionData,
   useNavigate,
+  type MiddlewareFunction,
 } from "react-router";
 import { ApiError } from "~/lib/api-client";
 import { employeeService } from "~/services/employees/employee-service";
@@ -11,10 +12,18 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import type { EmployeeWorkloadType } from "~/types/employees/employee";
 import { EmployeeUpdateForm } from "~/components/employees/employee-update-form";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
+import { PERMS } from "~/config/permissions";
 
 export function meta({}: any) {
   return [{ title: "Editar empleado" }];
 }
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.EMPLOYEE_VIEW, PERMS.EMPLOYEE_UPDATE], {
+    flashMessage: "No tienes permiso para editar Empleados."
+  }),
+];
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const { id } = params;

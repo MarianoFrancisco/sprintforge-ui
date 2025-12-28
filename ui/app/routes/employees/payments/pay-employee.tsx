@@ -5,6 +5,7 @@ import {
   useLoaderData,
   useActionData,
   useNavigate,
+  type MiddlewareFunction,
 } from "react-router";
 import { useEffect } from "react";
 import { toast } from "sonner";
@@ -18,10 +19,18 @@ import type { PayEmployeeRequestDTO } from "~/types/employees/employee-payment";
 
 import { EmployeeCard } from "~/components/employees/cards/employee-card";
 import { EmployeePaymentForm } from "~/components/employees/payments/employee-payment-form";
+import { PERMS } from "~/config/permissions";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
 
 export function meta() {
   return [{ title: "Realizar pago" }];
 }
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.EMPLOYEE_VIEW, PERMS.EMPLOYEE_PAY], {
+    flashMessage: "No tienes permiso para realizar pagos a Empleados."
+  }),
+];
 
 // Loader: carga el empleado por CUI (params.id)
 export async function loader({ params }: LoaderFunctionArgs) {

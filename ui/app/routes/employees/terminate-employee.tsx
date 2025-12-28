@@ -1,10 +1,10 @@
 import {
-  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
   useLoaderData,
   useActionData,
   useNavigate,
+  type MiddlewareFunction,
 } from "react-router";
 import { ApiError } from "~/lib/api-client";
 import { employeeService } from "~/services/employees/employee-service";
@@ -13,10 +13,18 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import type { EmployeeResponseDTO } from "~/types/employees/employee";
 import { EmployeeCard } from "~/components/employees/cards/employee-card";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
+import { PERMS } from "~/config/permissions";
 
 export function meta({}: any) {
   return [{ title: "Terminar empleado" }];
 }
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.EMPLOYEE_VIEW, PERMS.EMPLOYEE_TERMINATE], {
+    flashMessage: "No tienes permiso para terminar Empleados."
+  }),
+];
 
 // Loader: carga el empleado por id
 export async function loader({ params }: LoaderFunctionArgs) {
