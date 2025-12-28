@@ -1,6 +1,3 @@
-// app/components/roles/role-form.tsx
-"use client";
-
 import { useState } from "react";
 import { Form, useActionData, useNavigation } from "react-router";
 import { Label } from "~/components/ui/label";
@@ -8,7 +5,6 @@ import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
 import { Card, CardContent } from "~/components/ui/card";
-import { Checkbox } from "~/components/ui/checkbox";
 import { Loader2, Save } from "lucide-react";
 import type { Permission } from "../permission/permission-selector";
 import PermissionSelector from "../permission/permission-selector";

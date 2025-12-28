@@ -44,4 +44,14 @@ export const navMainData: NavItem[] = [
       { title: "Listado", url: "/identity/users", permission: PERMS.USER_VIEW },
     ],
   },
+  {
+    title: "Proyectos",
+    url: "/projects",
+    icon: Users,
+    // permission: PERMS.USER_VIEW,
+    items: [
+      { title: "Crear proyecto", url: "/projects/create" },
+      { title: "Listado", url: "/projects" },
+    ],
+  },
 ];

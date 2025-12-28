@@ -40,6 +40,13 @@ export default [
                 route(":id/change-role", "routes/identity/users/change-user-role.tsx"),
             ])
         ]),
+
+        ...prefix("projects", [
+            // index("routes/scrum/project/index-project.tsx"),
+            route("create", "routes/scrum/project/create-project.tsx"),
+            // route(":id", "routes/scrum/project/view-project.tsx"),
+            // route(":id/edit", "routes/scrum/project/edit-project.tsx"),
+        ]),
     ]),
     route("action/set-theme", "routes/action/set-theme.ts"),
 ] satisfies RouteConfig;
