@@ -13,6 +13,7 @@ import { DataTable } from "~/components/common/data-table";
 import { StatusBadge } from "~/components/common/status-badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "~/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "~/components/common/data-table-column-header";
+import { PositionActions } from "./position-actions";
 
 interface PositionsTableProps {
     data: PositionResponseDTO[];
@@ -70,32 +71,9 @@ export function PositionsTable({ data }: PositionsTableProps) {
         {
             id: "actions",
             header: () => <span>Acciones</span>,
-            cell: ({ row }) => {
-                const position = row.original;
-                const isActive = position.isActive;
+            cell: ({ row }) => <PositionActions position={row.original} />,
+        }
 
-                return (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button
-                                variant="ghost"
-                                className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-                                size="icon"
-                            >
-                                <EllipsisVertical />
-                                <span className="sr-only">Open menu</span>
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-32">
-                            <DropdownMenuItem onClick={() => navigate(`/employees/positions/${position.id}/edit`)}>Editar</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleActivation(position.id, !isActive)} >{isActive ? "Desactivar" : "Activar"}</DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem variant="destructive" onClick={() => navigate(`/employees/positions/${position.id}/delete`)} >Eliminar</DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                );
-            },
-        },
     ];
 
     return <DataTable data={data} columns={columns} pageSize={10} />;

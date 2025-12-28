@@ -5,10 +5,7 @@ import { DataTableColumnHeader } from "~/components/common/data-table-column-hea
 import { MoneyCell } from "~/components/common/money-cell"
 import { Badge } from "~/components/ui/badge"
 import type { ProjectResponseDTO } from "~/types/scrum/project"
-import { formatGTQ } from "~/util/currency-formatter"
-
-// Si luego agregas acciones:
-// import { ProjectActions } from "./project-actions"
+import { ProjectActions } from "./project-actions"
 
 interface ProjectsTableProps {
   data: ProjectResponseDTO[]
@@ -107,13 +104,11 @@ export function ProjectsTable({ data }: ProjectsTableProps) {
     },
 
     // Acciones (opcional, cuando lo necesites)
-    /*
     {
       id: "actions",
       header: () => <span>Acciones</span>,
       cell: ({ row }) => <ProjectActions project={row.original} />,
     },
-    */
   ]
 
   return (

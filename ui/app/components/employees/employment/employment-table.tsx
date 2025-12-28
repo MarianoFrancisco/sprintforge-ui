@@ -13,7 +13,6 @@ import {
   DialogTrigger,
 } from "~/components/ui/dialog";
 import { Badge } from "~/components/ui/badge";
-import { formatGTQ } from "~/util/currency-formatter";
 import type { 
   EmploymentHistoryResponseDTO, 
   EmploymentHistoryType 

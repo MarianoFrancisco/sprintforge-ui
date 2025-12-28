@@ -20,7 +20,6 @@ import {
 
 import type { EmployeeResponseDTO, EmployeeStatus } from "~/types/employees/employee";
 import { EmployeeActions } from "./employee-actions";
-import { formatGTQ } from "~/util/currency-formatter";
 import { EmployeeStatusBadge } from "./employee-status-badge";
 import { MoneyCell } from "../common/money-cell";
 
