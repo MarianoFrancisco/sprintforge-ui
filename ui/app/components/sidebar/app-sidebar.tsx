@@ -13,13 +13,16 @@ import {
 } from "~/components/ui/sidebar"
 import { Link } from "react-router"
 import { Theme, useTheme } from "remix-themes"
-import { useAuth } from "~/hooks/use-auth"
 import { filterNavByPermissions } from "~/lib/nav-filter"
 import { navMainData } from "./nav-main-data"
+import type { User } from "~/types/identity/auth"
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
+  user: User;
+};
+
+export function AppSidebar({ user, ...props }: AppSidebarProps) {
   const [theme] = useTheme();
-    const { user } = useAuth();
 
   const filteredNavMain = React.useMemo(
     () => filterNavByPermissions(navMainData, user),

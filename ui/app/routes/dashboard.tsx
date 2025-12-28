@@ -1,3 +1,4 @@
+import { useUser } from "~/hooks/use-user";
 import type { Route } from "./+types/dashboard";
 
 export function meta({}: Route.MetaArgs) {
@@ -6,10 +7,8 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export default function Page() {
-  return (
-<p>
-  Hla mundo
-</p>
-  )
+export default function DashboardPage() {
+  const {user} = useUser();
+  return <p>Hola {user.fullname}</p>;
 }
+

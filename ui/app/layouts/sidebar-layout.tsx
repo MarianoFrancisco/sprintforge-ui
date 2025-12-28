@@ -1,7 +1,6 @@
 import { ArrowLeftCircle } from "lucide-react"
 import { useEffect, useState } from "react"
-import { Outlet, useNavigate, type LoaderFunctionArgs } from "react-router"
-import { requireIdentity } from "~/auth.server"
+import { Outlet, redirect, useLoaderData, useNavigate, useOutletContext, type LoaderFunctionArgs, type MiddlewareFunction } from "react-router"
 import { AppSidebar } from "~/components/sidebar/app-sidebar"
 import { Button } from "~/components/ui/button"
 import { ModeToggle } from "~/components/ui/mode-toggle"
@@ -11,23 +10,28 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "~/components/ui/sidebar"
-import { authService } from "~/services/identity/auth-service"
+import { userContext } from "~/context/user-context"
+import type { UserOutletContext } from "~/hooks/use-user"
+import { authMiddleware } from "~/middlewares/auth-middleware"
+import type { User } from "~/types/identity/auth"
 
 export function HydrateFallback() {
   return <div>Loading...</div>;
 }
-export async function loader({ request }: LoaderFunctionArgs) {
-  const { userId } = await requireIdentity(request, {
-    redirectTo: "/login",
-    flashMessage: "Necesitas iniciar sesión.",
-  });
 
-  const user = await authService.getCurrentUser(userId);
+export const middleware: MiddlewareFunction[] = [
+  authMiddleware
+];
 
-  return {user};
+export async function loader({ context }: LoaderFunctionArgs) {
+  const user = context.get(userContext);
+  if (!user) throw redirect("/login");
+  return { user };
 }
 
+
 export default function SidebarLayout() {
+    const { user } = useLoaderData<typeof loader>();
 
       const navigate = useNavigate()
   const [canGoBack, setCanGoBack] = useState(false)
@@ -48,7 +52,7 @@ export default function SidebarLayout() {
   }
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar user={user} />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 px-4 w-full">
@@ -72,9 +76,10 @@ export default function SidebarLayout() {
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <Outlet />
+          <Outlet context={{user} satisfies UserOutletContext}/>
         </div>
       </SidebarInset>
     </SidebarProvider>
   )
 }
+

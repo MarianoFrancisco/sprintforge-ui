@@ -1,16 +1,12 @@
 import {
-  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
   useLoaderData,
   useActionData,
   useNavigate,
-  useParams,
 } from "react-router";
 import { ApiError } from "~/lib/api-client";
-import { positionService } from "~/services/employees/position-service";
 import { employeeService } from "~/services/employees/employee-service";
-import { EmployeeForm } from "~/components/employees/employee-form";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import type { EmployeeWorkloadType } from "~/types/employees/employee";
