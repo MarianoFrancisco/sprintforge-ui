@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router";
-import { Ellipsis } from "lucide-react";
+import { Ellipsis, UserCog } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -39,6 +39,7 @@ export function UserActions({ user }: UserActionsProps) {
           disabled={!isActive}
           onClick={() => navigate(`/identity/users/${id}/change-role`)}
         >
+           <UserCog className="mr-2 h-4 w-4" />
           Cambiar rol
         </DropdownMenuItem>
 

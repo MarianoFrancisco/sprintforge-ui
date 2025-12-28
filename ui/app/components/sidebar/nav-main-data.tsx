@@ -1,4 +1,4 @@
-import { BriefcaseBusiness, Users } from "lucide-react";
+import { BriefcaseBusiness, FolderCog, IdCard, ShieldUser, Users } from "lucide-react";
 import { PERMS } from "~/config/permissions";
 import type { NavItem } from "~/types/navbar/nav-item";
 
@@ -6,7 +6,7 @@ export const navMainData: NavItem[] = [
   {
     title: "Puestos",
     url: "/employees/positions",
-    icon: Users,
+    icon: BriefcaseBusiness,
     permission: PERMS.POSITION_VIEW, // para ver el módulo
     items: [
       { title: "Nuevo puesto", url: "/employees/positions/create", permission: PERMS.POSITION_CREATE },
@@ -16,7 +16,7 @@ export const navMainData: NavItem[] = [
   {
     title: "Empleados",
     url: "/employees",
-    icon: BriefcaseBusiness,
+    icon: IdCard,
     permission: PERMS.EMPLOYEE_VIEW,
     items: [
       { title: "Contratar empleado", url: "/employees/hire", permission: PERMS.EMPLOYEE_HIRE },
@@ -28,7 +28,7 @@ export const navMainData: NavItem[] = [
   {
     title: "Roles",
     url: "/identity/roles",
-    icon: BriefcaseBusiness,
+    icon: ShieldUser,
     permission: PERMS.ROLE_VIEW,
     items: [
       { title: "Crear rol", url: "/identity/roles/create", permission: PERMS.ROLE_CREATE },
@@ -47,7 +47,7 @@ export const navMainData: NavItem[] = [
   {
     title: "Proyectos",
     url: "/projects",
-    icon: Users,
+    icon: FolderCog,
     permission: PERMS.PROJECT_VIEW,
     items: [
       { title: "Crear proyecto", url: "/projects/create", permission: PERMS.PROJECT_CREATE },
