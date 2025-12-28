@@ -34,13 +34,14 @@ export function ProjectActions({ project }: ProjectActionsProps) {
 
       <DropdownMenuContent align="end" className="w-48">
         {/* Ver proyecto */}
-        <DropdownMenuItem onClick={() => navigate(`/project/${id}`)}>
+        <DropdownMenuItem onClick={() => navigate(`/projects/${id}`)}>
           <Eye className="mr-2 h-4 w-4" />
           Ver
         </DropdownMenuItem>
+        <DropdownMenuSeparator />
         {/* Abrir / Cerrar */}
         {isClosed ? (
-          <Form method="post" action={`/project/${id}/open`}>
+          <Form method="post" action={`/projects/${id}/open`}>
             <DropdownMenuItem asChild>
               <button type="submit" className="flex w-full items-center">
                 <Unlock className="mr-2 h-4 w-4" />
@@ -49,7 +50,7 @@ export function ProjectActions({ project }: ProjectActionsProps) {
             </DropdownMenuItem>
           </Form>
         ) : (
-          <Form method="post" action={`/project/${id}/close`}>
+          <Form method="post" action={`/projects/${id}/close`}>
             <DropdownMenuItem asChild>
               <button type="submit" className="flex w-full items-center">
                 <Lock className="mr-2 h-4 w-4" />
@@ -59,10 +60,10 @@ export function ProjectActions({ project }: ProjectActionsProps) {
           </Form>
         )}
 
-        <DropdownMenuSeparator />
+        {/* <DropdownMenuSeparator /> */}
 
-        {/* Eliminar */}
-        <Form method="post" action={`/project/${id}/delete`}>
+        {/* Eliminar
+        <Form method="post" action={`/projects/${id}/delete`}>
           <DropdownMenuItem variant="destructive" asChild>
             <button
               type="submit"
@@ -72,7 +73,7 @@ export function ProjectActions({ project }: ProjectActionsProps) {
               Eliminar
             </button>
           </DropdownMenuItem>
-        </Form>
+        </Form> */}
       </DropdownMenuContent>
     </DropdownMenu>
   )

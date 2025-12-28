@@ -46,6 +46,8 @@ export default [
             route("create", "routes/scrum/project/create-project.tsx"),
             // route(":id", "routes/scrum/project/view-project.tsx"),
             // route(":id/edit", "routes/scrum/project/edit-project.tsx"),
+            route(":id/close", "routes/scrum/project/close-project.tsx"),
+            route(":id/open", "routes/scrum/project/open-project.tsx"),
         ]),
     ]),
     route("action/set-theme", "routes/action/set-theme.ts"),
