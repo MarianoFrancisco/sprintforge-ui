@@ -49,11 +49,11 @@ jobs:
             sudo docker builder prune -f || true
 
             DOCKER_BUILDKIT=1 sudo -E docker build \
-              -f frontend/Dockerfile \
+              -f ui/Dockerfile \
               --build-arg VITE_API_BASE_URL="${VITE_API_BASE_URL}" \
               --build-arg VITE_API_TIMEOUT="${VITE_API_TIMEOUT}" \
               -t sprintforge-ui:latest \
-              frontend
+              ui
 
             sudo docker stop sprintforge-ui || true
             sudo docker rm sprintforge-ui || true
