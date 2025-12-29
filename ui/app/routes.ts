@@ -44,12 +44,17 @@ export default [
         ...prefix("projects", [
             index("routes/scrum/project/index-project.tsx"),
             route("create", "routes/scrum/project/create-project.tsx"),
-            // route(":id", "routes/scrum/project/view-project.tsx"),
-            // route(":id/edit", "routes/scrum/project/edit-project.tsx"),
             route(":id/close", "routes/scrum/project/close-project.tsx"),
             route(":id/open", "routes/scrum/project/open-project.tsx"),
             route(":id/payment", "routes/scrum/project/create-project-payment.tsx"),
             route("payments", "routes/scrum/project/project-payments-history.tsx"),
+
+            ...prefix(":id", [
+                layout("layouts/project-layout.tsx", [
+                    index("routes/scrum/project/by-id/project-home.tsx"),
+                    // route("add-employees", "routes/scrum/project/by-id/add-employees.tsx"),
+                ])
+            ]),
         ]),
     ]),
     route("action/set-theme", "routes/action/set-theme.ts"),
