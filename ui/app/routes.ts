@@ -49,7 +49,7 @@ export default [
             route(":id/payment", "routes/scrum/project/create-project-payment.tsx"),
             route("payments", "routes/scrum/project/project-payments-history.tsx"),
 
-            ...prefix(":id", [
+            ...prefix(":projectId", [
                 layout("layouts/project-layout.tsx", [
                     index("routes/scrum/project/by-id/project-home.tsx"),
                     // route("add-employees", "routes/scrum/project/by-id/add-employees.tsx"),

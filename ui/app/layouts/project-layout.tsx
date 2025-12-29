@@ -2,22 +2,27 @@ import {
   Link,
   NavLink,
   Outlet,
+  redirect,
   useLoaderData,
   type LoaderFunctionArgs,
+  type MiddlewareFunction,
 } from "react-router";
 import { BarChart3, ClipboardList, KanbanSquare } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { Separator } from "~/components/ui/separator";
 
-import { projectService } from "~/services/scrum/project-service";
 import { EmployeesAvatarStack } from "~/components/project-nav/avatars-stack";
 import type { ProjectOutletContext } from "~/hooks/use-project";
+import { projectMiddleware } from "~/middlewares/project-middleware";
+import { projectContext } from "~/context/project-context";
 
-export async function loader({ params }: LoaderFunctionArgs) {
-  const id = params.id;
-  if (!id) throw new Response("Missing project id", { status: 400 });
+export const middleware: MiddlewareFunction[] = [
+   projectMiddleware({ flashMessage: "Proyecto no encontrado o sin acceso." }),
+];
 
-  const project = await projectService.getById(id);
+export async function loader({ context }: LoaderFunctionArgs) {
+  const project = context.get(projectContext);
+  if (!project) throw redirect("/");
   return { project };
 }
 
