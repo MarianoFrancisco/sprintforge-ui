@@ -1,4 +1,4 @@
-// ~/hooks/use-auth.ts
+// ~/hooks/use-user.ts
 import { useOutletContext } from "react-router";
 import type { User } from "~/types/identity/auth";
 

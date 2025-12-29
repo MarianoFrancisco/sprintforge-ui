@@ -1,5 +1,7 @@
+import { useProject } from "~/hooks/use-project";
 
 export default function ProjectHome() {
+  const { project } = useProject();
   return (
     <div>
       <h2 className="text-lg font-semibold">Bienvenido al proyecto</h2>
