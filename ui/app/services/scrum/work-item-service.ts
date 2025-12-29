@@ -75,6 +75,8 @@ class WorkItemService {
     request: MoveWorkItemInBoardColumnRequestDTO
   ): Promise<WorkItemResponseDTO> {
     try {
+      console.log("id item:", id);
+      console.log("request:", request);
       return await apiClient.patch<WorkItemResponseDTO>(`${this.basePath}/${id}/move`, request);
     } catch (error) {
       return this.handleError(error);

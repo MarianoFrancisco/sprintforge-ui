@@ -62,6 +62,9 @@ export default [
                     layout("layouts/board-layout.tsx", [
                     ...prefix("board/:sprintId", [
                             index("routes/scrum/project/by-id/sprint/sprint-board.tsx"),
+                            route("move-item-in-column/:itemId/:newPosition", "routes/scrum/project/by-id/sprint/board/move-item-in-column.tsx"),
+                            route("move-item-between-columns/:itemId/:targetColumnId/:targetPosition", "routes/scrum/project/by-id/sprint/board/move-item-between-columns.tsx"),
+                            route("move-column/:columnId/:newPosition", "routes/scrum/project/by-id/sprint/board/move-column.tsx"),
                         ]),
                     ]),
                 ]),

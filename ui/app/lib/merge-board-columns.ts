@@ -1,5 +1,8 @@
 import type { WorkItemResponseDTO } from "~/types/scrum/work-item";
-import type { BoardColumnResponseDTO, BoardColumnUI } from "~/types/scrum/board-column";
+import type {
+  BoardColumnResponseDTO,
+  BoardColumnUI,
+} from "~/types/scrum/board-column";
 
 export function mergeBoardColumnsWithWorkItems(
   workItems: WorkItemResponseDTO[],
@@ -11,12 +14,12 @@ export function mergeBoardColumnsWithWorkItems(
 
   const columnsMap = new Map<string, BoardColumnUI>();
 
-  // Crear columnas base
+  // 1) Crear columnas base
   for (const column of boardColumns) {
     columnsMap.set(column.id, {
       id: column.id,
       name: column.name,
-      position: column.position,
+      position: column.position, // 0-based
       isFinal: column.isFinal,
       isDeleted: column.isDeleted,
       createdAt: column.createdAt,
@@ -25,7 +28,7 @@ export function mergeBoardColumnsWithWorkItems(
     });
   }
 
-  // Asociar work items a su columna (sin ordenar)
+  // 2) Asociar work items a su columna
   for (const item of workItems) {
     const columnId = item.boardColumn?.id;
     if (!columnId) continue;
@@ -35,7 +38,7 @@ export function mergeBoardColumnsWithWorkItems(
 
     column.items.push({
       id: item.id,
-      position: item.position,
+      position: item.position, // 0-based
       title: item.title,
       storyPoints: item.storyPoints ?? null,
       priority: item.priority,
@@ -43,6 +46,13 @@ export function mergeBoardColumnsWithWorkItems(
     });
   }
 
-  // Se devuelve en el mismo orden que llegan las columnas
-  return boardColumns.map((c) => columnsMap.get(c.id)!);
+  // 3) Ordenar items dentro de cada columna por position (0-based)
+  for (const column of columnsMap.values()) {
+    column.items.sort((a, b) => a.position - b.position);
+  }
+
+  // 4) Ordenar columnas por position (0-based) y devolver
+  return [...columnsMap.values()].sort(
+    (a, b) => a.position - b.position,
+  );
 }

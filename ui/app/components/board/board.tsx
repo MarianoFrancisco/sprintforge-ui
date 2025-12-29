@@ -1,7 +1,6 @@
 // ~/components/board/board.tsx
 import * as React from "react";
-import { Button } from "~/components/ui/button";
-import { PlusIcon } from "lucide-react";
+import { useFetcher } from "react-router";
 
 import {
   DndContext,
@@ -36,8 +35,11 @@ export function Board({ boardColumns }: BoardProps) {
   const [isClient, setIsClient] = React.useState(false);
   React.useEffect(() => setIsClient(true), []);
 
+  const moveColumnFetcher = useFetcher();
+  const moveItemFetcher = useFetcher();
+
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 6 } })
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
   );
 
   const columnIds = columns.map((c) => c.id);
@@ -56,8 +58,6 @@ export function Board({ boardColumns }: BoardProps) {
       const fromColumn = findColumnByItemId(prev, activeId);
       if (!fromColumn) return prev;
 
-      // target column: si over es una columna, over.id es columnId
-      // si over es item, buscamos su columna
       const overType = over.data.current?.type as "column" | "item" | undefined;
 
       const toColumn =
@@ -67,8 +67,8 @@ export function Board({ boardColumns }: BoardProps) {
 
       if (!toColumn) return prev;
 
-      // Si sigues dentro de la misma columna, no hace falta nada aquí:
-      // el placeholder ya lo maneja dnd-kit para reordenamiento.
+      // Si sigues dentro de la misma columna, NO hacemos nada aquí
+      // para no interferir con el placeholder/ordenamiento normal.
       if (fromColumn.id === toColumn.id) return prev;
 
       const fromIndex = fromColumn.items.findIndex((i) => i.id === activeId);
@@ -82,17 +82,15 @@ export function Board({ boardColumns }: BoardProps) {
           ? toColumn.items.findIndex((i) => i.id === overId)
           : toColumn.items.length;
 
-      // remueve de origen
-      const newFromItems = fromColumn.items
-        .filter((i) => i.id !== activeId)
-        .map((it, idx) => ({ ...it, position: idx + 1 }));
+      // Remueve de origen (SIN re-map, SIN cambiar position)
+      const newFromItems = fromColumn.items.filter((i) => i.id !== activeId);
 
-      // inserta en destino (esto crea el “hueco” visual)
+      // Inserta en destino (SIN cambiar position)
       const newToItems = [
         ...toColumn.items.slice(0, toIndex),
-        { ...movingItem, position: 0 },
+        movingItem,
         ...toColumn.items.slice(toIndex),
-      ].map((it, idx) => ({ ...it, position: idx + 1 }));
+      ];
 
       return prev.map((c) => {
         if (c.id === fromColumn.id) return { ...c, items: newFromItems };
@@ -109,45 +107,114 @@ export function Board({ boardColumns }: BoardProps) {
     const activeType = active.data.current?.type as "column" | "item" | undefined;
     const overType = over.data.current?.type as "column" | "item" | undefined;
 
-    // Reordenar columnas
-    if (activeType === "column" && overType === "column") {
-      if (active.id === over.id) return;
+    // ...dentro de handleDragEnd
 
-      setColumns((prev) => {
-        const oldIndex = prev.findIndex((c) => c.id === active.id);
-        const newIndex = prev.findIndex((c) => c.id === over.id);
-        return arrayMove(prev, oldIndex, newIndex).map((c, idx) => ({
-          ...c,
-          position: idx + 1,
-        }));
-      });
+// =========================
+// 1) COLUMNAS
+// route("move-column/:columnId/:newPosition", ...)
+// =========================
+if (activeType === "column" && overType === "column") {
+  if (active.id === over.id) return;
 
-      // aquí luego llamarás a action de mover columna
-      return;
-    }
+  const columnId = String(active.id);
 
-    // Reordenar items dentro de misma columna:
-    // (si se movió entre columnas, ya lo reflejamos en onDragOver,
-    // aquí solo dejamos listo para que luego hagas submit al backend)
-    if (activeType === "item") {
-      const activeId = String(active.id);
+  const oldIndex = columns.findIndex((c) => c.id === columnId);
+  const newIndex = columns.findIndex((c) => c.id === String(over.id));
+  if (oldIndex < 0 || newIndex < 0) return;
 
-      const fromColumnId = active.data.current?.columnId as string | undefined;
+  const newPosition = newIndex; // ✅ 0-based
 
-      const toColumnId =
-        (over.data.current?.columnId as string | undefined) ??
-        (overType === "column" ? (over.id as string) : undefined);
+  setColumns((prev) => arrayMove(prev, oldIndex, newIndex));
 
-      // aquí luego decides qué action llamar según from/to
-      console.log("persist move", { activeId, fromColumnId, toColumnId });
-      return;
-    }
+  moveColumnFetcher.submit(null, {
+    method: "post",
+    action: `move-column/${columnId}/${newPosition}`,
+  });
+
+  return;
+}
+
+// =========================
+// 2) ITEMS
+// =========================
+if (activeType === "item") {
+  const itemId = String(active.id);
+
+  const fromColumnId = active.data.current?.columnId as string | undefined;
+
+  const toColumnId =
+    (over.data.current?.columnId as string | undefined) ??
+    (overType === "column" ? String(over.id) : undefined);
+
+  if (!fromColumnId || !toColumnId) return;
+
+  // ---- A) MISMA COLUMNA
+  // route("move-item-in-column/:itemId/:newPosition", ...)
+  if (fromColumnId === toColumnId) {
+    const col = columns.find((c) => c.id === fromColumnId);
+    if (!col) return;
+
+    const oldIndex = col.items.findIndex((i) => i.id === itemId);
+    if (oldIndex < 0) return;
+
+    const overTypeLocal = over.data.current?.type as "column" | "item" | undefined;
+    const overId = String(over.id);
+
+    // Si soltó sobre un item -> índice de ese item
+    // Si soltó sobre la columna -> al final (después del último)
+    // OJO: como NO estamos aplicando setState aquí, "al final" para backend 0-based
+    // suele ser col.items.length - 1 (última posición) cuando realmente se mueve dentro.
+    // Para consistencia, calcula "desiredIndex" en términos de posición final:
+    let desiredIndex =
+      overTypeLocal === "item"
+        ? col.items.findIndex((i) => i.id === overId)
+        : col.items.length - 1;
+
+    if (desiredIndex < 0) return;
+
+    // Si el item se mueve hacia abajo dentro de la misma columna y estás “apuntando”
+    // a un índice basado en la lista actual (que incluye el item), al removerlo el índice final baja 1.
+    // Ajuste típico:
+    if (desiredIndex > oldIndex) desiredIndex -= 1;
+
+    if (desiredIndex === oldIndex) return;
+
+    const newPosition = desiredIndex; // ✅ 0-based
+
+    moveItemFetcher.submit(null, {
+      method: "post",
+      action: `move-item-in-column/${itemId}/${newPosition}`,
+    });
+
+    return;
+  }
+
+  const overTypeLocal = over.data.current?.type as "column" | "item" | undefined;
+  const overId = String(over.id);
+
+  const targetColumn = columns.find((c) => c.id === toColumnId);
+  if (!targetColumn) return;
+
+  const targetIndex =
+    overTypeLocal === "item"
+      ? targetColumn.items.findIndex((i) => i.id === overId)
+      : targetColumn.items.length;
+
+  const targetPosition = Math.max(0, targetIndex);
+
+  moveItemFetcher.submit(null, {
+    method: "post",
+    action: `move-item-between-columns/${itemId}/${toColumnId}/${targetPosition}`,
+  });
+
+  return;
+}
+
   }
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-center justify-between">
-      </div>
+      <div className="flex items-center justify-between"></div>
 
       {isClient ? (
         <DndContext
