@@ -7,6 +7,13 @@ export default [
     layout("layouts/sidebar-layout.tsx", [
         route("dashboard", "routes/dashboard.tsx"),
 
+        ...prefix("reports", [
+            route("hiring-history", "routes/reports/hiring-report.tsx"),
+            route("role-general", "routes/reports/role-report.tsx"),
+            route("profits", "routes/reports/profits-report.tsx"),
+            route("expenses", "routes/reports/expenses-report.tsx"),
+        ]),
+
         ...prefix("employees", [
             index("routes/employees/index-employee.tsx"),
             route("hire", "routes/employees/hire-employee.tsx"),
