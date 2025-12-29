@@ -6,18 +6,10 @@ import { DataTableColumnHeader } from "~/components/common/data-table-column-hea
 import { Badge } from "~/components/ui/badge"
 import type { WorkItemResponseDTO } from "~/types/scrum/work-item"
 import { WorkItemTableActions } from "./work-item-table-actions"
+import { PriorityBadge } from "./priority-badge"
 
 interface WorkItemsTableProps {
   data: WorkItemResponseDTO[]
-}
-
-function PriorityBadge({ priority }: { priority: number }) {
-  // Ajusta textos si tu priority tiene significado (1=Alta, etc.)
-  return (
-    <Badge variant="outline" className="font-mono text-xs">
-      P{priority}
-    </Badge>
-  )
 }
 
 export function WorkItemsTable({ data }: WorkItemsTableProps) {
