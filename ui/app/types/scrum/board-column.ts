@@ -48,6 +48,6 @@ export interface CreateBoardColumnRequestDTO {
 
 export interface MoveBoardColumnRequestDTO {
   employeeId: string;
-  sprintId: string;
+  columnId: string;
   newPosition: number;
 }
