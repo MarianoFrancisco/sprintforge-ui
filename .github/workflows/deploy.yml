@@ -1,0 +1,65 @@
+name: sprintforge-ui
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set env vars
+        run: |
+          echo "HOST=${{ secrets.AWS_VM_HOST }}" >> $GITHUB_ENV
+          echo "VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}" >> $GITHUB_ENV
+          echo "VITE_API_TIMEOUT=${{ secrets.VITE_API_TIMEOUT }}" >> $GITHUB_ENV
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.AWS_VM_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H "$HOST" >> ~/.ssh/known_hosts
+
+      - name: Deploy to EC2 via SSH
+        shell: bash
+        env:
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+        run: |
+          ssh ${{ secrets.AWS_VM_USER }}@"$HOST" << EOF
+            set -e
+
+            cd ~
+
+            if [ ! -d "sprintforge-ui" ]; then
+              git clone https://github.com/MarianoFrancisco/sprintforge-ui.git
+            fi
+
+            cd sprintforge-ui
+            git fetch --all --prune
+            git checkout "${GITHUB_REF_NAME}"
+            git pull --ff-only
+
+            sudo docker container prune -f || true
+            sudo docker builder prune -f || true
+
+            DOCKER_BUILDKIT=1 sudo -E docker build \
+              -f ui/Dockerfile \
+              --build-arg VITE_API_BASE_URL="${VITE_API_BASE_URL}" \
+              --build-arg VITE_API_TIMEOUT="${VITE_API_TIMEOUT}" \
+              -t sprintforge-ui:latest \
+              ui
+
+            sudo docker stop sprintforge-ui || true
+            sudo docker rm sprintforge-ui || true
+
+            sudo docker run -d --name sprintforge-ui \
+              --restart unless-stopped \
+              -p 80:3000 \
+              sprintforge-ui:latest
+          EOF

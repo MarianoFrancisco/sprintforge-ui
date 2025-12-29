@@ -37,7 +37,7 @@ export const authSessionStorage = createCookieSessionStorage<
     httpOnly: true,
     sameSite: "lax",
     secrets: [process.env.SESSION_SECRET ?? "dev-secret"],
-    secure: process.env.NODE_ENV === "production",
+    secure: false,
     // maxAge: 60 * 60 * 24 * 7, // opcional: 7 días
   },
 });
