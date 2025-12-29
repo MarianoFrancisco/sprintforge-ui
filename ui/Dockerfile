@@ -1,22 +1,28 @@
-FROM node:20-alpine AS development-dependencies-env
-COPY . /app
+FROM node:20-alpine AS build
 WORKDIR /app
-RUN npm ci
 
-FROM node:20-alpine AS production-dependencies-env
-COPY ./package.json package-lock.json /app/
-WORKDIR /app
-RUN npm ci --omit=dev
+COPY package*.json ./
+RUN --mount=type=cache,target=/root/.npm npm ci
 
-FROM node:20-alpine AS build-env
-COPY . /app/
-COPY --from=development-dependencies-env /app/node_modules /app/node_modules
-WORKDIR /app
+COPY . .
+
+ARG VITE_API_BASE_URL
+ARG VITE_API_TIMEOUT
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+ENV VITE_API_TIMEOUT=$VITE_API_TIMEOUT
+
 RUN npm run build
 
-FROM node:20-alpine
-COPY ./package.json package-lock.json /app/
-COPY --from=production-dependencies-env /app/node_modules /app/node_modules
-COPY --from=build-env /app/build /app/build
+FROM node:20-alpine AS runner
 WORKDIR /app
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV HOST=0.0.0.0
+
+COPY package*.json ./
+RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev
+
+COPY --from=build /app/build ./build
+
+EXPOSE 3000
 CMD ["npm", "run", "start"]
