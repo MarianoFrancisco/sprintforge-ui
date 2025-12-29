@@ -30,7 +30,7 @@ const tabs = [
   { to: "avances", label: "Avances", icon: BarChart3 },
   { to: "backlog", label: "Backlog", icon: ClipboardList },
   { to: "sprints", label: "Sprints", icon: ClipboardList },
-  { to: "tablero", label: "Tablero", icon: KanbanSquare },
+  { to: "board", label: "Tablero", icon: KanbanSquare },
 ];
 
 
