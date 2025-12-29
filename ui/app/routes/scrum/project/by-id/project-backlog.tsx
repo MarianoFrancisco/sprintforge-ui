@@ -2,8 +2,6 @@
 import { type LoaderFunctionArgs, redirect, useLoaderData } from "react-router"
 import { Backlog } from "~/components/scrum/project/by-id/backlog"
 import { projectContext } from "~/context/project-context"
-import { projectMiddleware } from "~/middlewares/project-middleware"
-
 import { workItemService } from "~/services/scrum/work-item-service"
 import type { WorkItemResponseDTO } from "~/types/scrum/work-item"
 
