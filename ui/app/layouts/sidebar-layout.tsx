@@ -1,5 +1,4 @@
 import { ArrowLeftCircle } from "lucide-react"
-import { useEffect, useState } from "react"
 import { Outlet, redirect, useLoaderData, useNavigate, useOutletContext, type LoaderFunctionArgs, type MiddlewareFunction } from "react-router"
 import { AppSidebar } from "~/components/sidebar/app-sidebar"
 import { Button } from "~/components/ui/button"
@@ -13,11 +12,6 @@ import {
 import { userContext } from "~/context/user-context"
 import type { UserOutletContext } from "~/hooks/use-user"
 import { authMiddleware } from "~/middlewares/auth-middleware"
-import type { User } from "~/types/identity/auth"
-
-export function HydrateFallback() {
-  return <div>Loading...</div>;
-}
 
 export const middleware: MiddlewareFunction[] = [
   authMiddleware
@@ -29,26 +23,12 @@ export async function loader({ context }: LoaderFunctionArgs) {
   return { user };
 }
 
-
 export default function SidebarLayout() {
-    const { user } = useLoaderData<typeof loader>();
-
-      const navigate = useNavigate()
-  const [canGoBack, setCanGoBack] = useState(false)
-
-  // Solo en el cliente verificamos si hay historial para volver
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setCanGoBack(window.history.state && window.history.state.idx > 0)
-    }
-  }, [])
+  const { user } = useLoaderData<typeof loader>();
+  const navigate = useNavigate()
 
   const handleGoBack = () => {
-    if (canGoBack) {
-      navigate(-1)
-    } else {
-      navigate("/")
-    }
+    navigate(-1)
   }
   return (
     <SidebarProvider>
@@ -61,7 +41,7 @@ export default function SidebarLayout() {
               orientation="vertical"
               className="mr-2 data-[orientation=vertical]:h-4"
             />
-                        <Button
+            <Button
               variant="ghost"
               size="sm"
               onClick={handleGoBack}
@@ -71,15 +51,14 @@ export default function SidebarLayout() {
               Regresar
             </Button>
             <div className="ml-auto">
-            <ModeToggle />
+              <ModeToggle />
             </div>
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <Outlet context={{user} satisfies UserOutletContext}/>
+          <Outlet context={{ user } satisfies UserOutletContext} />
         </div>
       </SidebarInset>
     </SidebarProvider>
   )
 }
-
