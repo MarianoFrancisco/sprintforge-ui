@@ -6,6 +6,7 @@ import { MoneyCell } from "~/components/common/money-cell"
 import { Badge } from "~/components/ui/badge"
 import type { ProjectResponseDTO } from "~/types/scrum/project"
 import { ProjectActions } from "./project-actions"
+import { Link } from "react-router"
 
 interface ProjectsTableProps {
   data: ProjectResponseDTO[]
@@ -21,19 +22,21 @@ function StatusBadge({ isClosed }: { isClosed: boolean }) {
 
 export function ProjectsTable({ data }: ProjectsTableProps) {
   const columns: ColumnDef<ProjectResponseDTO>[] = [
-    // Key
+     // Key
     {
       accessorKey: "projectKey",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Key" />
       ),
-      cell: ({ getValue }) => (
-        <span className="font-mono text-sm font-semibold">
+      cell: ({ getValue, row }) => (
+        <Link
+          to={`/projects/${row.original.id}`}
+          className="font-mono text-sm font-semibold text-primary hover:underline"
+        >
           {getValue() as string}
-        </span>
+        </Link>
       ),
     },
-
     // Nombre
     {
       accessorKey: "name",
