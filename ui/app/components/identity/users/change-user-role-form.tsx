@@ -102,12 +102,6 @@ export function ChangeUserRoleForm({
                 )}
               </Button>
             </div>
-
-            {actionData?.error && (
-              <p className="text-sm text-red-500 text-center">
-                {actionData.error}
-              </p>
-            )}
           </Form>
         </CardContent>
       </Card>

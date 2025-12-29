@@ -52,6 +52,7 @@ export default [
             ...prefix(":projectId", [
                 layout("layouts/project-layout.tsx", [
                     index("routes/scrum/project/by-id/project-home.tsx"),
+                    route("work-item/create", "routes/scrum/project/by-id/work-item/create-work-item.tsx"),
                     // route("add-employees", "routes/scrum/project/by-id/add-employees.tsx"),
                 ])
             ]),
