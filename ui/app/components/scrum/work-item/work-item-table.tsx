@@ -5,6 +5,7 @@ import { DataTable } from "~/components/common/data-table"
 import { DataTableColumnHeader } from "~/components/common/data-table-column-header"
 import { Badge } from "~/components/ui/badge"
 import type { WorkItemResponseDTO } from "~/types/scrum/work-item"
+import { WorkItemTableActions } from "./work-item-table-actions"
 
 interface WorkItemsTableProps {
   data: WorkItemResponseDTO[]
@@ -89,12 +90,15 @@ export function WorkItemsTable({ data }: WorkItemsTableProps) {
       meta: { className: "w-full" },
     },
 
-    // (Opcional) acciones luego...
-    // {
-    //   id: "actions",
-    //   header: () => <span>Acciones</span>,
-    //   cell: ({ row }) => <WorkItemActions item={row.original} />,
-    // },
+    // ACTIONS
+    {
+      id: "actions",
+      header: () => <span>Acciones</span>,
+      cell: ({ row }) => <WorkItemTableActions workItem={row.original} />,
+      meta: { className: "w-[72px] text-right" },
+      enableSorting: false,
+      enableHiding: false,
+    },
   ]
 
   return (

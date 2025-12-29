@@ -55,6 +55,7 @@ export default [
                     route("work-items/create", "routes/scrum/project/by-id/work-item/create-work-item.tsx"),
                     route("sprint/create", "routes/scrum/project/by-id/sprint/create-sprint.tsx"),
                     route("backlog", "routes/scrum/project/by-id/project-backlog.tsx"),
+                    route("backlog/work-items/:workItemId/move-to-sprint", "routes/scrum/project/by-id/work-item/work-item-move-to-sprint.tsx"),
                     // route("add-employees", "routes/scrum/project/by-id/add-employees.tsx"),
                 ])
             ]),
