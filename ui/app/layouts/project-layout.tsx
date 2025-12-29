@@ -33,7 +33,9 @@ const tabs = [
   { to: "tablero", label: "Tablero", icon: KanbanSquare },
 ];
 
+
 export default function ProjectLayout() {
+  const BASE_PROJECTS_PATH = "/projects";
   const { project } = useLoaderData<typeof loader>();
 
   return (
@@ -65,7 +67,7 @@ export default function ProjectLayout() {
         {tabs.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={to}
-            to={to}
+            to={`${BASE_PROJECTS_PATH}/${project.id}/${to}`}
             end
             className={({ isActive }) =>
               cn(
