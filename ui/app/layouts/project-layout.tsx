@@ -17,13 +17,13 @@ import { projectMiddleware } from "~/middlewares/project-middleware";
 import { projectContext } from "~/context/project-context";
 
 export const middleware: MiddlewareFunction[] = [
-   projectMiddleware({ flashMessage: "Proyecto no encontrado o sin acceso." }),
+  projectMiddleware({ flashMessage: "Proyecto no encontrado o sin acceso." }),
 ];
 
 export async function loader({ context }: LoaderFunctionArgs) {
-  const project = context.get(projectContext);
-  if (!project) throw redirect("/");
-  return { project };
+  const projectCtx = context.get(projectContext); // ahora es ProjectTypeContext
+  if (!projectCtx) throw redirect("/");
+  return projectCtx; // { project, sprints }
 }
 
 const tabs = [
@@ -33,10 +33,9 @@ const tabs = [
   { to: "board", label: "Tablero", icon: KanbanSquare },
 ];
 
-
 export default function ProjectLayout() {
   const BASE_PROJECTS_PATH = "/projects";
-  const { project } = useLoaderData<typeof loader>();
+  const { project, sprints } = useLoaderData<typeof loader>();
 
   return (
     <div className="flex flex-col gap-4">
@@ -45,22 +44,15 @@ export default function ProjectLayout() {
         <span className="text-sm text-muted-foreground">Proyectos</span>
 
         {/* Título */}
-        <Link
-          to={`/projects/${project.id}`}
-          className="w-fit"
-        >
+        <Link to={`/projects/${project.id}`} className="w-fit">
           <h1 className="text-2xl font-semibold tracking-tight hover:underline">
             {project.name}
           </h1>
         </Link>
 
         {/* Avatares debajo del título, alineados a la izquierda */}
-        <EmployeesAvatarStack
-          employees={project.employees}
-          size="md"
-        />
+        <EmployeesAvatarStack employees={project.employees} size="md" />
       </div>
-
 
       {/* Tabs */}
       <div className="flex items-center gap-1 overflow-x-auto">
@@ -73,7 +65,7 @@ export default function ProjectLayout() {
               cn(
                 "inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                 "text-muted-foreground hover:text-foreground hover:bg-muted",
-                isActive && "bg-muted text-foreground"
+                isActive && "bg-muted text-foreground",
               )
             }
           >
@@ -86,7 +78,7 @@ export default function ProjectLayout() {
       <Separator />
 
       {/* Contenido de la pestaña */}
-      <Outlet context={{project} satisfies ProjectOutletContext} />
+      <Outlet context={{ project, sprints } satisfies ProjectOutletContext} />
     </div>
   );
 }

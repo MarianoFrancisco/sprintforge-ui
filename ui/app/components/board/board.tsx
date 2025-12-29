@@ -147,11 +147,6 @@ export function Board({ boardColumns }: BoardProps) {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <p className="text-base font-semibold">Tablero</p>
-        <Button type="button" className="gap-2 rounded-xl">
-          <PlusIcon className="h-4 w-4" />
-          Agregar columna
-        </Button>
       </div>
 
       {isClient ? (

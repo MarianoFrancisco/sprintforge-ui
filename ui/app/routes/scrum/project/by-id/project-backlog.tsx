@@ -29,8 +29,10 @@ type LoaderData = {
 }
 
 export async function loader({ context }: LoaderFunctionArgs) {
-  const project = context.get(projectContext)
-  if (!project) throw redirect("/")
+  const projectCtx = context.get(projectContext)
+  if (!projectCtx) throw redirect("/")
+
+  const { project } = projectCtx
 
   const [allWorkItems, allSprints] = await Promise.all([
     workItemService.getAll({ projectId: project.id }),

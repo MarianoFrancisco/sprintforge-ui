@@ -57,8 +57,14 @@ export default [
                     route("backlog", "routes/scrum/project/by-id/project-backlog.tsx"),
                     route("backlog/work-items/:workItemId/move-to-sprint", "routes/scrum/project/by-id/work-item/work-item-move-to-sprint.tsx"),
                     // route("sprint/:sprintId/board", "routes/scrum/project/by-id/sprint/sprint-board.tsx"),
-                    route("board", "routes/scrum/project/by-id/sprint/sprint-board.tsx"),
-                ])
+                    route("board", "routes/scrum/project/by-id/board-redirect.tsx"),
+                    
+                    layout("layouts/board-layout.tsx", [
+                    ...prefix("board/:sprintId", [
+                            index("routes/scrum/project/by-id/sprint/sprint-board.tsx"),
+                        ]),
+                    ]),
+                ]),
             ]),
         ]),
     ]),

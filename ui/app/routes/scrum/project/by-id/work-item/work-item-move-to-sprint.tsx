@@ -48,8 +48,9 @@ export async function loader({ request, context, params }: LoaderFunctionArgs) {
     flashMessage: "Debes iniciar sesión para realizar esta acción.",
   })
 
-  const project = context.get(projectContext)
-  if (!project) throw redirect("/")
+  const projectCtx = context.get(projectContext)
+  if (!projectCtx) throw redirect("/")
+    const { project } = projectCtx;
 
   const workItemId = params.workItemId
   if (!workItemId) throw redirect(`/projects/${project.id}/backlog`)
@@ -82,8 +83,9 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
     flashMessage: "Debes iniciar sesión para realizar esta acción.",
   })
 
-  const project = context.get(projectContext)
-  if (!project) throw redirect("/")
+  const projectCtx = context.get(projectContext)
+  if (!projectCtx) throw redirect("/")
+    const { project } = projectCtx;
 
   const workItemId = params.workItemId
   if (!workItemId) throw redirect(`/projects/${project.id}/backlog`)
