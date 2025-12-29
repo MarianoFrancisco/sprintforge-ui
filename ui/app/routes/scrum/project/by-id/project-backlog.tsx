@@ -1,10 +1,16 @@
 // ~/routes/scrum/projects/project-backlog.tsx
 import { type LoaderFunctionArgs, redirect, useLoaderData } from "react-router"
-import { Backlog } from "~/components/scrum/project/by-id/backlog"
+import { Separator } from "~/components/ui/separator"
+
 import { projectContext } from "~/context/project-context"
 import { workItemService } from "~/services/scrum/work-item-service"
 import type { WorkItemResponseDTO } from "~/types/scrum/work-item"
 
+import { Backlog } from "~/components/scrum/project/by-id/backlog-component"
+import { SprintBacklog } from "~/components/scrum/project/by-id/sprint-component"
+
+import { groupWorkItemsBySprint, type SprintGroup } from "~/lib/filter-work-items"
+import { sprintService } from "~/services/scrum/sprint-service"
 
 export function meta() {
   return [
@@ -18,28 +24,46 @@ export const handle = {
 }
 
 type LoaderData = {
-  workItems: WorkItemResponseDTO[]
+  backlog: WorkItemResponseDTO[]
+  sprints: Record<string, SprintGroup>
 }
 
 export async function loader({ context }: LoaderFunctionArgs) {
   const project = context.get(projectContext)
   if (!project) throw redirect("/")
 
-  // 1) Traer todas las historias del proyecto
-  const all = await workItemService.getAll({ projectId: project.id })
+  const [allWorkItems, allSprints] = await Promise.all([
+    workItemService.getAll({ projectId: project.id }),
+    sprintService.getAll({ projectId: project.id }),
+  ])
 
-  // 2) Backlog = las que NO tienen boardColumn (o viene null/undefined)
-  //    Nota: tu DTO tipa boardColumn como WorkItemBoard, pero en la práctica puede venir null.
-  const backlog = (all ?? []).filter((wi) => !wi.boardColumn)
+  const { backlog, sprints } = groupWorkItemsBySprint(allWorkItems, allSprints)
 
-  return { workItems: backlog } satisfies LoaderData
+  return { backlog, sprints } satisfies LoaderData
 }
 
 export default function ProjectBacklogRoute() {
-  const { workItems } = useLoaderData<typeof loader>() as LoaderData
+  const { backlog, sprints } = useLoaderData<typeof loader>() as LoaderData
+
+  const sprintGroups = Object.values(sprints)
+
   return (
-    <section className="p-6">
-      <Backlog workItems={workItems} />
+    <section className="space-y-6 p-6">
+      {/* BACKLOG principal */}
+      <Backlog workItems={backlog} />
+
+      {/* Separador entre backlog y el primer sprint (si hay sprints) */}
+      {sprintGroups.length > 0 ? <Separator /> : null}
+
+      {/* Sprints */}
+      {sprintGroups.map((group, idx) => (
+        <div key={group.sprint.id} className="space-y-6">
+          <SprintBacklog sprint={group.sprint} workItems={group.items} />
+
+          {/* Separador entre sprints */}
+          {idx < sprintGroups.length - 1 ? <Separator /> : null}
+        </div>
+      ))}
     </section>
   )
 }

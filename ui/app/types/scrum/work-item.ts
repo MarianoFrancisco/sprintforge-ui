@@ -1,4 +1,5 @@
 import type { EmployeeResultResponseDTO } from "./project";
+import type { SprintStatus } from "./sprint";
 
 export interface FindWorkItemsRequest {
   projectId?: string;
@@ -19,6 +20,12 @@ export interface WorkItemBoard {
   name: string;
 }
 
+export interface WorkItemSprint {
+  id: string;
+  name: string;
+  status: SprintStatus;
+}
+
 export interface WorkItemResponseDTO {
   id: string;
   position: number;
@@ -32,7 +39,8 @@ export interface WorkItemResponseDTO {
   isDeleted: boolean;
   createdAt: string;
   updatedAt: string;
-  boardColumn: WorkItemBoard;
+  sprint?: WorkItemSprint | null;
+  boardColumn?: WorkItemBoard | null;
 }
 
 export interface WorkItemResultResponseDTO {
@@ -48,7 +56,8 @@ export interface WorkItemResultResponseDTO {
   isDeleted: boolean;
   createdAt: string;
   updatedAt: string;
-  boardColumn: WorkItemBoard;
+  sprint?: WorkItemSprint | null;
+  boardColumn?: WorkItemBoard | null;
 }
 
 export interface CreateWorkItemRequestDTO {
