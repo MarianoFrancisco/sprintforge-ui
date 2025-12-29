@@ -47,7 +47,7 @@ export function WorkItemTableActions({ workItem }: WorkItemTableActionsProps) {
       <DropdownMenuContent align="end" className="w-52">
         {/* Mover a Sprint (siempre disponible; si ya está en sprint, es "cambiar sprint") */}
         <DropdownMenuItem
-          onClick={() => navigate(`backlog/work-items/${id}/move-to-sprint`)}
+          onClick={() => navigate(`work-items/${id}/move-to-sprint`)}
         >
           <ArrowRightToLine className="mr-2 h-4 w-4" />
           {inSprint ? "Cambiar sprint" : "Mover a sprint"}
