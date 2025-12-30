@@ -80,54 +80,32 @@ export default function ProjectProgressReportRoute() {
     handleGenerate();
   };
 
-useEffect(() => {
-  if (hasShownRef.current) return;
+// useEffect(() => {
+//   if (hasShownRef.current) return;
 
-  if (projects.length === 0) {
-    hasShownRef.current = true;
-    toast.error("No hay proyectos disponibles para generar el reporte.");
-    navigate("/");
-  }
-}, [projects, navigate]);
+//   if (projects.length === 0) {
+//     hasShownRef.current = true;
+//     toast.error("No hay proyectos disponibles para generar el reporte.");
+//     navigate("/");
+//   }
+// }, [projects, navigate]);
 
-if (projects.length === 0) {
-  return null; // O un mensaje de carga si prefieres
-}
+// if (projects.length === 0) {
+//   return null; // O un mensaje de carga si prefieres
+// }
 
   return (
     <section className="p-4 md:p-6 space-y-4 md:space-y-6">
-      {/* Header */}
-      <header className="space-y-1">
-        <h1 className="text-xl md:text-2xl font-bold">Avance de proyectos</h1>
-        <p className="text-sm md:text-base text-muted-foreground">
-          Genera, visualiza y descarga el reporte de avance en PDF.
-          {projectId ? " (filtrado por proyecto)" : " (todos los proyectos)"}
-        </p>
-      </header>
+      {/* Header responsive (manteniendo estilo) */}
+      <header className="grid gap-3">
+        <div className="space-y-1">
+          <h1 className="text-xl md:text-2xl font-bold">Reporte de Avance de Proyectos</h1>
+          <p className="text-sm md:text-base text-muted-foreground">
+            Genera, visualiza y descarga el reporte de avance de proyectos en PDF.
+          </p>
+        </div>
 
-      {/* Filtro + Actions (mismo patrón que hicimos) */}
-      <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-4 md:gap-6 items-end">
-        {/* Filtros (Card compacta) */}
-        <Card className="w-full md:max-w-md">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">Filtros</CardTitle>
-            <CardDescription>Opcional</CardDescription>
-          </CardHeader>
-
-          <CardContent className="grid gap-2">
-            <Label>Proyecto</Label>
-            <Combobox
-              options={projectOptions}
-              value={projectId}
-              onChange={setProjectId}
-              placeholder="Seleccionar proyecto"
-              className="w-full"
-            />
-          </CardContent>
-        </Card>
-
-        {/* Actions */}
-        <div className="flex md:justify-end">
+        <div className="flex items-center justify-end">
           <ReportActions
             loading={loading}
             pdfUrl={pdfUrl}
@@ -139,7 +117,31 @@ if (projects.length === 0) {
             regenerateLabel="Regenerar PDF"
           />
         </div>
-      </div>
+      </header>
+
+      {/* Filtros en Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Filtros</CardTitle>
+          <CardDescription>
+            El proyecto es opcional. Si no se selecciona ninguno, se generará el reporte para todos los proyectos.
+          </CardDescription>
+        </CardHeader>
+
+        <CardContent className="grid grid-cols-1 md:grid-cols-1 gap-4">
+          <div className="grid gap-2">
+
+            <Label>Proyecto</Label>
+            <Combobox
+              options={projectOptions}
+              value={projectId}
+              onChange={setProjectId}
+              placeholder="Seleccionar proyecto"
+              className="w-full"
+            />
+          </div>
+        </CardContent>
+      </Card>
 
       {/* PDF Viewer */}
       <div className="rounded-lg overflow-hidden">
@@ -149,19 +151,8 @@ if (projects.length === 0) {
           error={error}
           onRetry={handleRetry}
           height="600px"
-          title="Avance de proyectos"
+          title="Hiring history"
         />
-      </div>
-
-      {/* Endpoint preview (opcional, estilo similar) */}
-      <div className="text-sm text-muted-foreground">
-        <p>
-          Endpoint:{" "}
-          <code className="bg-muted px-2 py-1 rounded">
-            {REPORT_ENDPOINTS.PROJECT_PROGRESS}
-            {projectId ? `?projectId=${projectId}` : ""}
-          </code>
-        </p>
       </div>
     </section>
   );

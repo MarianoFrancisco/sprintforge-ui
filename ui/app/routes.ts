@@ -11,7 +11,7 @@ export default [
             route("project-progress", "routes/reports/project-progress-report.tsx"),
             route("hiring-history", "routes/reports/hiring-report.tsx"),
             route("role-general", "routes/reports/role-report.tsx"),
-            route("profits", "routes/reports/profits-report.tsx"),
+            route("income", "routes/reports/income-report.tsx"),
             route("expenses", "routes/reports/expenses-report.tsx"),
         ]),
 
