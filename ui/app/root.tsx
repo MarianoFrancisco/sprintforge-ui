@@ -74,7 +74,7 @@ function App() {
         <PreventFlashOnWrongTheme ssrTheme={Boolean(data.theme)} />
         <Links />
       </head>
-       <body className="h-full min-h-screen bg-background text-foreground overflow-x-hidden">
+       <body >
         <Outlet />
         <Toaster
           position="top-center"

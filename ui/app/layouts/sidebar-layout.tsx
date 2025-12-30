@@ -56,12 +56,9 @@ export default function SidebarLayout() {
             </div>
           </div>
         </header>
-        <ScrollArea >
           <div className="p-4">
             <Outlet context={{ user } satisfies UserOutletContext} />
-            <ScrollBar orientation="horizontal" />
           </div>
-        </ScrollArea>
       </SidebarInset>
     </SidebarProvider>
   )

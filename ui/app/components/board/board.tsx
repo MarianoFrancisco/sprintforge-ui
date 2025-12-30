@@ -16,6 +16,7 @@ import {
 
 import { SortableBoardColumn } from "./sortable-board-column";
 import type { BoardColumnUI } from "~/types/scrum/board-column";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 interface BoardProps {
   boardColumns: BoardColumnUI[];
@@ -127,23 +128,24 @@ export function Board({ boardColumns }: BoardProps) {
     }
   }
 
-  return (
-    <div className="flex flex-col gap-3">
-      <div className="flex items-center justify-between"></div>
+return (
+  <div className="min-w-0 flex flex-col gap-3">
+    <div className="flex items-center justify-between" />
 
-      {/* Eliminado el check isClient - render siempre */}
-      <DndContext
-        sensors={sensors}
-        onDragEnd={handleDragEnd}
-      >
-        <SortableContext items={columnIds} strategy={horizontalListSortingStrategy}>
-          <div className="flex gap-3 overflow-x-auto pb-2">
+    <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+      <SortableContext items={columnIds} strategy={horizontalListSortingStrategy}>
+        {/* Contenedor con scroll horizontal */}
+        <ScrollArea className="w-full whitespace-nowrap pb-2">
+          <div className="flex w-max gap-3 pr-4">
             {boardColumns.map((col) => (
               <SortableBoardColumn key={col.id} column={col} />
             ))}
           </div>
-        </SortableContext>
-      </DndContext>
-    </div>
-  );
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+      </SortableContext>
+    </DndContext>
+  </div>
+)
+
 }
