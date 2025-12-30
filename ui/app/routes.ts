@@ -2,10 +2,19 @@ import { type RouteConfig, index, layout, prefix, route } from "@react-router/de
 
 export default [
     index("routes/home.tsx"),
+    // BORRAR LUEGO ESTA RUTA
+    route("role-report-iframe", "routes/reports/role-report-iframe.tsx"),
     route("login", "routes/login.tsx"),
     route("logout", "routes/logout.tsx"),
     layout("layouts/sidebar-layout.tsx", [
         route("dashboard", "routes/dashboard.tsx"),
+
+        ...prefix("reports", [
+            route("hiring-history", "routes/reports/hiring-report.tsx"),
+            route("role-general", "routes/reports/role-report.tsx"),
+            route("profits", "routes/reports/profits-report.tsx"),
+            route("expenses", "routes/reports/expenses-report.tsx"),
+        ]),
 
         ...prefix("employees", [
             index("routes/employees/index-employee.tsx"),
@@ -51,12 +60,24 @@ export default [
 
             ...prefix(":projectId", [
                 layout("layouts/project-layout.tsx", [
+                    route("report/progress", "routes/scrum/project/by-id/project-report-progress.tsx"),
                     index("routes/scrum/project/by-id/project-home.tsx"),
                     route("work-items/create", "routes/scrum/project/by-id/work-item/create-work-item.tsx"),
                     route("sprint/create", "routes/scrum/project/by-id/sprint/create-sprint.tsx"),
                     route("backlog", "routes/scrum/project/by-id/project-backlog.tsx"),
-                    // route("add-employees", "routes/scrum/project/by-id/add-employees.tsx"),
-                ])
+                    route("backlog/work-items/:workItemId/move-to-sprint", "routes/scrum/project/by-id/work-item/work-item-move-to-sprint.tsx"),
+                    // route("sprint/:sprintId/board", "routes/scrum/project/by-id/sprint/sprint-board.tsx"),
+                    route("board", "routes/scrum/project/by-id/board-redirect.tsx"),
+                    
+                    layout("layouts/board-layout.tsx", [
+                    ...prefix("board/:sprintId", [
+                            index("routes/scrum/project/by-id/sprint/sprint-board.tsx"),
+                            route("move-item-in-column/:itemId/:newPosition", "routes/scrum/project/by-id/sprint/board/move-item-in-column.tsx"),
+                            route("move-item-between-columns/:itemId/:targetColumnId/:targetPosition", "routes/scrum/project/by-id/sprint/board/move-item-between-columns.tsx"),
+                            route("move-column/:columnId/:newPosition", "routes/scrum/project/by-id/sprint/board/move-column.tsx"),
+                        ]),
+                    ]),
+                ]),
             ]),
         ]),
     ]),

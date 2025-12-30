@@ -1,7 +1,8 @@
 // ~/middlewares/project-middleware.ts
 import { redirect, type LoaderFunctionArgs } from "react-router";
-import { projectContext } from "~/context/project-context";
+import { projectContext, type SprintTypeContext } from "~/context/project-context";
 import { projectService } from "~/services/scrum/project-service";
+import { sprintService } from "~/services/scrum/sprint-service";
 import { getAuthSession, commitAuthSession } from "~/sessions.server";
 
 type ProjectMiddlewareOptions = {
@@ -16,14 +17,15 @@ export function projectMiddleware(opts: ProjectMiddlewareOptions = {}) {
     flashMessage = "No se pudo cargar el proyecto.",
     paramKey,
   } = opts;
+
   return async ({ context, request, params }: LoaderFunctionArgs) => {
-    
-    // Se asume que authMiddleware ya corrió (si necesitas validar user aquí, lo puedes hacer)
+    const session = await getAuthSession(request);
+
+    // Se asume que authMiddleware ya corrió
     const projectId =
       (paramKey ? params[paramKey] : undefined) ?? params.projectId;
 
     if (!projectId) {
-      const session = await getAuthSession(request);
       session.flash("authError", "Falta el identificador del proyecto.");
       throw redirect(redirectTo, {
         headers: { "Set-Cookie": await commitAuthSession(session) },
@@ -33,25 +35,32 @@ export function projectMiddleware(opts: ProjectMiddlewareOptions = {}) {
     try {
       const project = await projectService.getById(projectId);
 
-      // Si tu servicio devuelve null en lugar de throw:
       if (!project) {
-        const session = await getAuthSession(request);
         session.flash("authError", flashMessage);
         throw redirect(redirectTo, {
           headers: { "Set-Cookie": await commitAuthSession(session) },
         });
       }
 
-      context.set(projectContext, project);
+      const sprints = await sprintService.getAll({ projectId });
+
+      const sprintContext: SprintTypeContext[] = (sprints ?? []).map(
+        (s: any) => ({
+          id: s.id,
+          name: s.name,
+        }),
+      );
+
+      context.set(projectContext, {
+        project,
+        sprints: sprintContext,
+      });
+
       return;
     } catch (err) {
-      // Log interno
       console.error("projectMiddleware error:", err);
 
-      // Flash + redirect
-      const session = await getAuthSession(request);
       session.flash("authError", flashMessage);
-
       throw redirect(redirectTo, {
         headers: { "Set-Cookie": await commitAuthSession(session) },
       });

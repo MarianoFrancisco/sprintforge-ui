@@ -71,14 +71,6 @@ export function SprintBacklog({ sprint, workItems }: SprintBacklogProps) {
 
         {/* Acciones a la derecha */}
         <div className="flex items-center gap-2">
-          {primaryAction ? (
-            <Button asChild size="sm" className="gap-2">
-              <Link to={primaryAction.to}>
-                {PrimaryIcon ? <PrimaryIcon className="h-4 w-4" /> : null}
-                {primaryAction.label}
-              </Link>
-            </Button>
-          ) : null}
 
           <Button asChild variant="outline" size="sm" className="gap-2">
             <Link to={`/projects/${project.id}/work-items/create`}>
@@ -86,6 +78,16 @@ export function SprintBacklog({ sprint, workItems }: SprintBacklogProps) {
               Agregar historia
             </Link>
           </Button>
+
+                  {primaryAction ? (
+            <Button asChild size="sm" className="gap-2">
+              <Link to={primaryAction.to}>
+                {PrimaryIcon ? <PrimaryIcon className="h-4 w-4" /> : null}
+                {primaryAction.label}
+              </Link>
+            </Button>
+          ) : null}
+          
         </div>
       </div>
 

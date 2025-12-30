@@ -1,4 +1,4 @@
-import { BriefcaseBusiness, FolderCog, IdCard, ShieldUser, Users } from "lucide-react";
+import { BriefcaseBusiness, FileDown, FolderCog, IdCard, ShieldUser, Users } from "lucide-react";
 import { PERMS } from "~/config/permissions";
 import type { NavItem } from "~/types/navbar/nav-item";
 
@@ -53,6 +53,18 @@ export const navMainData: NavItem[] = [
       { title: "Crear proyecto", url: "/projects/create", permission: PERMS.PROJECT_CREATE },
       { title: "Listado", url: "/projects", permission: PERMS.PROJECT_VIEW },
       { title: "Historial de pagos", url: "/projects/payments", permission: PERMS.PROJECT_VIEW_PAYMENT_HISTORY },
+    ],
+  },
+    {
+    title: "Reportes",
+    url: "#",
+    icon: FileDown,
+    // permission: PERMS.PROJECT_VIEW,
+    items: [
+      { title: "Reporte de contrataciones", url: "/reports/hiring-history"},
+      { title: "Reporte general por rol", url: "/reports/role-general"},
+      { title: "Reporte de ganancias", url: "/reports/profits"},
+      { title: "Reporte de gastos", url: "/reports/expenses"},
     ],
   },
 ];
