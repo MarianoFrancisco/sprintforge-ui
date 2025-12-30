@@ -1,7 +1,9 @@
 import { useEffect } from "react"
 import {
   type ActionFunctionArgs,
+  data,
   type LoaderFunctionArgs,
+  redirect,
   useActionData,
   useLoaderData,
   useNavigate,
@@ -17,6 +19,7 @@ import type { CreateProjectRequestDTO } from "~/types/scrum/project"
 import { PERMS } from "~/config/permissions";
 import { permissionMiddleware } from "~/middlewares/permission-middleware";
 import type { MiddlewareFunction } from "react-router";
+import { commitAuthSession, getAuthSession } from "~/sessions.server"
 
 export function meta() {
   return [{ title: "Crear proyecto" }]
@@ -45,12 +48,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 /** Action: crea proyecto usando employeeId de sesión */
 export async function action({ request }: ActionFunctionArgs) {
+  const session = await getAuthSession(request);
   const identity = await requireIdentity(request, {
     redirectTo: "/",
     flashMessage: "Debes iniciar sesión para crear un proyecto.",
   })
 
   const formData = await request.formData()
+  let errors: Record<string, string> = {}
 
   try {
     const payload: CreateProjectRequestDTO = {
@@ -68,34 +73,26 @@ export async function action({ request }: ActionFunctionArgs) {
     }
 
     await projectService.create(payload)
-
-    return { success: "Proyecto creado exitosamente" }
+    session.flash("success", "Proyecto creado correctamente.");
+    return redirect("/projects", {
+      headers: {
+        "Set-Cookie": await commitAuthSession(session),
+      },
+    });
   } catch (error: any) {
-    console.error("Error al crear proyecto", error)
-    return { error: error?.message ?? "Ocurrió un error al crear el proyecto" }
+    console.error("Error al crear proyecto", error);
+    session.flash("error", error?.response?.detail || "Error al crear el proyecto.");
+    errors = error?.response?.errors || {};
   }
+  return data({ errors }, {
+    headers: {
+      "Set-Cookie": await commitAuthSession(session),
+    },
+  });
 }
 
 export default function CreateProjectPage() {
   const data = useLoaderData<typeof loader>()
-  const actionData = useActionData() as
-    | { error?: string; success?: string; errors?: Record<string, string> }
-    | undefined
-
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    if (actionData?.error) toast.error(actionData.error)
-
-    if (actionData?.success) {
-      toast.success(actionData.success, {
-        action: {
-          label: "Ver proyectos",
-          onClick: () => navigate("/projects"),
-        },
-      })
-    }
-  }, [actionData, navigate])
 
   return (
     <section className="p-6">
