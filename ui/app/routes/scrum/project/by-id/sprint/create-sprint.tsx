@@ -2,12 +2,12 @@
 import { useEffect, useMemo, useState } from "react"
 import {
   type ActionFunctionArgs,
+  type MiddlewareFunction,
   redirect,
   useActionData,
   useNavigate,
 } from "react-router"
 import { toast } from "sonner"
-import { ApiError } from "~/lib/api-client"
 
 import { projectContext } from "~/context/project-context"
 import { sprintService } from "~/services/scrum/sprint-service"
@@ -23,20 +23,30 @@ import {
 
 import { requireIdentity } from "~/auth.server"
 import { CreateSprintForm } from "~/components/scrum/sprint/sprint-create-form"
+import { PERMS } from "~/config/permissions"
+import { permissionMiddleware } from "~/middlewares/permission-middleware"
+import { commitAuthSession, getAuthSession } from "~/sessions.server"
 
 export function meta() {
   return [{ title: "Crear sprint" }]
 }
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.SPRINT_CREATE], {
+    flashMessage: "No tienes permiso para crear sprints.",
+  }),
+];
 
 export async function action({ request, context }: ActionFunctionArgs) {
   const { employeeId } = await requireIdentity(request, {
     redirectTo: "/",
     flashMessage: "Debes iniciar sesión para realizar esta acción.",
   })
+  const session = await getAuthSession(request);
 
-  const project = context.get(projectContext)
-  if (!project) throw redirect("/")
-
+  const projectCtx = context.get(projectContext)
+  if (!projectCtx) throw redirect("/")
+  const project = projectCtx.project
   const formData = await request.formData()
 
   try {
@@ -61,25 +71,20 @@ const endDate = endLocal ? new Date(endLocal).toISOString() : ""
     }
 
     await sprintService.create(payload)
+    session.flash("success", "Sprint creado correctamente.")
 
-    return { success: "Sprint creado correctamente" }
   } catch (error: any) {
     console.log("error en action create sprint", error)
-
-    if (error instanceof ApiError && error.response) {
-      try {
-        const errorData = (error.response as any).data || error.response
-        return {
-          errors: errorData.errors || {},
-          error: errorData.detail || errorData.message || `Error ${error.status}`,
-        }
-      } catch {
-        return { error: `Error ${error.status}: No se pudo procesar la respuesta` }
-      }
-    }
-
-    return { error: error?.message || "Error al crear el sprint" }
+        session.flash(
+      "error",
+      error?.response?.detail || "Error al iniciar el sprint."
+    );
   }
+  return redirect(`/projects/${project.id}/sprints`, {
+    headers: {
+      "Set-Cookie": await commitAuthSession(session),
+    },
+  });
 }
 
 export default function CreateSprintRoute() {

@@ -85,18 +85,16 @@ class SprintService {
     }
   }
 
-  /**
-   * (Opcional / futuro)
-   * Si luego expones los endpoints de update/delete (ya existen en el controller como handlers),
-   * aquí puedes agregarlos.
-   */
-  // async delete(id: string, request: { employeeId: string }): Promise<void> {
-  //   try {
-  //     await apiClient.delete(`${this.basePath}/${id}`, request)
-  //   } catch (error) {
-  //     return this.handleError(error)
-  //   }
-  // }
+// dentro de tu sprintService / SprintService
+
+async delete(id: string, employeeId: string): Promise<void> {
+  try {
+    await apiClient.patch<void>(`${this.basePath}/${id}`, { employeeId })
+  } catch (error) {
+    return this.handleError(error)
+  }
+}
+
 }
 
 export const sprintService = new SprintService()

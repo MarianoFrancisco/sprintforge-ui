@@ -25,7 +25,7 @@ export function Backlog({ workItems }: BacklogProps) {
         {/* Acciones alineadas a la derecha */}
         <div className="flex items-center gap-2">
           <Button asChild variant="outline" size="sm" className="gap-2">
-            <Link to={`/projects/${project.id}/sprint/create`}>
+            <Link relative="route" to={`create`}>
               <Rocket className="h-4 w-4" />
               Crear sprint
             </Link>
