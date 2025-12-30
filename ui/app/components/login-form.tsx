@@ -8,16 +8,18 @@ import {
 } from "~/components/ui/field"
 import { Input } from "~/components/ui/input"
 import { ModeToggle } from "./ui/mode-toggle"
-import { Form, Link } from "react-router"
+import { Form, Link, useNavigation } from "react-router"
 import React from "react"
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "./ui/input-group"
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff, Loader2, LogIn } from "lucide-react"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const [showPassword, setShowPassword] = React.useState(false);
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
@@ -73,7 +75,22 @@ export function LoginForm({
                 </InputGroup>
               </Field>
               <Field>
-                <Button type="submit">Iniciar Sesión</Button>
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Iniciando sesión...
+                    </>
+                  ) : (
+                    <>
+                    <LogIn className="mr-2 h-4 w-4" />
+                    Iniciar sesión
+                    </>
+                  )}
+                </Button>
               </Field>
             </FieldGroup>
           </Form>
