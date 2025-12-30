@@ -6,7 +6,8 @@ import { PlusIcon } from "lucide-react";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import type { BoardColumnUI } from "~/types/scrum/board-column";
 import { SortableWorkItem } from "./sortable-work-item";
-
+import { useNavigate, useRouteLoaderData } from "react-router";
+import type {loader as BoardLayout} from "~/layouts/board-layout"
 
 interface BoardColumnProps {
   column: BoardColumnUI;
@@ -14,6 +15,10 @@ interface BoardColumnProps {
 
 export function BoardColumn({ column }: BoardColumnProps) {
   const itemIds = column.items.map((i) => i.id);
+  const data = useRouteLoaderData<typeof BoardLayout>("layouts/board-layout");
+  const {project, sprintId } =data!;
+  
+  const navigate = useNavigate();
 
   return (
     <Card className="w-[320px] shrink-0 rounded-2xl">
@@ -43,7 +48,7 @@ export function BoardColumn({ column }: BoardColumnProps) {
           type="button"
           variant="secondary"
           className="mt-3 w-full justify-center gap-2 rounded-xl"
-          onClick={() => {}}
+          onClick={() => {navigate("/projects/" + project.id + "/work-items/create/" + sprintId + "/" + column.id)}}
         >
           <PlusIcon className="h-4 w-4" />
           Agregar historia

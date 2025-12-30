@@ -66,18 +66,20 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   }
 }
 
-export async function action({ request, context }: ActionFunctionArgs) {
+export async function action({ request, context, params }: ActionFunctionArgs) {
   const session = await getAuthSession(request)
+
   const { employeeId } = await requireIdentity(request, {
     redirectTo: "/",
     flashMessage: "Debes iniciar sesión para realizar esta acción.",
   })
-  const projectCtx = context.get(projectContext);
-  if (!projectCtx) throw redirect("/");
-  const { project } = projectCtx;
 
-  const formData = await request.formData();
-  let errors = {};
+  const projectCtx = context.get(projectContext)
+  if (!projectCtx) throw redirect("/")
+  const { project } = projectCtx
+
+  const formData = await request.formData()
+  let errors = {}
 
   try {
     const title = String(formData.get("title") ?? "").trim()
@@ -93,33 +95,44 @@ export async function action({ request, context }: ActionFunctionArgs) {
     const priority = Number(priorityRaw)
     const storyPoints = storyPointsRaw ? Number(storyPointsRaw) : null
 
-    const payload: CreateWorkItemRequestDTO & {
-      employeeId: string
-      projectId: string
-    } = {
+    const sprintId = params.sprintId?.trim()
+    const boardColumnId = params.boardColumnId?.trim()
+
+    const payload: CreateWorkItemRequestDTO = {
       employeeId,
       projectId: project.id,
       title,
       priority,
-      description: description ? description : undefined,
-      acceptanceCriteria: acceptanceCriteria ? acceptanceCriteria : undefined,
+
+      description: description || undefined,
+      acceptanceCriteria: acceptanceCriteria || undefined,
       storyPoints,
-      developerId: developerIdRaw ? developerIdRaw : null,
-      productOwnerId: productOwnerIdRaw ? productOwnerIdRaw : null,
+
+      developerId: developerIdRaw || null,
+      productOwnerId: productOwnerIdRaw || null,
+
+      ...(sprintId ? { sprintId } : {}),
+      ...(boardColumnId ? { boardColumnId } : {}),
     }
 
-    await workItemService.create(payload as any)
+    await workItemService.create(payload)
     session.flash("success", "Historia de usuario creada correctamente")
   } catch (error: any) {
-    console.log("error en action create work item", error)
-    errors = error?.response?.errors || {};
+    console.error("error en action create work item", error)
+    session.flash("error", error?.response?.detail || "Error al crear la historia de usuario.")
+    errors = error?.response?.errors || {}
   }
-  return data({ errors }, {
-    headers: {
-      "Set-Cookie": await commitAuthSession(session),
+
+  return data(
+    { errors },
+    {
+      headers: {
+        "Set-Cookie": await commitAuthSession(session),
+      },
     },
-  });
+  )
 }
+
 
 export default function CreateWorkItemRoute() {
   const data = useLoaderData<typeof loader>() as LoaderData

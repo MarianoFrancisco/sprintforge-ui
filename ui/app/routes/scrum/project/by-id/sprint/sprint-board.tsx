@@ -35,7 +35,7 @@ export async function loader({ context, params }: LoaderFunctionArgs): Promise<S
 }
 
 export default function SprintBoardRoute() {
-  const { sprintName, boardColumns } = useLoaderData() as SprintBoardLoaderData;
+  const { boardColumns } = useLoaderData() as SprintBoardLoaderData;
 
   return (
       <Board boardColumns={boardColumns} />

@@ -62,7 +62,7 @@ export default [
             ...prefix(":projectId", [
                 layout("layouts/project-layout.tsx", [
                     index("routes/scrum/project/by-id/project-home.tsx"),
-                    route("work-items/create", "routes/scrum/project/by-id/work-item/create-work-item.tsx"),
+                    route("work-items/create/:sprintId?/:boardColumnId?", "routes/scrum/project/by-id/work-item/create-work-item.tsx"),
                     route("sprint/create", "routes/scrum/project/by-id/sprint/create-sprint.tsx"),
                     route("backlog", "routes/scrum/project/by-id/project-backlog.tsx"),
                     route("backlog/work-items/:workItemId/move-to-sprint", "routes/scrum/project/by-id/work-item/work-item-move-to-sprint.tsx"),

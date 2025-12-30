@@ -73,7 +73,7 @@ export function SprintBacklog({ sprint, workItems }: SprintBacklogProps) {
         <div className="flex items-center gap-2">
 
           <Button asChild variant="outline" size="sm" className="gap-2">
-            <Link to={`/projects/${project.id}/work-items/create`}>
+            <Link to={`/projects/${project.id}/work-items/create/${sprint.id}`}>
               <Plus className="h-4 w-4" />
               Agregar historia
             </Link>

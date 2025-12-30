@@ -42,7 +42,8 @@ class WorkItemService {
 
       return await apiClient.get<WorkItemResponseDTO[]>(endpoint);
     } catch (error) {
-      return this.handleError(error);
+      console.error("Error fetching work items:", error);
+      return [];
     }
   }
 
