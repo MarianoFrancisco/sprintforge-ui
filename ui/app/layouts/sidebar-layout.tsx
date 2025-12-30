@@ -3,6 +3,7 @@ import { Outlet, redirect, useLoaderData, useNavigate, useOutletContext, type Lo
 import { AppSidebar } from "~/components/sidebar/app-sidebar"
 import { Button } from "~/components/ui/button"
 import { ModeToggle } from "~/components/ui/mode-toggle"
+import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area"
 import { Separator } from "~/components/ui/separator"
 import {
   SidebarInset,
@@ -55,9 +56,12 @@ export default function SidebarLayout() {
             </div>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <Outlet context={{ user } satisfies UserOutletContext} />
-        </div>
+        <ScrollArea >
+          <div className="p-4">
+            <Outlet context={{ user } satisfies UserOutletContext} />
+            <ScrollBar orientation="horizontal" />
+          </div>
+        </ScrollArea>
       </SidebarInset>
     </SidebarProvider>
   )

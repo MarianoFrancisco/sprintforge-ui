@@ -10,6 +10,7 @@ export default [
         route("dashboard", "routes/dashboard.tsx"),
 
         ...prefix("reports", [
+            route("project-progress", "routes/reports/project-progress-report.tsx"),
             route("hiring-history", "routes/reports/hiring-report.tsx"),
             route("role-general", "routes/reports/role-report.tsx"),
             route("profits", "routes/reports/profits-report.tsx"),
@@ -60,7 +61,6 @@ export default [
 
             ...prefix(":projectId", [
                 layout("layouts/project-layout.tsx", [
-                    route("report/progress", "routes/scrum/project/by-id/project-report-progress.tsx"),
                     index("routes/scrum/project/by-id/project-home.tsx"),
                     route("work-items/create", "routes/scrum/project/by-id/work-item/create-work-item.tsx"),
                     route("sprint/create", "routes/scrum/project/by-id/sprint/create-sprint.tsx"),

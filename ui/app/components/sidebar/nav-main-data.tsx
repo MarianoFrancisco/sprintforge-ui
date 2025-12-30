@@ -61,6 +61,7 @@ export const navMainData: NavItem[] = [
     icon: FileDown,
     // permission: PERMS.PROJECT_VIEW,
     items: [
+      {title: "Reporte de avance de proyectos", url: "/reports/project-progress"},
       { title: "Reporte de contrataciones", url: "/reports/hiring-history"},
       { title: "Reporte general por rol", url: "/reports/role-general"},
       { title: "Reporte de ganancias", url: "/reports/profits"},

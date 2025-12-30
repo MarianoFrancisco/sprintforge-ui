@@ -65,7 +65,7 @@ function App() {
   const [theme] = useTheme();
 
   return (
-    <html lang="en" data-theme={theme ?? ""} >
+    <html lang="en" data-theme={theme ?? ""} className="h-full">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -73,7 +73,7 @@ function App() {
         <PreventFlashOnWrongTheme ssrTheme={Boolean(data.theme)} />
         <Links />
       </head>
-      <body>
+       <body className="h-full min-h-screen bg-background text-foreground overflow-x-hidden">
         <Outlet />
         <Toaster
           position="top-center"

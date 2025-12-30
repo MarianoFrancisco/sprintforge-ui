@@ -1,89 +1,127 @@
 // routes/reporting/hiring-history-report.tsx
-import { useMemo, useState } from "react";
+import { useState } from "react";
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
-import { Button } from "~/components/ui/button";
-import { toast } from "sonner";
+import { Label } from "~/components/ui/label";
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8006";
-
-function joinUrl(base: string, path: string) {
-  const b = base.replace(/\/+$/, "");
-  const p = path.replace(/^\/+/, "");
-  return `${b}/${p}`;
-}
-
-function reportingEndpoint(base: string) {
-  const clean = base.replace(/\/+$/, "");
-  return clean.endsWith("/api/v1")
-    ? joinUrl(clean, "reporting")
-    : joinUrl(clean, "api/v1/reporting");
-}
+import { PdfViewer } from "~/components/reports/pdf-viewer";
+import { ReportActions } from "~/components/reports/report-actions";
+import { usePdfReport } from "~/hooks/use-pdf-report";
+import { REPORT_ENDPOINTS } from "~/services/reports/reports-service";
 
 export default function HiringHistoryReportRoute() {
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
-  const [loading, setLoading] = useState(false);
+  // opcionales: si están vacíos, NO se mandan y el backend devuelve todo
+  const [fromDate, setFromDate] = useState<string>("");
+  const [toDate, setToDate] = useState<string>("");
 
-  const baseReportUrl = useMemo(() => reportingEndpoint(API_BASE_URL), []);
+  const {
+    pdfUrl,
+    loading,
+    error,
+    fetchPdf,
+    downloadPdf,
+    openInNewTab,
+    clearPdf,
+    setError,
+  } = usePdfReport(REPORT_ENDPOINTS.HIRING_HISTORY, {
+    autoLoad: false,
+    filename: "reporte-hiring-history.pdf",
+  });
 
-  const handleOpenPdf = () => {
-    // Validación mínima opcional (si prefieres permitir vacío, quita esto)
-    if (!from && !to) {
-      toast.error("Selecciona al menos una fecha (Desde o Hasta)");
-      return;
-    }
+  const handleGenerate = () => {
+    setError(null);
 
-    // Si tu backend requiere ambas fechas, usa esta validación en lugar de la anterior:
-    // if (!from || !to) { toast.error("Debes seleccionar ambas fechas"); return; }
+    const params: Record<string, string> = {};
+    if (fromDate) params.from = fromDate;
+    if (toDate) params.to = toDate;
+    fetchPdf(params);
+  };
 
-    setLoading(true);
-    try {
-      const url = new URL(joinUrl(baseReportUrl, "hiring-history.pdf"));
+  const handleDownload = () => {
+    const range =
+      fromDate || toDate
+        ? `_${fromDate || "all"}_${toDate || "all"}`
+        : "_all";
 
-      // Si no hay fecha, NO se envía
-      if (from) url.searchParams.set("from", from);
-      if (to) url.searchParams.set("to", to);
+    downloadPdf(`hiring-history${range}.pdf`);
+  };
 
-      // Navegación directa -> evita CORS de fetch
-      window.open(url.toString(), "_blank", "noopener,noreferrer");
-    } finally {
-      // no sabemos cuándo termina de descargar, así que lo bajamos rápido
-      setTimeout(() => setLoading(false), 300);
-    }
+  const handleRetry = () => {
+    setError(null);
+    handleGenerate();
   };
 
   return (
-    <section className="p-6 max-w-md space-y-6">
-      <h1 className="text-lg font-semibold">
-        Reporte de historial de contrataciones
-      </h1>
+    <section className="p-4 md:p-6 space-y-4 md:space-y-6">
+      {/* Header responsive (manteniendo estilo) */}
+      <header className="grid gap-3">
+        <div className="space-y-1">
+          <h1 className="text-xl md:text-2xl font-bold">Reporte de Contrataciones</h1>
+          <p className="text-sm md:text-base text-muted-foreground">
+            Genera, visualiza y descarga el reporte de contrataciones en PDF.
+          </p>
+        </div>
 
-      <div className="space-y-2">
-        <label className="text-sm font-medium">Desde</label>
-        <Input
-          type="date"
-          value={from}
-          onChange={(e) => setFrom(e.target.value)}
+        <div className="flex items-center justify-end">
+          <ReportActions
+            loading={loading}
+            pdfUrl={pdfUrl}
+            onGenerate={handleGenerate}
+            onDownload={handleDownload}
+            onOpenInNewTab={openInNewTab}
+            onClear={clearPdf}
+            generateLabel="Generar PDF"
+            regenerateLabel="Regenerar PDF"
+          />
+        </div>
+      </header>
+
+      {/* Filtros en Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Filtros</CardTitle>
+          <CardDescription>
+            Los campos son opcionales. Si no seleccionas fechas, se generará el reporte con todos los registros.
+          </CardDescription>
+        </CardHeader>
+
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid gap-2">
+            <Label htmlFor="fromDate">Fecha desde</Label>
+            <Input
+              id="fromDate"
+              type="date"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
+              disabled={loading}
+            />
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="toDate">Fecha hasta</Label>
+            <Input
+              id="toDate"
+              type="date"
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
+              disabled={loading}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* PDF Viewer */}
+      <div className="rounded-lg overflow-hidden">
+        <PdfViewer
+          pdfUrl={pdfUrl}
+          loading={loading}
+          error={error}
+          onRetry={handleRetry}
+          height="600px"
+          title="Hiring history"
         />
       </div>
-
-      <div className="space-y-2">
-        <label className="text-sm font-medium">Hasta</label>
-        <Input
-          type="date"
-          value={to}
-          onChange={(e) => setTo(e.target.value)}
-        />
-      </div>
-
-      <Button onClick={handleOpenPdf} disabled={loading} className="w-full">
-        {loading ? "Abriendo..." : "Abrir / Descargar PDF"}
-      </Button>
-
-      <p className="text-xs text-muted-foreground break-all">
-        Endpoint: {joinUrl(baseReportUrl, "hiring-history.pdf")}
-      </p>
     </section>
   );
 }
