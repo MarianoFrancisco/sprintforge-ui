@@ -65,10 +65,10 @@ export function PositionActions({ position }: PositionActionsProps) {
 
         {/* Eliminar */}
         <Form method="post" action={`/employees/positions/${id}/delete`}>
-          <DropdownMenuItem asChild>
+          <DropdownMenuItem asChild variant="destructive">
             <button
               type="submit"
-              className="flex w-full items-center text-destructive"
+              className="flex w-full items-center"
             >
               <Trash2 className="mr-2 h-4 w-4" />
               Eliminar

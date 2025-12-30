@@ -33,7 +33,8 @@ class EmployeeService {
 
       return await apiClient.get<EmployeeResponseDTO[]>(endpoint);
     } catch (e) {
-      return this.handleError(e);
+      console.error("Error fetching employees:", e);
+      return []
     }
   }
 

@@ -1,8 +1,6 @@
 import {
-  redirect,
-  useActionData,
+  data,
   useLoaderData,
-  useNavigate,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from "react-router";
@@ -11,11 +9,9 @@ import type {
   UpdatePositionDetailRequest,
 } from "~/types/employees/position";
 import { positionService } from "~/services/employees/position-service";
-import { ApiError } from "~/lib/api-client";
 import { PositionForm } from "~/components/employees/positions/position-form";
 import type { Route } from "../../+types/home";
-import { toast } from "sonner";
-import { useEffect } from "react";
+import { commitAuthSession, getAuthSession } from "~/sessions.server";
 
 export function meta({ }: Route.MetaArgs) {
   return [{ title: "Editar cargo" }];
@@ -34,9 +30,10 @@ export async function loader({ params }: LoaderFunctionArgs) {
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
+  const session = await getAuthSession(request);
   if (!params.id) throw new Error("No se proporcionó el ID del cargo");
-
   const formData = await request.formData();
+  let errors = {};
 
   try {
     const updateData: UpdatePositionDetailRequest = {
@@ -46,55 +43,20 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
     await positionService.update(params.id, updateData);
 
-    return { success: "Cargo actualizado correctamente" };
+    return { success: "Puesto actualizado correctamente" };
   } catch (error: any) {
-    console.error("Action error (update position):", error);
-
-    if (error instanceof ApiError && error.response) {
-      try {
-        const errorData = (error.response as any).data || error.response;
-
-        return {
-          errors: errorData.errors || {},
-          error:
-            errorData.detail ||
-            errorData.message ||
-            `Error ${error.status}`,
-        };
-      } catch (parseError) {
-        return {
-          error: `Error ${error.status}: No se pudo procesar la respuesta`,
-        };
-      }
-    }
-
-    return {
-      error: error.message || "Error al actualizar el cargo",
-    };
+    session.flash("error", error?.response?.detail || "Error al actualizar el puesto.");
+    errors = error?.response?.errors || {};
   }
+  return data({ errors }, {
+    headers: {
+      "Set-Cookie": await commitAuthSession(session),
+    },
+  });
 }
 
 export default function EditPositionPage() {
   const position = useLoaderData<typeof loader>() as PositionResponseDTO;
-  const actionData = useActionData();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (actionData?.error) {
-      toast.error(actionData.error);
-    }
-    if (actionData?.success) {
-      toast.success(actionData.success, {
-        action: {
-          label: "Ver cargos",
-          onClick: () => {
-            navigate("/employees/positions");
-          },
-        },
-      });
-    }
-  }, [actionData]);
-
   return (
     <section className="p-6">
       <PositionForm position={position} />

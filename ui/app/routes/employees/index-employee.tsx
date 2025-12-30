@@ -1,4 +1,4 @@
-import { Link, useLoaderData, type MiddlewareFunction } from "react-router";
+import { data, Link, useLoaderData, type MiddlewareFunction } from "react-router";
 import type { Route } from "../+types/home";
 import { Button } from "~/components/ui/button";
 import { employeeService } from "~/services/employees/employee-service";
@@ -44,10 +44,10 @@ export async function loader({ request }: { request: Request }) {
   // Obtener empleados filtrados
   const employees = await employeeService.getAll(filters);
 
-  return {
+  return data({
     employees,
     filters
-  };
+  })
 }
 
 export default function EmployeesPage() {

@@ -32,7 +32,8 @@ class PositionService {
 
       return await apiClient.get<PositionResponseDTO[]>(endpoint);
     } catch (error) {
-      return this.handleError(error);
+      console.error("Error fetching positions:", error);
+      return [];
     }
   }
 

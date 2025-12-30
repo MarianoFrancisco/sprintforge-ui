@@ -59,7 +59,7 @@ export function PositionForm({ position }: PositionFormProps) {
                                 // required
                             />
                             {actionData?.errors?.name && (
-                                <p className="text-sm text-red-500">{actionData.errors.name}</p>
+                                <p className="text-sm text-destructive">{actionData.errors.name}</p>
                             )}
                         </div>
 
@@ -74,7 +74,7 @@ export function PositionForm({ position }: PositionFormProps) {
                                 defaultValue={position?.description ?? ""}
                             />
                             {actionData?.errors?.description && (
-                                <p className="text-sm text-red-500">
+                                <p className="text-sm text-destructive">
                                     {actionData.errors.description}
                                 </p>
                             )}

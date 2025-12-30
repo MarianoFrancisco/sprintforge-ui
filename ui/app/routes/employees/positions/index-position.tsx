@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from "react-router";
+import { data, Link, useLoaderData } from "react-router";
 import { PositionFilter } from "~/components/employees/positions/position-filter";
 import { PositionsTable } from "~/components/employees/positions/position-table";
 import { Button } from "~/components/ui/button";
@@ -34,13 +34,8 @@ export async function loader({ request }: { request: Request }) {
     filters.isDeleted = params.isDeleted === "true";
   }
 
-  try {
-    const positions = await positionService.getAll(filters);
-    return Response.json(positions);
-  } catch (error) {
-    console.error("Error al cargar posiciones:", error);
-    return Response.json([], { status: 500 });
-  }
+  const positions = await positionService.getAll(filters);
+  return data(positions);
 }
 
 export default function PositionsPage() {
