@@ -10,9 +10,11 @@ export default [
         ...prefix("reports", [
             route("project-progress", "routes/reports/project-progress-report.tsx"),
             route("hiring-history", "routes/reports/hiring-report.tsx"),
+            route("termination-history", "routes/reports/termination-history-report.tsx"),
             route("role-general", "routes/reports/role-report.tsx"),
-            route("income", "routes/reports/income-report.tsx"),
-            route("expenses", "routes/reports/expenses-report.tsx"),
+            route("incomes", "routes/reports/income-report.tsx"),
+            route("expenses", "routes/reports/expense-report.tsx"),
+            route("profits", "routes/reports/profit-report.tsx"),
         ]),
 
         ...prefix("employees", [

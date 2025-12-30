@@ -1,5 +1,5 @@
 // routes/reporting/income-report.tsx
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLoaderData, useNavigate } from "react-router";
 import { toast } from "sonner";
 
@@ -104,17 +104,19 @@ export default function IncomeReportRoute() {
     handleGenerate();
   };
 
-  // Si quieres bloquear la pantalla cuando no hay proyectos disponibles para el combobox:
-  // (pero ojo: projectId es opcional, así que esto NO debería bloquearte siempre)
-  // Si de verdad quieres avisar una sola vez y redirigir, descomenta esto:
-  //
-  // useEffect(() => {
-  //   if (hasShownRef.current) return;
-  //   if (projects.length === 0) {
-  //     hasShownRef.current = true;
-  //     toast.error("No hay proyectos disponibles. Aún puedes generar el reporte sin proyecto.");
-  //   }
-  // }, [projects]);
+useEffect(() => {
+  if (hasShownRef.current) return;
+
+  if (projects.length === 0) {
+    hasShownRef.current = true;
+    toast.error("No hay proyectos disponibles para generar el reporte.");
+    navigate("/");
+  }
+}, [projects, navigate]);
+
+if (projects.length === 0) {
+  return null; // O un mensaje de carga si prefieres
+}
 
   return (
     <section className="p-4 md:p-6 space-y-4 md:space-y-6">

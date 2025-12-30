@@ -80,19 +80,19 @@ export default function ProjectProgressReportRoute() {
     handleGenerate();
   };
 
-// useEffect(() => {
-//   if (hasShownRef.current) return;
+useEffect(() => {
+  if (hasShownRef.current) return;
 
-//   if (projects.length === 0) {
-//     hasShownRef.current = true;
-//     toast.error("No hay proyectos disponibles para generar el reporte.");
-//     navigate("/");
-//   }
-// }, [projects, navigate]);
+  if (projects.length === 0) {
+    hasShownRef.current = true;
+    toast.error("No hay proyectos disponibles para generar el reporte.");
+    navigate("/");
+  }
+}, [projects, navigate]);
 
-// if (projects.length === 0) {
-//   return null; // O un mensaje de carga si prefieres
-// }
+if (projects.length === 0) {
+  return null; // O un mensaje de carga si prefieres
+}
 
   return (
     <section className="p-4 md:p-6 space-y-4 md:space-y-6">
@@ -151,7 +151,7 @@ export default function ProjectProgressReportRoute() {
           error={error}
           onRetry={handleRetry}
           height="600px"
-          title="Hiring history"
+          title="Project progress report"
         />
       </div>
     </section>
