@@ -22,11 +22,6 @@ export default function Home() {
         <div className="w-full max-w-sm md:max-w-4xl">
           <Welcome />
         </div>
-        {/* BORRAR LUEGO AQUI */}
-        <Link to="/role-report-iframe" className="mt-6">
-          <Button size="lg">Ver reporte IFRAME (borrar luego)</Button>
-        </Link>
-        {/* BORRAR LUEGO TERMINA AQUI */}
       </div>
   )
 }
