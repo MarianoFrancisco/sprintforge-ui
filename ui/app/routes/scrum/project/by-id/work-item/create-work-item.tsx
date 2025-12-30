@@ -1,15 +1,13 @@
 // ~/routes/scrum/work-items/create-work-item.tsx
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import {
   type ActionFunctionArgs,
+  data,
   type LoaderFunctionArgs,
   redirect,
-  useActionData,
   useLoaderData,
   useNavigate,
 } from "react-router"
-import { toast } from "sonner"
-import { ApiError } from "~/lib/api-client"
 
 import { projectContext } from "~/context/project-context"
 import { employeeService } from "~/services/employees/employee-service"
@@ -17,7 +15,6 @@ import { workItemService } from "~/services/scrum/work-item-service"
 
 import type { EmployeeResponseDTO } from "~/types/employees/employee"
 import type { CreateWorkItemRequestDTO } from "~/types/scrum/work-item"
-
 
 import {
   Dialog,
@@ -28,6 +25,7 @@ import {
 } from "~/components/ui/dialog"
 import { CreateUserStoryForm } from "~/components/scrum/work-item/work-item-create-form"
 import { requireIdentity } from "~/auth.server"
+import { commitAuthSession, getAuthSession } from "~/sessions.server"
 
 export function meta() {
   return [{ title: "Crear historia de usuario" }]
@@ -40,13 +38,15 @@ type LoaderData = {
 }
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
-      const {employeeId} = await requireIdentity(request, {
-        redirectTo: "/",
-        flashMessage: "Debes iniciar sesión para realizar esta acción.",
-      })
+  const { employeeId } = await requireIdentity(request, {
+    redirectTo: "/",
+    flashMessage: "Debes iniciar sesión para realizar esta acción.",
+  })
 
-  const project = context.get(projectContext)
-  if (!project) throw redirect("/")
+  const projectCtx = context.get(projectContext)
+  if (!projectCtx) throw redirect("/")
+  const { project } = projectCtx
+
 
   try {
     const employees = await employeeService.getAll({ status: "ACTIVE" })
@@ -67,15 +67,17 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 }
 
 export async function action({ request, context }: ActionFunctionArgs) {
-    const {employeeId} = await requireIdentity(request, {
-      redirectTo: "/",
-      flashMessage: "Debes iniciar sesión para realizar esta acción.",
-    })
-  const project = context.get(projectContext)
-  if (!project) throw redirect("/")
+  const session = await getAuthSession(request)
+  const { employeeId } = await requireIdentity(request, {
+    redirectTo: "/",
+    flashMessage: "Debes iniciar sesión para realizar esta acción.",
+  })
+  const projectCtx = context.get(projectContext);
+  if (!projectCtx) throw redirect("/");
+  const { project } = projectCtx;
 
-
-  const formData = await request.formData()
+  const formData = await request.formData();
+  let errors = {};
 
   try {
     const title = String(formData.get("title") ?? "").trim()
@@ -107,35 +109,20 @@ export async function action({ request, context }: ActionFunctionArgs) {
     }
 
     await workItemService.create(payload as any)
-
-    return {
-      success: "Historia de usuario creada correctamente",
-    }
+    session.flash("success", "Historia de usuario creada correctamente")
   } catch (error: any) {
     console.log("error en action create work item", error)
-
-    if (error instanceof ApiError && error.response) {
-      try {
-        const errorData = (error.response as any).data || error.response
-        return {
-          errors: errorData.errors || {},
-          error: errorData.detail || errorData.message || `Error ${error.status}`,
-        }
-      } catch {
-        return { error: `Error ${error.status}: No se pudo procesar la respuesta` }
-      }
-    }
-
-    return { error: error?.message || "Error al crear la historia de usuario" }
+    errors = error?.response?.errors || {};
   }
+  return data({ errors }, {
+    headers: {
+      "Set-Cookie": await commitAuthSession(session),
+    },
+  });
 }
 
 export default function CreateWorkItemRoute() {
   const data = useLoaderData<typeof loader>() as LoaderData
-  const actionData = useActionData() as
-    | { error?: string; success?: string; errors?: Record<string, string> }
-    | undefined
-
   const navigate = useNavigate()
 
   const [open, setOpen] = useState(true)
@@ -149,22 +136,6 @@ export default function CreateWorkItemRoute() {
       navigate(closeTo)
     }
   }
-
-  useEffect(() => {
-    if (actionData?.error) toast.error(actionData.error)
-
-    if (actionData?.success) {
-      toast.success(actionData.success, {
-        action: {
-          label: "Ver proyecto",
-          onClick: () => navigate(closeTo),
-        },
-      })
-
-      // Cerrar modal y volver
-      navigate(closeTo)
-    }
-  }, [actionData, navigate, closeTo])
 
   return (
     <Dialog

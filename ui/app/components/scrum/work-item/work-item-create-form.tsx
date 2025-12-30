@@ -1,7 +1,6 @@
 // ~/components/scrum/work-items/create-user-story-form.tsx
 import { useMemo, useState } from "react"
 import { Form, useActionData, useNavigation } from "react-router"
-import { Card, CardContent } from "~/components/ui/card"
 import { Label } from "~/components/ui/label"
 import { Input } from "~/components/ui/input"
 import { Textarea } from "~/components/ui/textarea"
@@ -22,7 +21,7 @@ export function CreateUserStoryForm({
   defaultValues,
 }: CreateUserStoryFormProps) {
   const actionData = useActionData() as
-    | { error?: string; success?: string; errors?: Record<string, string> }
+    | { errors?: Record<string, string> }
     | undefined
 
   const navigation = useNavigation()
@@ -71,7 +70,7 @@ export function CreateUserStoryForm({
                   required
                 />
                 {actionData?.errors?.title && (
-                  <p className="text-sm text-red-500">{actionData.errors.title}</p>
+                  <p className="text-sm text-destructive">{actionData.errors.title}</p>
                 )}
               </div>
 
@@ -90,7 +89,7 @@ export function CreateUserStoryForm({
                   required
                 />
                 {actionData?.errors?.priority && (
-                  <p className="text-sm text-red-500">{actionData.errors.priority}</p>
+                  <p className="text-sm text-destructive">{actionData.errors.priority}</p>
                 )}
               </div>
 
@@ -112,7 +111,7 @@ export function CreateUserStoryForm({
                   placeholder="Opcional"
                 />
                 {actionData?.errors?.storyPoints && (
-                  <p className="text-sm text-red-500">
+                  <p className="text-sm text-destructive">
                     {actionData.errors.storyPoints}
                   </p>
                 )}
@@ -129,7 +128,7 @@ export function CreateUserStoryForm({
                   defaultValue={defaultValues?.description ?? ""}
                 />
                 {actionData?.errors?.description && (
-                  <p className="text-sm text-red-500">
+                  <p className="text-sm text-destructive">
                     {actionData.errors.description}
                   </p>
                 )}
@@ -146,7 +145,7 @@ export function CreateUserStoryForm({
                   defaultValue={defaultValues?.acceptanceCriteria ?? ""}
                 />
                 {actionData?.errors?.acceptanceCriteria && (
-                  <p className="text-sm text-red-500">
+                  <p className="text-sm text-destructive">
                     {actionData.errors.acceptanceCriteria}
                   </p>
                 )}
@@ -163,7 +162,7 @@ export function CreateUserStoryForm({
                   clearable
                 />
                 {actionData?.errors?.developerId && (
-                  <p className="text-sm text-red-500">
+                  <p className="text-sm text-destructive">
                     {actionData.errors.developerId}
                   </p>
                 )}
@@ -180,7 +179,7 @@ export function CreateUserStoryForm({
                   clearable
                 />
                 {actionData?.errors?.productOwnerId && (
-                  <p className="text-sm text-red-500">
+                  <p className="text-sm text-destructive">
                     {actionData.errors.productOwnerId}
                   </p>
                 )}
