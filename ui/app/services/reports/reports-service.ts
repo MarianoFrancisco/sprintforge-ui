@@ -115,5 +115,6 @@ export const REPORT_ENDPOINTS = {
   ROLE_GENERAL: 'role-general.pdf',
   INCOME: 'income.pdf',
   HIRING_HISTORY: 'hiring-history.pdf',
+  PROJECT_PROGRESS: 'project-progress.pdf',
   // Agrega más endpoints aquí según necesites
 } as const;
