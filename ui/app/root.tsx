@@ -51,7 +51,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const session = await getAuthSession(request);
   return data({
     theme: getTheme(),
-    authError: session.get("authError"),
+    error: session.get("error"),
+    success: session.get("success"),
   }, {
     headers: {
       "Set-Cookie": await commitAuthSession(session),
@@ -90,13 +91,16 @@ function App() {
 }
 
 export default function AppWithProviders() {
-  const data = useLoaderData();
+  const data = useLoaderData<typeof loader>();
 
   useEffect(() => {
-    if (data.authError) {
-      toast.error(data.authError);
+    if (data.error) {
+      toast.error(data.error);
     }
-  }, [data.authError]);
+    if (data.success) {
+      toast.success(data.success);
+    }
+  }, [data.error, data.success]);
   return (
     <ThemeProvider specifiedTheme={data.theme} themeAction="/action/set-theme" disableTransitionOnThemeChange={true}>
       <App />

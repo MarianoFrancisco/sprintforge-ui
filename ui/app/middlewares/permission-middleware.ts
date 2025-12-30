@@ -39,7 +39,7 @@ export function permissionMiddleware(
 
     // Flash opcional (siguiendo tu patrón)
     const session = await getAuthSession(request);
-    session.flash("authError", flashMessage);
+    session.flash("error", flashMessage);
 
     throw redirect(redirectTo, {
       headers: { "Set-Cookie": await commitAuthSession(session) },

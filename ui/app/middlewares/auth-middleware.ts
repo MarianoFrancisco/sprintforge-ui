@@ -38,9 +38,9 @@ async function logoutAndRedirect(
   const session = await getAuthSession(request);
 
   if (opts?.flashMessage) {
-    session.flash("authError", opts.flashMessage);
+    session.flash("error", opts.flashMessage);
   } else {
-    session.flash("authError", "Tu sesión expiró. Inicia sesión nuevamente.");
+    session.flash("error", "Tu sesión expiró. Inicia sesión nuevamente.");
   }
   
   throw redirect(opts?.redirectTo ?? "/", {

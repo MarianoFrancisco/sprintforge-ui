@@ -4,11 +4,11 @@ import {
   type MiddlewareFunction,
   redirect,
 } from "react-router";
-import { toast } from "sonner";
 import { PERMS } from "~/config/permissions";
 import { permissionMiddleware } from "~/middlewares/permission-middleware";
 
 import { roleService } from "~/services/identity/role-service";
+import { commitAuthSession, getAuthSession } from "~/sessions.server";
 
 export function meta() {
   return [{ title: "Desactivar rol" }];
@@ -20,19 +20,30 @@ export const middleware: MiddlewareFunction[] = [
 ];
 
 // Action: petición POST para activar el rol
-export async function action({ params }: ActionFunctionArgs) {
+export async function action({ request, params }: ActionFunctionArgs) {
+  const session = await getAuthSession(request);
   const { id } = params;
   if (!id) throw new Error("ID del rol no proporcionado");
 
   try {
     await roleService.deactivate(id);
-    toast.success("Rol desactivado correctamente");
-    return redirect("/identity/roles");
+    session.flash("success", "Rol desactivado correctamente.");
+
+    return redirect("/identity/roles", {
+      headers: {
+        "Set-Cookie": await commitAuthSession(session),
+      },
+    });
   } catch (error: any) {
-    throw redirect("/identity/roles");
+    session.flash("error", error?.response?.detail || "Error al desactivar el rol.");
   }
+  return redirect("/identity/roles", {
+    headers: {
+      "Set-Cookie": await commitAuthSession(session),
+    },
+  });
 }
 
 export default function DeactivateRolePage() {
-    return null;
+  return null;
 }

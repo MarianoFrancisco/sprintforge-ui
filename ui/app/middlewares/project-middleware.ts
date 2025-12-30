@@ -26,7 +26,7 @@ export function projectMiddleware(opts: ProjectMiddlewareOptions = {}) {
       (paramKey ? params[paramKey] : undefined) ?? params.projectId;
 
     if (!projectId) {
-      session.flash("authError", "Falta el identificador del proyecto.");
+      session.flash("error", "Falta el identificador del proyecto.");
       throw redirect(redirectTo, {
         headers: { "Set-Cookie": await commitAuthSession(session) },
       });
@@ -36,7 +36,7 @@ export function projectMiddleware(opts: ProjectMiddlewareOptions = {}) {
       const project = await projectService.getById(projectId);
 
       if (!project) {
-        session.flash("authError", flashMessage);
+        session.flash("error", flashMessage);
         throw redirect(redirectTo, {
           headers: { "Set-Cookie": await commitAuthSession(session) },
         });
@@ -60,7 +60,7 @@ export function projectMiddleware(opts: ProjectMiddlewareOptions = {}) {
     } catch (err) {
       console.error("projectMiddleware error:", err);
 
-      session.flash("authError", flashMessage);
+      session.flash("error", flashMessage);
       throw redirect(redirectTo, {
         headers: { "Set-Cookie": await commitAuthSession(session) },
       });

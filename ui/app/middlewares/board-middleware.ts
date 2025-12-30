@@ -33,7 +33,7 @@ export function boardMiddleware(opts: BoardMiddlewareOptions = {}) {
         | undefined;
 
       if (!projectCtx?.project?.id) {
-        session.flash("authError", "No hay proyecto cargado en el contexto.");
+        session.flash("error", "No hay proyecto cargado en el contexto.");
         throw redirect(redirectTo, {
           headers: { "Set-Cookie": await commitAuthSession(session) },
         });
@@ -46,7 +46,7 @@ export function boardMiddleware(opts: BoardMiddlewareOptions = {}) {
 
       if (!sprintId) {
         session.flash(
-          "authError",
+          "error",
           "Sprint no existe o no tiene permiso para verlo.",
         );
         throw redirect(redirectTo, {
@@ -76,7 +76,7 @@ export function boardMiddleware(opts: BoardMiddlewareOptions = {}) {
     } catch (err) {
       console.error("boardMiddleware error:", err);
 
-      session.flash("authError", flashMessage);
+      session.flash("error", flashMessage);
       throw redirect(redirectTo, {
         headers: { "Set-Cookie": await commitAuthSession(session) },
       });

@@ -28,7 +28,7 @@ export async function requireIdentity(
   if (identity) return identity;
 
   const session = await getAuthSession(request);
-  if (opts?.flashMessage) session.flash("authError", opts.flashMessage);
+  if (opts?.flashMessage) session.flash("error", opts.flashMessage);
 
   throw redirect(opts?.redirectTo ?? "/", {
     headers: { "Set-Cookie": await commitAuthSession(session) },
