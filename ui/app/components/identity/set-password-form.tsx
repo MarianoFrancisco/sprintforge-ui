@@ -6,14 +6,13 @@ import {
   FieldGroup,
   FieldLabel,
 } from "~/components/ui/field"
-import { Input } from "~/components/ui/input"
-import { ModeToggle } from "./ui/mode-toggle"
+import { ModeToggle } from "../ui/mode-toggle"
 import { Form, Link, useNavigation } from "react-router"
 import React from "react"
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "./ui/input-group"
-import { Eye, EyeOff, Home, Loader2, LogIn } from "lucide-react"
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "../ui/input-group"
+import { Eye, EyeOff, Home, Loader2, LogIn, UserCheck } from "lucide-react"
 
-export function LoginForm({
+export function SetPasswordForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
@@ -41,35 +40,40 @@ export function LoginForm({
                 <ModeToggle />
               </div>
               <div className="flex flex-col items-center gap-2 text-center">
-                <h1 className="text-2xl font-bold">Bienvenido</h1>
+                <h1 className="text-2xl font-bold">Establecer contraseña</h1>
                 <p className="text-muted-foreground text-balance">
-                  Inicia sesión en tu cuenta de Sprint Forge
+                  Haz iniciado tu carrera laboral con Sprint Forge. Por favor, establece tu contraseña para continuar.
                 </p>
               </div>
               <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                />
-              </Field>
-              <Field>
-                <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Contraseña</FieldLabel>
-                  <Link
-                    to="#"
-                    className="ml-auto text-sm underline-offset-2 hover:underline"
-                  >
-                    ¿Olvidaste tu contraseña?
-                  </Link>
-                </div>
+                <FieldLabel htmlFor="password">Contraseña</FieldLabel>
                 <InputGroup>
                   <InputGroupInput
                     id="password"
                     name="password"
+                    type={showPassword ? "text" : "password"}
+                    required
+                  />
+
+                  <InputGroupAddon align="inline-end">
+                    <InputGroupButton
+                      type="button"
+                      variant="ghost"
+                      size="icon-xs"
+                      aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                      onClick={() => setShowPassword((prev) => !prev)}
+                    >
+                      {showPassword ? <EyeOff /> : <Eye />}
+                    </InputGroupButton>
+                  </InputGroupAddon>
+                </InputGroup>
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="confirm-password">Confirmar contraseña</FieldLabel>
+                <InputGroup>
+                  <InputGroupInput
+                    id="confirm-password"
+                    name="confirm-password"
                     type={showPassword ? "text" : "password"}
                     required
                   />
@@ -95,12 +99,12 @@ export function LoginForm({
                   {isSubmitting ? (
                     <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Iniciando sesión...
+                    Activando cuenta...
                     </>
                   ) : (
                     <>
-                    <LogIn className="mr-2 h-4 w-4" />
-                    Iniciar sesión
+                    <UserCheck className="mr-2 h-4 w-4" />
+                    Activar cuenta
                     </>
                   )}
                 </Button>

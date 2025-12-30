@@ -4,6 +4,7 @@ export default [
     index("routes/home.tsx"),
     route("login", "routes/login.tsx"),
     route("logout", "routes/logout.tsx"),
+    route("identity/set-initial-password/:userId", "routes/identity/set-initial-password.tsx"),
     layout("layouts/sidebar-layout.tsx", [
         route("dashboard", "routes/dashboard.tsx"),
 
