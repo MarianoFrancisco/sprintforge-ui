@@ -15,6 +15,15 @@ import { REPORT_ENDPOINTS } from "~/services/reports/reports-service";
 import { Combobox } from "~/components/common/combobox-option";
 import type { ComboboxOption } from "~/types/filters";
 import { projectService } from "~/services/scrum/project-service";
+import { PERMS } from "~/config/permissions";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
+import type { MiddlewareFunction } from "react-router";
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.REPORT_INCOMES], {
+    flashMessage: "No tienes permiso para ver el reporte de ingresos."
+  }),
+];
 
 export type ProjectOption = {
   id: string;

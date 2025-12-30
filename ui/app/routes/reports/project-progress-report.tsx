@@ -12,6 +12,15 @@ import { Combobox } from "~/components/common/combobox-option";
 import { projectService } from "~/services/scrum/project-service";
 import { useLoaderData, useNavigate } from "react-router";
 import { toast } from "sonner";
+import { PERMS } from "~/config/permissions";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
+import type { MiddlewareFunction } from "react-router";
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.REPORT_PROJECT_PROGRESS], {
+    flashMessage: "No tienes permiso para ver el reporte de avance de proyectos."
+  }),
+];
 
 export type ProjectOption = {
   id: string;

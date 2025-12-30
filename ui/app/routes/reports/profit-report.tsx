@@ -9,6 +9,15 @@ import { PdfViewer } from "~/components/reports/pdf-viewer";
 import { ReportActions } from "~/components/reports/report-actions";
 import { usePdfReport } from "~/hooks/use-pdf-report";
 import { REPORT_ENDPOINTS } from "~/services/reports/reports-service";
+import { PERMS } from "~/config/permissions";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
+import type { MiddlewareFunction } from "react-router";
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.REPORT_PROFITS], {
+    flashMessage: "No tienes permiso para ver el reporte de ganancias."
+  }),
+];
 
 export default function ProfitReportRoute() {
   // opcionales: si están vacíos, NO se mandan y el backend devuelve todo

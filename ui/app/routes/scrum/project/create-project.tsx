@@ -14,10 +14,19 @@ import { employeeService } from "~/services/employees/employee-service"
 import { projectService } from "~/services/scrum/project-service"
 import type { EmployeeResponseDTO } from "~/types/employees/employee"
 import type { CreateProjectRequestDTO } from "~/types/scrum/project"
+import { PERMS } from "~/config/permissions";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
+import type { MiddlewareFunction } from "react-router";
 
 export function meta() {
   return [{ title: "Crear proyecto" }]
 }
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.PROJECT_CREATE], {
+    flashMessage: "No tienes permiso para crear un proyecto."
+  }),
+];
 
 export async function loader({ request }: LoaderFunctionArgs) {
   await requireIdentity(request, {

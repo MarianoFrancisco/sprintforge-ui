@@ -3,6 +3,15 @@ import { PdfViewer } from "~/components/reports/pdf-viewer";
 import { ReportActions } from "~/components/reports/report-actions";
 import { usePdfReport } from "~/hooks/use-pdf-report";
 import { REPORT_ENDPOINTS } from "~/services/reports/reports-service";
+import { PERMS } from "~/config/permissions";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
+import type { MiddlewareFunction } from "react-router";
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.REPORT_ROLE_GENERAL], {
+    flashMessage: "No tienes permiso para ver el reporte general de roles."
+  }),
+];
 
 export default function RoleGeneralReportRoute() {
   const {

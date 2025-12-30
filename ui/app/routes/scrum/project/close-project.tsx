@@ -1,9 +1,17 @@
 import { redirect } from "react-router"
-import type { ActionFunctionArgs } from "react-router"
+import type { ActionFunctionArgs, MiddlewareFunction } from "react-router"
 
 import { requireIdentity } from "~/auth.server"
+import { PERMS } from "~/config/permissions"
+import { permissionMiddleware } from "~/middlewares/permission-middleware"
 import { projectService } from "~/services/scrum/project-service"
 import type { CloseProjectRequestDTO } from "~/types/scrum/project"
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.PROJECT_CLOSE], {
+    flashMessage: "No tienes permiso para cerrar un proyecto."
+  }),
+];
 
 export async function action({ request, params }: ActionFunctionArgs) {
   const identity = await requireIdentity(request, {

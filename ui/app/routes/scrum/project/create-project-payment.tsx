@@ -5,6 +5,7 @@ import {
   useLoaderData,
   useActionData,
   useNavigate,
+  type MiddlewareFunction,
 } from "react-router";
 import { useEffect } from "react";
 import { toast } from "sonner";
@@ -16,10 +17,18 @@ import type { CreatePaymentRequestDTO, PaymentMethod } from "~/types/scrum/proje
 import { projectPaymentService } from "~/services/scrum/project-payment-service";
 import { ProjectCard } from "~/components/scrum/project/project-card";
 import { ProjectPaymentForm } from "~/components/scrum/project/payment/project-payment-form";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
+import { PERMS } from "~/config/permissions";
 
 export function meta() {
   return [{ title: "Registrar pago de proyecto" }];
 }
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.PROJECT_PAY], {
+    flashMessage: "No tienes permiso para registrar un pago de proyecto."
+  }),
+];
 
 // Loader: carga el proyecto por params.id
 export async function loader({ params }: LoaderFunctionArgs) {
