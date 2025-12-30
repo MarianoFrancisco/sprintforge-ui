@@ -2,6 +2,8 @@ import { type RouteConfig, index, layout, prefix, route } from "@react-router/de
 
 export default [
     index("routes/home.tsx"),
+    // BORRAR LUEGO ESTA RUTA
+    route("role-report-iframe", "routes/reports/role-report-iframe.tsx"),
     route("login", "routes/login.tsx"),
     route("logout", "routes/logout.tsx"),
     layout("layouts/sidebar-layout.tsx", [

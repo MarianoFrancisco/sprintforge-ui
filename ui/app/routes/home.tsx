@@ -1,6 +1,7 @@
-import { redirect, type LoaderFunctionArgs } from "react-router";
+import { Link, redirect, type LoaderFunctionArgs } from "react-router";
 import { Welcome } from "../welcome/welcome";
 import { getAuthSession } from "~/sessions.server";
+import { Button } from "~/components/ui/button";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const session = await getAuthSession(request);
@@ -21,6 +22,11 @@ export default function Home() {
         <div className="w-full max-w-sm md:max-w-4xl">
           <Welcome />
         </div>
+        {/* BORRAR LUEGO AQUI */}
+        <Link to="/role-report-iframe" className="mt-6">
+          <Button size="lg">Ver reporte IFRAME (borrar luego)</Button>
+        </Link>
+        {/* BORRAR LUEGO TERMINA AQUI */}
       </div>
   )
 }
