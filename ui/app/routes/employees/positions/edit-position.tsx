@@ -22,7 +22,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
   try {
     const position = await positionService.getById(params.id);
-    return position;
+    return data(position);
   } catch (error) {
     console.error("Loader error:", error);
     throw error;
