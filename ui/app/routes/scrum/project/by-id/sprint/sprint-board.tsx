@@ -4,6 +4,8 @@ import { Board } from "~/components/board/board";
 import type { BoardColumnUI } from "~/types/scrum/board-column";
 import { boardContext } from "~/context/board-context";
 import { projectContext } from "~/context/project-context";
+import { Sidebar, useSidebar } from "~/components/ui/sidebar";
+import { useEffect } from "react";
 
 export function meta() {
   return [{ title: "Sprint Board" }];
@@ -36,6 +38,12 @@ export async function loader({ context, params }: LoaderFunctionArgs): Promise<S
 
 export default function SprintBoardRoute() {
   const { boardColumns } = useLoaderData() as SprintBoardLoaderData;
+  const sidebar = useSidebar();
+  useEffect(() => {
+    if (sidebar.open) {
+      sidebar.setOpen(false);
+    }
+  }, []);
 
   return (
       <Board boardColumns={boardColumns} />
