@@ -88,6 +88,7 @@ export function EmployeeCombobox({
                   employee={selectedEmployee}
                   disabled={disabled}
                   // opcional: permitir quitar sin abrir el popover
+                  showRemoveButton={false}
                   onRemove={clearable ? () => onChange(null) : undefined}
                   className="max-w-full"
                 />

@@ -9,11 +9,20 @@ import { extractInitials } from "~/lib/employee-initials"
 export interface EmployeeChipProps {
   employee: Pick<EmployeeResponseDTO, "id" | "email" | "fullName" | "profileImage">
   onRemove?: (id: string) => void
+  showRemoveButton?: boolean
   disabled?: boolean
   className?: string
 }
 
-export function EmployeeChip({ employee, onRemove, disabled, className }: EmployeeChipProps) {
+export function EmployeeChip({
+  employee,
+  onRemove,
+  showRemoveButton = true,
+  disabled,
+  className,
+}: EmployeeChipProps) {
+  const canRemove = showRemoveButton && typeof onRemove === "function"
+
   return (
     <Badge
       variant="secondary"
@@ -31,15 +40,17 @@ export function EmployeeChip({ employee, onRemove, disabled, className }: Employ
         </AvatarFallback>
       </Avatar>
 
-      <span className="max-w-[220px] truncate text-xs">{employee.email}</span>
+      <span className="max-w-[220px] truncate text-xs">
+        {employee.email}
+      </span>
 
-      {onRemove ? (
+      {canRemove ? (
         <Button
           type="button"
           variant="ghost"
           size="icon"
           className="h-5 w-5 rounded-md"
-          onClick={() => onRemove(employee.id)}
+          onClick={() => onRemove!(employee.id)}
           disabled={disabled}
           aria-label={`Quitar ${employee.email}`}
         >
