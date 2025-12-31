@@ -5,6 +5,11 @@ import {
   MinusIcon,
   AlertTriangleIcon,
   FlameIcon,
+  Equal,
+  ChevronDown,
+  ChevronsDown,
+  ChevronUp,
+  ChevronsUp,
 } from "lucide-react";
 
 interface PriorityBadgeProps {
@@ -20,7 +25,7 @@ export function PriorityBadge({ priority }: PriorityBadgeProps) {
           className="border-emerald-300/60 bg-emerald-50 text-emerald-800
                      dark:border-emerald-900/60 dark:bg-emerald-950/20 dark:text-emerald-200"
         >
-          <ArrowDownIcon />
+          <ChevronsDown />
           Muy baja
         </Badge>
       );
@@ -32,7 +37,7 @@ export function PriorityBadge({ priority }: PriorityBadgeProps) {
           className="border-lime-300/60 bg-lime-50 text-lime-800
                      dark:border-lime-900/60 dark:bg-lime-950/20 dark:text-lime-200"
         >
-          <ArrowDownIcon />
+          <ChevronDown />
           Baja
         </Badge>
       );
@@ -44,7 +49,7 @@ export function PriorityBadge({ priority }: PriorityBadgeProps) {
           className="border-slate-300/70 bg-slate-50 text-slate-800
                      dark:border-slate-700/70 dark:bg-slate-900/30 dark:text-slate-200"
         >
-          <MinusIcon />
+          <Equal />
           Media
         </Badge>
       );
@@ -56,7 +61,7 @@ export function PriorityBadge({ priority }: PriorityBadgeProps) {
           className="border-amber-300/60 bg-amber-50 text-amber-900
                      dark:border-amber-900/60 dark:bg-amber-950/20 dark:text-amber-200"
         >
-          <AlertTriangleIcon />
+          <ChevronUp />
           Alta
         </Badge>
       );
@@ -68,7 +73,7 @@ export function PriorityBadge({ priority }: PriorityBadgeProps) {
           className="border-rose-300/60 bg-rose-50 text-rose-900
                      dark:border-rose-900/60 dark:bg-rose-950/20 dark:text-rose-200"
         >
-          <FlameIcon />
+          <ChevronsUp />
           Muy alta
         </Badge>
       );

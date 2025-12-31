@@ -5,11 +5,13 @@ import { Label } from "~/components/ui/label"
 import { Input } from "~/components/ui/input"
 import { Textarea } from "~/components/ui/textarea"
 import { Button } from "~/components/ui/button"
-import { Loader2, Save } from "lucide-react"
+import { AlertTriangleIcon, ArrowDownIcon, ChevronsDown, ChevronsUp, ChevronUp, Equal, FlameIcon, Loader2, MinusIcon, Save } from "lucide-react"
 
 import type { CreateWorkItemRequestDTO } from "~/types/scrum/work-item"
 import { EmployeeCombobox } from "~/components/common/employee-combobox"
 import type { EmployeeResultResponseDTO } from "~/types/scrum/project"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select"
+import { PriorityBadge } from "./priority-badge"
 
 interface CreateUserStoryFormProps {
   employees: EmployeeResultResponseDTO[]
@@ -76,23 +78,31 @@ export function CreateUserStoryForm({
               </div>
 
               {/* PRIORIDAD */}
-              <div className="space-y-2">
-                <Label htmlFor="priority">Prioridad</Label>
-                <Input
-                  id="priority"
-                  name="priority"
-                  type="number"
-                  min={1}
-                  max={5}
-                  step={1}
-                  value={priority}
-                  onChange={(e) => setPriority(Number(e.target.value))}
-                  required
-                />
-                {actionData?.errors?.priority && (
-                  <p className="text-sm text-destructive">{actionData.errors.priority}</p>
-                )}
-              </div>
+<div className="space-y-2">
+  <Label htmlFor="priority">Prioridad</Label>
+  <Select
+  name="priority"
+    value={priority.toString()}
+    onValueChange={(value) => setPriority(Number(value))}
+  >
+    <SelectTrigger id="priority" className="w-full">
+      <SelectValue placeholder="Selecciona una prioridad" />
+    </SelectTrigger>
+    <SelectContent>
+      <SelectGroup>
+        <SelectItem value="1"> <ChevronsDown />  Muy baja</SelectItem>
+        <SelectItem value="2"> <ChevronsDown /> Baja</SelectItem>
+        <SelectItem value="3"> <Equal /> Media</SelectItem>
+        <SelectItem value="4"> <ChevronUp /> Alta</SelectItem>
+        <SelectItem value="5"> <ChevronsUp /> Muy alta</SelectItem>
+      </SelectGroup>
+    </SelectContent>
+  </Select>
+  
+  {actionData?.errors?.priority && (
+    <p className="text-sm text-destructive">{actionData.errors.priority}</p>
+  )}
+</div>
 
               {/* STORY POINTS */}
               <div className="space-y-2">

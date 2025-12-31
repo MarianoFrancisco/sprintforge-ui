@@ -1,19 +1,18 @@
 // ~/routes/scrum/work-items/create-work-item.tsx
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import {
   type ActionFunctionArgs,
   data,
   type LoaderFunctionArgs,
   redirect,
+  useActionData,
   useLoaderData,
   useNavigate,
 } from "react-router"
 
 import { projectContext } from "~/context/project-context"
-import { employeeService } from "~/services/employees/employee-service"
 import { workItemService } from "~/services/scrum/work-item-service"
 
-import type { EmployeeResponseDTO } from "~/types/employees/employee"
 import type { CreateWorkItemRequestDTO } from "~/types/scrum/work-item"
 
 import {
@@ -52,8 +51,6 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 
   try {
-    // const employees = await employeeService.getAll({ status: "ACTIVE" })
-
     return {
       project: { id: project.id, name: (project as any).name },
       employeeId,
@@ -120,6 +117,14 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
 
     await workItemService.create(payload)
     session.flash("success", "Historia de usuario creada correctamente")
+    return data(
+      { success: true },
+      {
+        headers: {
+          "Set-Cookie": await commitAuthSession(session),
+        },
+      },
+    )
   } catch (error: any) {
     console.error("error en action create work item", error)
     session.flash("error", error?.response?.detail || "Error al crear la historia de usuario.")
@@ -139,6 +144,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
 
 export default function CreateWorkItemRoute() {
   const data = useLoaderData<typeof loader>() as LoaderData
+  const actionData = useActionData();
   const navigate = useNavigate()
 
   const [open, setOpen] = useState(true)
@@ -152,6 +158,11 @@ export default function CreateWorkItemRoute() {
       navigate(closeTo)
     }
   }
+  useEffect(() => {
+    if (actionData?.success) {
+      onClose()
+    }
+  }, [actionData])
 
   return (
     <Dialog
