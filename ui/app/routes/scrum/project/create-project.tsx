@@ -34,7 +34,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   })
 
   try {
-    const employees: EmployeeResponseDTO[] = await employeeService.getAll()
+    const employees: EmployeeResponseDTO[] = await employeeService.getAll({status: 'ACTIVE'});
     return { employees }
   } catch (error) {
     console.error("Error al cargar empleados", error)

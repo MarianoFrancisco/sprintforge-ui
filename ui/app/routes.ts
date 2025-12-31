@@ -75,6 +75,12 @@ export default [
                         route("work-items/:workItemId/move-to-sprint", "routes/scrum/project/by-id/work-item/work-item-move-to-sprint.tsx"),
                         route("work-items/:workItemId/move-to-backlog", "routes/scrum/project/by-id/work-item/work-item-move-to-backlog.tsx"),
                         route("work-items/:workItemId/delete", "routes/scrum/project/by-id/work-item/delete-work-item.tsx"),
+                        
+                        route("work-items/:workItemId/assign/developer", "routes/scrum/project/by-id/work-item/assign-developer.tsx"),
+                        route("work-items/:workItemId/assign/product-owner", "routes/scrum/project/by-id/work-item/assign-product-owner.tsx"),
+                        route("work-items/:workItemId/unassign/developer", "routes/scrum/project/by-id/work-item/unassign-developer.tsx"),
+                        route("work-items/:workItemId/unassign/product-owner", "routes/scrum/project/by-id/work-item/unassign-product-owner.tsx"),
+
                         route("create", "routes/scrum/project/by-id/sprint/create-sprint.tsx"),
                         route(":sprintId/start", "routes/scrum/project/by-id/sprint/start-sprint.tsx"),
                         route(":sprintId/complete", "routes/scrum/project/by-id/sprint/complete-sprint.tsx"),

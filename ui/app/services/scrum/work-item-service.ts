@@ -107,6 +107,87 @@ class WorkItemService {
       return this.handleError(error);
     }
   }
+
+  /**
+ * PATCH /api/v1/work-item/{id}/assign/developer
+ */
+async assignDeveloper(
+  id: string,
+  request: {
+    employeeId: string;
+    developerId: string;
+  }
+): Promise<WorkItemResponseDTO> {
+  try {
+    return await apiClient.patch<WorkItemResponseDTO>(
+      `${this.basePath}/${id}/assign/developer`,
+      request
+    );
+  } catch (error) {
+    return this.handleError(error);
+  }
+}
+
+/**
+ * PATCH /api/v1/work-item/{id}/unassign/developer
+ */
+async unassignDeveloper(
+  id: string,
+  request: {
+    employeeId: string;
+  }
+): Promise<WorkItemResponseDTO> {
+  try {
+    return await apiClient.patch<WorkItemResponseDTO>(
+      `${this.basePath}/${id}/unassign/developer`,
+      request
+    );
+  } catch (error) {
+    return this.handleError(error);
+  }
+}
+
+/**
+ * PATCH /api/v1/work-item/{id}/assign/product-owner
+ */
+async assignProductOwner(
+  id: string,
+  request: {
+    employeeId: string;
+    productOwnerId: string;
+  }
+): Promise<WorkItemResponseDTO> {
+  try {
+    return await apiClient.patch<WorkItemResponseDTO>(
+      `${this.basePath}/${id}/assign/product-owner`,
+      request
+    );
+  } catch (error) {
+    return this.handleError(error);
+  }
+}
+
+/**
+ * PATCH /api/v1/work-item/{id}/unassign/product-owner
+ */
+async unassignProductOwner(
+  id: string,
+  request: {
+    employeeId: string;
+  }
+): Promise<WorkItemResponseDTO> {
+  try {
+    return await apiClient.patch<WorkItemResponseDTO>(
+      `${this.basePath}/${id}/unassign/product-owner`,
+      request
+    );
+  } catch (error) {
+    return this.handleError(error);
+  }
+}
+
+
+
 }
 
 export const workItemService = new WorkItemService();
