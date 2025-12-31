@@ -7,6 +7,7 @@ import {
   ArrowLeftToLine,
   UserPlus,
   UserMinus,
+  Eye,
 } from "lucide-react"
 
 import {
@@ -26,6 +27,7 @@ interface WorkItemTableActionsProps {
 
 /**
  * Acciones:
+ * - Ver (modal)
  * - Mover a Sprint (modal)
  * - Mover a Backlog (POST)
  * - Asignar/Desasignar Developer (modal)
@@ -54,6 +56,14 @@ export function WorkItemTableActions({ workItem }: WorkItemTableActionsProps) {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-56">
+        {/* Ver */}
+        <DropdownMenuItem onClick={() => navigate(`work-items/${id}`)}>
+          <Eye className="mr-2 h-4 w-4" />
+          Ver
+        </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+
         {/* Mover a Sprint */}
         <DropdownMenuItem onClick={() => navigate(`work-items/${id}/move-to-sprint`)}>
           <ArrowRightToLine className="mr-2 h-4 w-4" />

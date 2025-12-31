@@ -72,6 +72,7 @@ export default [
                     
                     ...prefix("sprints",[
                         index("routes/scrum/project/by-id/project-backlog.tsx"),
+                        route("work-items/:workItemId", "routes/scrum/project/by-id/work-item/work-item.tsx"),
                         route("work-items/:workItemId/move-to-sprint", "routes/scrum/project/by-id/work-item/work-item-move-to-sprint.tsx"),
                         route("work-items/:workItemId/move-to-backlog", "routes/scrum/project/by-id/work-item/work-item-move-to-backlog.tsx"),
                         route("work-items/:workItemId/delete", "routes/scrum/project/by-id/work-item/delete-work-item.tsx"),
