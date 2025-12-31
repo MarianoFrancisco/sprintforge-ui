@@ -1,5 +1,5 @@
 import { Form, useNavigate } from "react-router"
-import { Ellipsis, Eye, Lock, Unlock, Trash2, BanknoteArrowUp } from "lucide-react"
+import { Ellipsis, Eye, Lock, Unlock, Trash2, BanknoteArrowUp, History } from "lucide-react"
 
 import {
   DropdownMenu,
@@ -9,10 +9,10 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
 import { Button } from "~/components/ui/button"
-import type { ProjectResponseDTO } from "~/types/scrum/project"
+import type { ProjectResultResponseDTO } from "~/types/scrum/project"
 
 interface ProjectActionsProps {
-  project: ProjectResponseDTO
+  project: ProjectResultResponseDTO
 }
 
 export function ProjectActions({ project }: ProjectActionsProps) {
@@ -68,6 +68,12 @@ export function ProjectActions({ project }: ProjectActionsProps) {
           </Form>
           </>
         )}
+
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => navigate(`/projects/${id}/activity-history`)}>
+          <History className="mr-2 h-4 w-4" />
+          Historial
+        </DropdownMenuItem>
 
         {/* <DropdownMenuSeparator /> */}
 

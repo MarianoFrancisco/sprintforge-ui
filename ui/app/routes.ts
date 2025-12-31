@@ -59,6 +59,7 @@ export default [
             route(":id/close", "routes/scrum/project/close-project.tsx"),
             route(":id/open", "routes/scrum/project/open-project.tsx"),
             route(":id/payment", "routes/scrum/project/create-project-payment.tsx"),
+            route(":id/activity-history", "routes/scrum/project/project-activity-history.tsx"),
             route("payments", "routes/scrum/project/project-payments-history.tsx"),
 
             ...prefix(":projectId", [
@@ -77,6 +78,7 @@ export default [
                         route(":sprintId/start", "routes/scrum/project/by-id/sprint/start-sprint.tsx"),
                         route(":sprintId/complete", "routes/scrum/project/by-id/sprint/complete-sprint.tsx"),
                         route(":sprintId/delete", "routes/scrum/project/by-id/sprint/delete-sprint.tsx"),
+                        route(":sprintId/activity-history", "routes/scrum/project/by-id/sprint/sprint-activity-history.tsx"),
 
                     ]),
                     

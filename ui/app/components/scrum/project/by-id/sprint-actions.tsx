@@ -1,6 +1,6 @@
 // ~/components/sprints/sprint-actions.tsx
-import { Form } from "react-router"
-import { Ellipsis, Play, CheckCircle2, Trash2 } from "lucide-react"
+import { Form, useNavigate } from "react-router"
+import { Ellipsis, Play, CheckCircle2, Trash2, History } from "lucide-react"
 
 import {
   DropdownMenu,
@@ -27,6 +27,7 @@ function canClose(status: SprintStatus) {
 
 export function SprintActions({ sprint }: SprintActionsProps) {
   const { id, status } = sprint
+  const navigate = useNavigate()
 
   return (
     <DropdownMenu>
@@ -61,7 +62,11 @@ export function SprintActions({ sprint }: SprintActionsProps) {
             </button>
           </DropdownMenuItem>
         </Form>
-
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => navigate(`${id}/activity-history`)}>
+          <History className="mr-2 h-4 w-4" />
+          Historial
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
 
         {/* Eliminar */}
