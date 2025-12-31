@@ -27,9 +27,9 @@ export function meta() {
 
 export async function action({ request, params }: ActionFunctionArgs) {
   const session = await getAuthSession(request)
-  const sprintId = params.sprintId;
+  const {sprintId, projectId} = params;
 
-  if (!sprintId) {
+  if (!sprintId || !projectId) {
     throw redirect("/")
   }
 
@@ -51,20 +51,25 @@ export async function action({ request, params }: ActionFunctionArgs) {
     })
 
     session.flash("success", "Columna creada correctamente")
+    return redirect(`/projects/${projectId}/board/${sprintId}`, {
+      headers: {
+        "Set-Cookie": await commitAuthSession(session),
+      },
+    })
   } catch (error: any) {
     console.error("error en action create board column", error)
     session.flash("error", error?.response?.detail || "Error al crear la columna.")
     errors = error?.response?.errors || {}
+    return data(
+      { errors },
+      {
+        headers: {
+          "Set-Cookie": await commitAuthSession(session),
+        },
+      },
+    )
   }
 
-  return data(
-    { errors },
-    {
-      headers: {
-        "Set-Cookie": await commitAuthSession(session),
-      },
-    },
-  )
 }
 
 export default function CreateBoardColumnRoute() {
