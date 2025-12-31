@@ -89,6 +89,8 @@ export default [
                             route("move-item-between-columns/:itemId/:targetColumnId/:targetPosition", "routes/scrum/project/by-id/sprint/board/move-item-between-columns.tsx"),
                             route("move-column/:columnId/:newPosition", "routes/scrum/project/by-id/sprint/board/move-column.tsx"),
                             route("create-column", "routes/scrum/project/by-id/sprint/board/create-column.tsx"),
+                            route("column/rename/:columnId", "routes/scrum/project/by-id/sprint/board/rename-column.tsx"),
+                            route("column/delete/:columnId", "routes/scrum/project/by-id/sprint/board/delete-column.tsx"),
                         ]),
                     ]),
                 ]),

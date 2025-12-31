@@ -8,6 +8,7 @@ import type { BoardColumnUI } from "~/types/scrum/board-column";
 import { SortableWorkItem } from "./sortable-work-item";
 import { useNavigate, useRouteLoaderData } from "react-router";
 import type {loader as BoardLayout} from "~/layouts/board-layout"
+import { ColumnActions } from "./column-actions";
 
 interface BoardColumnProps {
   column: BoardColumnUI;
@@ -30,8 +31,14 @@ export function BoardColumn({ column }: BoardColumnProps) {
               {column.items.length} items
             </p>
           </div>
-
           <div className="text-xs text-muted-foreground">#{column.position}</div>
+          <div className="shrink-0">
+            <ColumnActions
+              column={{
+                id: column.id,
+              }}
+            />
+          </div>
         </div>
       </CardHeader>
 

@@ -77,6 +77,49 @@ class BoardColumnService {
       return this.handleError(error);
     }
   }
+
+  /**
+ * PATCH /api/v1/board-column/{id}/name
+ */
+  async updateName(
+    id: string,
+    request: {
+      employeeId: string;
+      name: string;
+    }
+  ): Promise<BoardColumnResponseDTO> {
+    try {
+      const updated = await apiClient.patch<BoardColumnResponseDTO>(
+        `${this.basePath}/${id}/name`,
+        request
+      );
+      return updated;
+    } catch (error) {
+      return this.handleError(error);
+    }
+  }
+
+  /**
+ * PATCH /api/v1/board-column/{id}
+ * (Soft delete / delete con comando)
+ */
+  async delete(
+    id: string,
+    request: { employeeId: string; targetBoardColumnId?: string }
+  ): Promise<void> {
+    try {
+      // Si no te mandan targetBoardColumnId, asumimos que es el mismo id
+      const payload = {
+        employeeId: request.employeeId,
+        targetBoardColumnId: request.targetBoardColumnId ?? id,
+      };
+
+      await apiClient.patch<void>(`${this.basePath}/${id}`, payload);
+    } catch (error) {
+      return this.handleError(error);
+    }
+  }
+
 }
 
 export const boardColumnService = new BoardColumnService();
