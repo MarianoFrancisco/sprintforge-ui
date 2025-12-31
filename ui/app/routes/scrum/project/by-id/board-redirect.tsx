@@ -1,8 +1,10 @@
 // ~/routes/projects/$projectId/board/board-redirect.tsx
 import { redirect, type LoaderFunctionArgs } from "react-router";
 import { projectContext } from "~/context/project-context";
+import { commitAuthSession, getAuthSession } from "~/sessions.server";
 
-export async function loader({ context }: LoaderFunctionArgs) {
+export async function loader({ context, request }: LoaderFunctionArgs) {
+  const session = await getAuthSession(request);
   const projectCtx = context.get(projectContext);
 
   // No hay proyecto en contexto
@@ -14,7 +16,12 @@ export async function loader({ context }: LoaderFunctionArgs) {
 
   // No hay sprints
   if (!sprints || sprints.length === 0) {
-    throw redirect("/");
+    session.flash("error", "No hay sprints disponibles en este proyecto.");
+    throw redirect(`/projects/${project.id}`, {
+      headers: {
+        "Set-Cookie": await commitAuthSession(session),
+      },
+    });
   }
 
   // Tomamos el primer sprint
