@@ -102,78 +102,83 @@ export function SprintBacklog({ sprint, workItems }: SprintBacklogProps) {
 
   return (
     <section className="space-y-4">
-      {/* Header estilo JIRA (nombre de sprint + acciones) */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <h2 className="truncate text-xl font-semibold tracking-tight">
-              {sprint.name}
-            </h2>
-            <Badge variant={statusBadgeVariant(sprint.status)}>
-              {statusLabel(sprint.status)}
-            </Badge>
-          </div>
-        </div>
+      {/* Header responsive (sprint) */}
+<div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+  {/* Título + estado */}
+  <div className="min-w-0">
+    <div className="flex flex-wrap items-center gap-2">
+      <h2 className="truncate text-xl font-semibold tracking-tight">
+        {sprint.name}
+      </h2>
+      <Badge variant={statusBadgeVariant(sprint.status)}>
+        {statusLabel(sprint.status)}
+      </Badge>
+      <SprintActions sprint={sprint} />
+    </div>
+  </div>
 
-        {/* Acciones a la derecha */}
-        <div className="flex items-center gap-2">
-          <Button asChild variant="outline" size="sm" className="gap-2">
-            <Link to={`/projects/${project.id}/work-items/create/${sprint.id}`}>
-              <Plus className="h-4 w-4" />
-              Agregar historia
-            </Link>
+  {/* Acciones */}
+  <div className="flex flex-col gap-2 sm:flex-row sm:items-center md:justify-end">
+    <Button
+      asChild
+      variant="outline"
+      size="sm"
+      className="gap-2 w-full sm:w-auto"
+    >
+      <Link to={`/projects/${project.id}/work-items/create/${sprint.id}`}>
+        <Plus className="h-4 w-4" />
+        Agregar historia
+      </Link>
+    </Button>
+
+    {primaryAction ? (
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button
+            size="sm"
+            className="gap-2 w-full sm:w-auto"
+            disabled={isSubmitting}
+          >
+            {PrimaryIcon ? <PrimaryIcon className="h-4 w-4" /> : null}
+            {isSubmitting ? "Procesando..." : primaryAction.label}
           </Button>
+        </AlertDialogTrigger>
 
-          {primaryAction ? (
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button 
-                  size="sm" 
-                  className="gap-2"
-                  disabled={isSubmitting}
-                >
-                  {PrimaryIcon ? <PrimaryIcon className="h-4 w-4" /> : null}
-                  {isSubmitting ? "Procesando..." : primaryAction.label}
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>{primaryAction.dialogTitle}</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    {primaryAction.dialogDescription}
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <fetcher.Form 
-                  method="POST" 
-                  action={`/projects/${project.id}/sprints/${sprint.id}/${primaryAction.action}`}
-                >
-                  <input type="hidden" name="sprintId" value={sprint.id} />
-                  <AlertDialogFooter>
-                    <AlertDialogCancel disabled={isSubmitting}>
-                      Cancelar
-                    </AlertDialogCancel>
-                    <AlertDialogAction 
-                      asChild
-                      disabled={isSubmitting}
-                    >
-                      <button 
-                        type="submit" 
-                        name="action" 
-                        value={primaryAction.action}
-                        className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
-                      >
-                        {isSubmitting ? "Procesando..." : primaryAction.buttonText}
-                      </button>
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </fetcher.Form>
-              </AlertDialogContent>
-            </AlertDialog>
-          ) : null}
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{primaryAction.dialogTitle}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {primaryAction.dialogDescription}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
 
-          <SprintActions sprint={sprint} />
-        </div>
-      </div>
+          <fetcher.Form
+            method="POST"
+            action={`/projects/${project.id}/sprints/${sprint.id}/${primaryAction.action}`}
+          >
+            <input type="hidden" name="sprintId" value={sprint.id} />
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={isSubmitting}>
+                Cancelar
+              </AlertDialogCancel>
+              <AlertDialogAction asChild disabled={isSubmitting}>
+                <button
+                  type="submit"
+                  name="action"
+                  value={primaryAction.action}
+                  className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+                >
+                  {isSubmitting ? "Procesando..." : primaryAction.buttonText}
+                </button>
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </fetcher.Form>
+        </AlertDialogContent>
+      </AlertDialog>
+    ) : null}
+  </div>
+</div>
+
 
       {/* Tabla de historias del sprint */}
       <div className="rounded-lg border bg-background">

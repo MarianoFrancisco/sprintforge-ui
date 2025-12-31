@@ -19,26 +19,36 @@ export function Backlog({ workItems }: BacklogProps) {
   return (
     <section className="space-y-4">
       {/* Header estilo JIRA (solo acciones) */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold tracking-tight">Backlog</h2>
+<div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+  <h2 className="text-xl font-semibold tracking-tight">Backlog</h2>
 
-        {/* Acciones alineadas a la derecha */}
-        <div className="flex items-center gap-2">
-          <Button asChild variant="outline" size="sm" className="gap-2">
-            <Link relative="route" to={`create`}>
-              <Rocket className="h-4 w-4" />
-              Crear sprint
-            </Link>
-          </Button>
+  {/* Acciones */}
+  <div className="flex flex-col gap-2 sm:flex-row sm:items-center md:justify-end">
+    <Button
+      asChild
+      variant="outline"
+      size="sm"
+      className="gap-2 w-full sm:w-auto"
+    >
+      <Link relative="route" to={`create`}>
+        <Rocket className="h-4 w-4" />
+        Crear sprint
+      </Link>
+    </Button>
 
-          <Button asChild size="sm" className="gap-2">
-            <Link to={`/projects/${project.id}/work-items/create`}>
-              <Plus className="h-4 w-4" />
-              Agregar historia
-            </Link>
-          </Button>
-        </div>
-      </div>
+    <Button
+      asChild
+      size="sm"
+      className="gap-2 w-full sm:w-auto"
+    >
+      <Link to={`/projects/${project.id}/work-items/create`}>
+        <Plus className="h-4 w-4" />
+        Agregar historia
+      </Link>
+    </Button>
+  </div>
+</div>
+
 
       {/* Tabla de historias en backlog */}
       <div className="rounded-lg border bg-background">
