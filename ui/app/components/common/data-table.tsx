@@ -82,7 +82,7 @@ export function DataTable<TData>({
             </Select>
           </div>
           <div className="flex w-fit items-center justify-center text-sm font-medium">
-            Página {table.getState().pagination.pageIndex + 1} de{" "}
+            Página {table.getPageCount() > 0 ? (table.getState().pagination.pageIndex + 1) : 0} de{" "}
             {table.getPageCount()}
           </div>
           <div className="ml-auto flex items-center gap-2 lg:ml-0">
