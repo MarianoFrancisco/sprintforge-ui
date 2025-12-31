@@ -50,15 +50,6 @@ export function CreateUserStoryForm({
 
   return (
           <Form method="post" className="space-y-5">
-            {/* Header */}
-            <div className="space-y-1 text-center">
-              <h2 className="text-2xl font-semibold tracking-tight">
-                Crear historia de usuario
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                Completa la información y asigna responsables si aplica
-              </p>
-            </div>
 
             {/* Grid responsive */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
