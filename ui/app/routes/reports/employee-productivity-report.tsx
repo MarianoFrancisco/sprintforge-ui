@@ -194,16 +194,6 @@ export default function EmployeeProductivityReportRoute() {
           title="Employee productivity report"
         />
       </div>
- {/* Endpoint preview (opcional, estilo similar al ejemplo) */}
-      <div className="text-sm text-muted-foreground">
-        <p>
-          Endpoint:{" "}
-          <code className="bg-muted px-2 py-1 rounded">
-            {REPORT_ENDPOINTS.INCOME}?from={from || "YYYY-MM-DD"}&to={to || "YYYY-MM-DD"}
-            {employeeId ? `&employeeId=${employeeId}` : ""}
-          </code>
-        </p>
-      </div>
     </section>
   );
 }
