@@ -1,10 +1,7 @@
 import {
-  BadgeCheck,
-  Bell,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
-  Sparkles,
+  ShieldUser,
 } from "lucide-react"
 import { Form } from "react-router"
 
@@ -29,15 +26,12 @@ import {
   useSidebar,
 } from "~/components/ui/sidebar"
 import { extractInitials } from "~/lib/employee-initials"
+import type { User } from "~/types/identity/auth"
 
 export function NavUser({
   user,
 }: {
-  user: {
-    name: string
-    email: string
-    avatar?: string | null
-  }
+  user: User
 }) {
   const { isMobile } = useSidebar()
 
@@ -51,16 +45,16 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                {user.avatar && (
-                  <AvatarImage src={user.avatar} alt={user.name} />
+                {user.profileImage && (
+                  <AvatarImage src={user.profileImage} alt={user.fullname} />
                 )}
                 <AvatarFallback className="rounded-lg bg-muted text-foreground">
-                  {extractInitials(user.name)}
+                  {extractInitials(user.fullname)}
                 </AvatarFallback>
 
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
+                <span className="truncate font-medium">{user.fullname}</span>
                 <span className="truncate text-xs">{user.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
@@ -75,15 +69,15 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  {user.avatar && (
-                    <AvatarImage src={user.avatar} alt={user.name} />
+                  {user.profileImage && (
+                    <AvatarImage src={user.profileImage} alt={user.fullname} />
                   )}
                   <AvatarFallback className="rounded-lg">
-                    {extractInitials(user.name)}
+                    {extractInitials(user.fullname)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
+                  <span className="truncate font-medium">{user.fullname}</span>
                   <span className="truncate text-xs">{user.email}</span>
                 </div>
               </div>
@@ -91,12 +85,12 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
+                <ShieldUser />
+                {user.role}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
+            {/* <DropdownMenuGroup>
               <DropdownMenuItem>
                 <BadgeCheck />
                 Account
@@ -110,7 +104,7 @@ export function NavUser({
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator /> */}
             <DropdownMenuItem asChild>
               <Form method="post" action="/logout">
                 <button

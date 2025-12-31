@@ -40,12 +40,6 @@ export function AppSidebar({ user, projects, ...props }: AppSidebarProps) {
     [user],
   );
 
-  const sidebarUser = {
-    name: user.fullname,
-    email: user.email,
-    avatar: user.profileImage,
-  };
-
     // Mapear proyectos al formato requerido
   const mappedProjects = React.useMemo(() => {
     const projectsToMap = projects ?? [];
@@ -80,7 +74,7 @@ export function AppSidebar({ user, projects, ...props }: AppSidebarProps) {
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={sidebarUser} />
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   )
