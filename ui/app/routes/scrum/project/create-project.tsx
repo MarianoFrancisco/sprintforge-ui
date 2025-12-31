@@ -1,14 +1,10 @@
-import { useEffect } from "react"
 import {
   type ActionFunctionArgs,
   data,
   type LoaderFunctionArgs,
   redirect,
-  useActionData,
   useLoaderData,
-  useNavigate,
 } from "react-router"
-import { toast } from "sonner"
 
 import { requireIdentity } from "~/auth.server"
 import { ProjectForm } from "~/components/scrum/project/project-form"
