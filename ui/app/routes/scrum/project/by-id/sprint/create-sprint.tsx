@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from "react"
 import {
   type ActionFunctionArgs,
+  data,
   type MiddlewareFunction,
   redirect,
   useActionData,
@@ -71,7 +72,12 @@ const endDate = endLocal ? new Date(endLocal).toISOString() : ""
     }
 
     await sprintService.create(payload)
-    session.flash("success", "Sprint creado correctamente.")
+    session.flash("success", "Sprint creado correctamente.");
+      return redirect(`/projects/${project.id}/sprints`, {
+    headers: {
+      "Set-Cookie": await commitAuthSession(session),
+    },
+  });
 
   } catch (error: any) {
     console.log("error en action create sprint", error)
@@ -79,12 +85,13 @@ const endDate = endLocal ? new Date(endLocal).toISOString() : ""
       "error",
       error?.response?.detail || "Error al iniciar el sprint."
     );
+    return data({errors: error?.response?.errors || {}}, {
+      headers: {
+        "Set-Cookie": await commitAuthSession(session),
+      },
+    })
   }
-  return redirect(`/projects/${project.id}/sprints`, {
-    headers: {
-      "Set-Cookie": await commitAuthSession(session),
-    },
-  });
+
 }
 
 export default function CreateSprintRoute() {
