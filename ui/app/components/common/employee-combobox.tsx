@@ -13,9 +13,9 @@ import {
 } from "~/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover"
 
-import type { EmployeeResponseDTO } from "~/types/employees/employee"
 import { EmployeeChip } from "../scrum/project/employee-chip"
 import { EmployeeItem } from "../scrum/project/employee-item"
+import type { EmployeeResultResponseDTO } from "~/types/scrum/project"
 
 function normalize(s: string) {
   return s
@@ -26,7 +26,7 @@ function normalize(s: string) {
 }
 
 interface EmployeeComboboxProps {
-  employees: EmployeeResponseDTO[]
+  employees: EmployeeResultResponseDTO[]
   value?: string | null
   onChange: (nextValue: string | null) => void
   placeholder?: string

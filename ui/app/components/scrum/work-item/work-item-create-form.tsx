@@ -7,12 +7,12 @@ import { Textarea } from "~/components/ui/textarea"
 import { Button } from "~/components/ui/button"
 import { Loader2, Save } from "lucide-react"
 
-import type { EmployeeResponseDTO } from "~/types/employees/employee"
 import type { CreateWorkItemRequestDTO } from "~/types/scrum/work-item"
 import { EmployeeCombobox } from "~/components/common/employee-combobox"
+import type { EmployeeResultResponseDTO } from "~/types/scrum/project"
 
 interface CreateUserStoryFormProps {
-  employees: EmployeeResponseDTO[]
+  employees: EmployeeResultResponseDTO[]
   defaultValues?: Partial<CreateWorkItemRequestDTO>
 }
 
@@ -42,6 +42,7 @@ export function CreateUserStoryForm({
 
   const employeesActive = useMemo(() => {
     // si tienes flags isActive/isDeleted filtra aquí; por ahora, usa todos
+    console.log(employees)
     return employees
   }, [employees])
 

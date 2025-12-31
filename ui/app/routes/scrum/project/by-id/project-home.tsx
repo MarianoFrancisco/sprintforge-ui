@@ -1,4 +1,10 @@
+import { redirect, type LoaderFunctionArgs } from "react-router";
 import { useProject } from "~/hooks/use-project";
+
+// de momento solo redirige al backlog del proyecto
+export async function loader({params}: LoaderFunctionArgs) {
+  return redirect("/projects/" + params.projectId + "/sprints");
+}
 
 export default function ProjectHome() {
   const { project } = useProject();

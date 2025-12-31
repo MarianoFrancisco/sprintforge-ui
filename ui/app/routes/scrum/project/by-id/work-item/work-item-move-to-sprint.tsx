@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from "react"
 import {
   type ActionFunctionArgs,
+  data,
   type LoaderFunctionArgs,
   redirect,
   useActionData,
@@ -9,7 +10,6 @@ import {
   useNavigate,
 } from "react-router"
 import { toast } from "sonner"
-import { ApiError } from "~/lib/api-client"
 
 import { projectContext } from "~/context/project-context"
 import { requireIdentity } from "~/auth.server"
@@ -28,6 +28,7 @@ import {
   DialogDescription,
 } from "~/components/ui/dialog"
 import { WorkItemMoveToSprintForm } from "~/components/scrum/work-item/work-item-move-to-sprint"
+import { commitAuthSession, getAuthSession } from "~/sessions.server"
 
 export function meta() {
   return [{ title: "Mover historia de usuario" }]
@@ -43,11 +44,11 @@ type LoaderData = {
  * Loader: valida que la historia exista + carga sprints para el combobox
  */
 export async function loader({ request, context, params }: LoaderFunctionArgs) {
+  const session = await getAuthSession(request);
   await requireIdentity(request, {
     redirectTo: "/",
     flashMessage: "Debes iniciar sesión para realizar esta acción.",
   })
-
   const projectCtx = context.get(projectContext)
   if (!projectCtx) throw redirect("/")
     const { project } = projectCtx;
@@ -70,7 +71,13 @@ export async function loader({ request, context, params }: LoaderFunctionArgs) {
     } satisfies LoaderData
   } catch (error) {
     console.error("Error loader move work item to sprint", error)
-    throw redirect(`/projects/${project.id}/backlog`)
+    const errorMessage = (error as any)?.response?.detail || "Error al cargar la historia de usuario."
+    session.flash("error", errorMessage)
+    throw redirect(`/projects/${project.id}/backlog`, {
+      headers: {
+        "Set-Cookie": await commitAuthSession(session),
+      },
+    })
   }
 }
 
@@ -78,6 +85,7 @@ export async function loader({ request, context, params }: LoaderFunctionArgs) {
  * Action: sprintId es obligatorio (no backlog aquí)
  */
 export async function action({ request, context, params }: ActionFunctionArgs) {
+  const session = await getAuthSession(request);
   const { employeeId } = await requireIdentity(request, {
     redirectTo: "/",
     flashMessage: "Debes iniciar sesión para realizar esta acción.",
@@ -95,38 +103,29 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
   try {
     const sprintIdRaw = String(formData.get("sprintId") ?? "").trim()
 
-    if (!sprintIdRaw) {
-      return {
-        errors: { sprintId: "Debes seleccionar un sprint." },
-        error: "Selecciona un sprint para continuar.",
-      }
-    }
-
     const payload: MoveWorkItemsToSprintRequestDTO = {
       employeeId,
       ids: [workItemId],
       sprintId: sprintIdRaw,
     }
 
-    await workItemService.moveToSprint(payload as any)
+    await workItemService.moveToSprint(payload)
+    session.flash("success", "Historia de usuario movida correctamente.")
 
-    return { success: "Historia movida al sprint correctamente" }
+    return redirect(`/projects/${project.id}/backlog`, {
+      headers: {
+        "Set-Cookie": await commitAuthSession(session),
+      },
+    })
+
   } catch (error: any) {
     console.log("error en action move work item to sprint", error)
-
-    if (error instanceof ApiError && error.response) {
-      try {
-        const errorData = (error.response as any).data || error.response
-        return {
-          errors: errorData.errors || {},
-          error: errorData.detail || errorData.message || `Error ${error.status}`,
-        }
-      } catch {
-        return { error: `Error ${error.status}: No se pudo procesar la respuesta` }
-      }
-    }
-
-    return { error: error?.message || "Error al mover la historia de usuario" }
+    session.flash("error", error?.response?.detail || "Error al desactivar el rol.");
+    return data({errors: error?.response?.errors || {} }, {
+      headers: {
+        "Set-Cookie": await commitAuthSession(session),
+      },
+    })
   }
 }
 

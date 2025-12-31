@@ -64,12 +64,14 @@ export default [
                 layout("layouts/project-layout.tsx", [
                     index("routes/scrum/project/by-id/project-home.tsx"),
                     route("work-items/create/:sprintId?/:boardColumnId?", "routes/scrum/project/by-id/work-item/create-work-item.tsx"),
-                    route("backlog/work-items/:workItemId/move-to-sprint", "routes/scrum/project/by-id/work-item/work-item-move-to-sprint.tsx"),
                     // route("sprint/:sprintId/board", "routes/scrum/project/by-id/sprint/sprint-board.tsx"),
                     route("board", "routes/scrum/project/by-id/board-redirect.tsx"),
+                    route("backlog", "routes/scrum/project/by-id/redirect-project-backlog.tsx"),
                     
                     ...prefix("sprints",[
                         index("routes/scrum/project/by-id/project-backlog.tsx"),
+                        route("work-items/:workItemId/move-to-sprint", "routes/scrum/project/by-id/work-item/work-item-move-to-sprint.tsx"),
+                        route("work-items/:workItemId/move-to-backlog", "routes/scrum/project/by-id/work-item/work-item-move-to-backlog.tsx"),
                         route("create", "routes/scrum/project/by-id/sprint/create-sprint.tsx"),
                         route(":sprintId/start", "routes/scrum/project/by-id/sprint/start-sprint.tsx"),
                         route(":sprintId/complete", "routes/scrum/project/by-id/sprint/complete-sprint.tsx"),

@@ -16,14 +16,25 @@ import { Theme, useTheme } from "remix-themes"
 import { filterNavByPermissions } from "~/lib/nav-filter"
 import { navMainData } from "./nav-main-data"
 import type { User } from "~/types/identity/auth"
+import { NavProjects } from "./nav-user-projects"
+import type { ProjectResponseDTO } from "~/types/scrum/project"
 
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
   user: User;
+  projects?: ProjectResponseDTO[];
 };
 
-export function AppSidebar({ user, ...props }: AppSidebarProps) {
-  const [theme] = useTheme();
+const mapProjectsToNavFormat = (
+  projects: ProjectResponseDTO[]
+): { name: string; url: string }[] => {
+  return projects.map(project => ({
+    name: project.name,
+    url: `/projects/${project.id}`
+  }));
+};
 
+export function AppSidebar({ user, projects, ...props }: AppSidebarProps) {
+  const [theme] = useTheme();
   const filteredNavMain = React.useMemo(
     () => filterNavByPermissions(navMainData, user),
     [user],
@@ -34,6 +45,12 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
     email: user.email,
     avatar: user.profileImage,
   };
+
+    // Mapear proyectos al formato requerido
+  const mappedProjects = React.useMemo(() => {
+    const projectsToMap = projects ?? [];
+    return mapProjectsToNavFormat(projectsToMap);
+  }, [projects]);
 
   return (
     <Sidebar variant="inset" {...props}>
@@ -59,6 +76,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={filteredNavMain} />
+        <NavProjects projects={mappedProjects} />
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>

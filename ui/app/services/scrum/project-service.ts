@@ -62,6 +62,17 @@ class ProjectService {
     }
   }
 
+  /** GET /api/v1/project/employee/{id} */
+  async getActiveByEmployeeId(employeeId: string): Promise<ProjectResponseDTO[]> {
+    try {
+      return await apiClient.get<ProjectResponseDTO[]>(
+        `${this.basePath}/employee/${employeeId}`
+      );
+    } catch (error) {
+      return this.handleError(error);
+    }
+  }
+
   /** POST /api/v1/project */
   async create(request: CreateProjectRequestDTO): Promise<ProjectResponseDTO> {
     try {

@@ -2,11 +2,13 @@
 import { redirect, type LoaderFunctionArgs } from "react-router";
 import { requireIdentity } from "~/auth.server";
 import { userContext } from "~/context/user-context";
+import { userProjectsContext } from "~/context/user-project-context";
 import { authService } from "~/services/identity/auth-service";
+import { projectService } from "~/services/scrum/project-service";
 import { destroyAuthSession, getAuthSession } from "~/sessions.server";
 
 export const authMiddleware = async ({ context, request }: LoaderFunctionArgs) => {
-  const { userId } = await requireIdentity(request, {
+  const { userId, employeeId } = await requireIdentity(request, {
     redirectTo: "/login",
     flashMessage: "Necesitas iniciar sesión.",
   });
@@ -23,6 +25,9 @@ export const authMiddleware = async ({ context, request }: LoaderFunctionArgs) =
     }
 
     context.set(userContext, user);
+
+    const projects = await projectService.getActiveByEmployeeId(employeeId);
+    context.set(userProjectsContext, projects || []);
   } catch (err) {
     await logoutAndRedirect(request, {
       redirectTo: "/",
@@ -42,7 +47,7 @@ async function logoutAndRedirect(
   } else {
     session.flash("error", "Tu sesión expiró. Inicia sesión nuevamente.");
   }
-  
+
   throw redirect(opts?.redirectTo ?? "/", {
     headers: { "Set-Cookie": await destroyAuthSession(session) },
   });

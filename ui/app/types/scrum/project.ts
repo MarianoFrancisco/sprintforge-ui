@@ -59,6 +59,7 @@ export interface EmployeeResultResponseDTO {
   fullName: string
   profileImage?: string | null
   position: string
+  status: string
 }
 
 export interface ProjectResultResponseDTO {

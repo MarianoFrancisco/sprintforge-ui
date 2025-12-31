@@ -27,7 +27,7 @@ export async function loader({ context }: LoaderFunctionArgs) {
 }
 
 const tabs = [
-  { to: "report/progress", label: "Reporte de avances", icon: BarChart3 },
+  // { to: "report/progress", label: "Reporte de avances", icon: BarChart3 },
   { to: "sprints", label: "Backlog", icon: ClipboardList },
   // { to: "sprints", label: "Sprints", icon: ClipboardList },
   { to: "board", label: "Tablero", icon: KanbanSquare },

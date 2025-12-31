@@ -3,7 +3,6 @@ import { Outlet, redirect, useLoaderData, useNavigate, useOutletContext, type Lo
 import { AppSidebar } from "~/components/sidebar/app-sidebar"
 import { Button } from "~/components/ui/button"
 import { ModeToggle } from "~/components/ui/mode-toggle"
-import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area"
 import { Separator } from "~/components/ui/separator"
 import {
   SidebarInset,
@@ -11,21 +10,23 @@ import {
   SidebarTrigger,
 } from "~/components/ui/sidebar"
 import { userContext } from "~/context/user-context"
+import { userProjectsContext } from "~/context/user-project-context"
 import type { UserOutletContext } from "~/hooks/use-user"
 import { authMiddleware } from "~/middlewares/auth-middleware"
 
 export const middleware: MiddlewareFunction[] = [
-  authMiddleware
+  authMiddleware,
 ];
 
 export async function loader({ context }: LoaderFunctionArgs) {
   const user = context.get(userContext);
   if (!user) throw redirect("/login");
-  return { user };
+  const projects = context.get(userProjectsContext);
+  return { user, projects };
 }
 
 export default function SidebarLayout() {
-  const { user } = useLoaderData<typeof loader>();
+  const { user, projects } = useLoaderData<typeof loader>();
   const navigate = useNavigate()
 
   const handleGoBack = () => {
@@ -33,7 +34,7 @@ export default function SidebarLayout() {
   }
   return (
     <SidebarProvider>
-      <AppSidebar user={user} />
+      <AppSidebar user={user} projects={projects}/>
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 px-4 w-full">

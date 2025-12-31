@@ -26,6 +26,7 @@ import {
 import { CreateUserStoryForm } from "~/components/scrum/work-item/work-item-create-form"
 import { requireIdentity } from "~/auth.server"
 import { commitAuthSession, getAuthSession } from "~/sessions.server"
+import type { EmployeeResultResponseDTO } from "~/types/scrum/project"
 
 export function meta() {
   return [{ title: "Crear historia de usuario" }]
@@ -34,7 +35,7 @@ export function meta() {
 type LoaderData = {
   project: { id: string; name?: string }
   employeeId: string
-  employees: EmployeeResponseDTO[]
+  employees: EmployeeResultResponseDTO[]
 }
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
@@ -47,9 +48,11 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   if (!projectCtx) throw redirect("/")
   const { project } = projectCtx
 
+  const employees = project.employees
+
 
   try {
-    const employees = await employeeService.getAll({ status: "ACTIVE" })
+    // const employees = await employeeService.getAll({ status: "ACTIVE" })
 
     return {
       project: { id: project.id, name: (project as any).name },

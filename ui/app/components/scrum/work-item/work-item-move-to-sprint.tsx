@@ -50,7 +50,6 @@ export function WorkItemMoveToSprintForm({
         )}
       </div>
 
-      {/* ✅ SIEMPRE enviar sprintId (aunque sea "") */}
       <input type="hidden" name="sprintId" value={selected} />
 
       <div className="flex items-center justify-end pt-4">
