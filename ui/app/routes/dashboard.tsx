@@ -56,13 +56,6 @@ export default function DashboardPage() {
               </div>
             </CardContent>
           </Card>
-
-          {/* Mensaje adicional minimalista */}
-          <div className="mt-8 text-center">
-            <p className="text-sm text-muted-foreground">
-              Usa el menú lateral para navegar por las funcionalidades.
-            </p>
-          </div>
         </div>
       </main>
   );
