@@ -62,6 +62,7 @@ export const navMainData: NavItem[] = [
     // permission: PERMS.PROJECT_VIEW,
     items: [
       {title: "Avance de proyectos", url: "/reports/project-progress", permission: PERMS.REPORT_PROJECT_PROGRESS},
+      { title: "Productividad", url: "/reports/employee-productivity", permission: PERMS.REPORT_EMPLOYEE_PRODUCTIVITY },
       { title: "Contrataciones", url: "/reports/hiring-history", permission: PERMS.REPORT_HIRING_HISTORY },
       { title: "Bajas empleados", url: "/reports/termination-history", permission: PERMS.REPORT_TERMINATION_HISTORY },
       { title: "Roles", url: "/reports/role-general", permission: PERMS.REPORT_ROLE_GENERAL },

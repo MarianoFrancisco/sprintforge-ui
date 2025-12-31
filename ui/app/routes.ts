@@ -16,6 +16,7 @@ export default [
             route("incomes", "routes/reports/income-report.tsx"),
             route("expenses", "routes/reports/expense-report.tsx"),
             route("profits", "routes/reports/profit-report.tsx"),
+            route("employee-productivity", "routes/reports/employee-productivity-report.tsx"),
         ]),
 
         ...prefix("employees", [

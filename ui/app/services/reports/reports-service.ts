@@ -119,5 +119,6 @@ export const REPORT_ENDPOINTS = {
   TERMINATION_HISTORY: 'termination-history.pdf',
   EXPENSES: 'expense.pdf',
   PROFITS: 'profit.pdf',
+  EMPLOYEE_PRODUCTIVITY: 'employee-productivity.pdf',
   // Agrega más endpoints aquí según necesites
 } as const;
