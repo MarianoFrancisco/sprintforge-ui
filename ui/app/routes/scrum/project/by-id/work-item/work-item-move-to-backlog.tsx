@@ -1,6 +1,7 @@
 // ~/routes/scrum/project/by-id/work-item/move-work-item-to-sprint.tsx
 import {
   type ActionFunctionArgs,
+  type MiddlewareFunction,
   redirect,
 } from "react-router"
 
@@ -9,10 +10,17 @@ import { requireIdentity } from "~/auth.server"
 import { workItemService } from "~/services/scrum/work-item-service"
 import type { MoveWorkItemsToBacklogRequestDTO } from "~/types/scrum/work-item"
 import { commitAuthSession, getAuthSession } from "~/sessions.server"
+import { PERMS } from "~/config/permissions"
+import { permissionMiddleware } from "~/middlewares/permission-middleware"
 
 export function meta() {
   return [{ title: "Mover historia de usuario" }]
 }
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.WORK_ITEM_MOVE_TO_BACKLOG], {
+    flashMessage: "No tienes permiso para mover historias de usuario al backlog.",
+  }),
+];
 
 /**
  * Action: sprintId es obligatorio (no backlog aquí)

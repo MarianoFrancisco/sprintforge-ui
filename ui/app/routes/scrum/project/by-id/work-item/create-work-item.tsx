@@ -4,6 +4,7 @@ import {
   type ActionFunctionArgs,
   data,
   type LoaderFunctionArgs,
+  type MiddlewareFunction,
   redirect,
   useActionData,
   useLoaderData,
@@ -26,10 +27,17 @@ import { CreateUserStoryForm } from "~/components/scrum/work-item/work-item-crea
 import { requireIdentity } from "~/auth.server"
 import { commitAuthSession, getAuthSession } from "~/sessions.server"
 import type { EmployeeResultResponseDTO } from "~/types/scrum/project"
+import { permissionMiddleware } from "~/middlewares/permission-middleware"
+import { PERMS } from "~/config/permissions"
 
 export function meta() {
   return [{ title: "Crear historia de usuario" }]
 }
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.WORK_ITEM_CREATE], {
+    flashMessage: "No tienes permiso para crear historias de usuario.",
+  }),
+];
 
 type LoaderData = {
   project: { id: string; name?: string }

@@ -4,6 +4,7 @@ import {
   type ActionFunctionArgs,
   data,
   type LoaderFunctionArgs,
+  type MiddlewareFunction,
   redirect,
   useActionData,
   useLoaderData,
@@ -29,10 +30,18 @@ import {
 } from "~/components/ui/dialog"
 import { WorkItemMoveToSprintForm } from "~/components/scrum/work-item/work-item-move-to-sprint"
 import { commitAuthSession, getAuthSession } from "~/sessions.server"
+import { PERMS } from "~/config/permissions"
+import { permissionMiddleware } from "~/middlewares/permission-middleware"
 
 export function meta() {
   return [{ title: "Mover historia de usuario" }]
 }
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.WORK_ITEM_MOVE_TO_SPRINT], {
+    flashMessage: "No tienes permiso para mover historias de usuario a un sprint.",
+  }),
+];
 
 type LoaderData = {
   project: { id: string; name?: string }

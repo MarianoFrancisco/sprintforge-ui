@@ -9,6 +9,7 @@ import {
   useLoaderData,
   useNavigate,
   useNavigation,
+  type MiddlewareFunction,
 } from "react-router"
 import { Loader2, Save } from "lucide-react"
 
@@ -28,10 +29,18 @@ import {
 } from "~/components/ui/dialog"
 
 import type { EmployeeResultResponseDTO } from "~/types/scrum/project"
+import { permissionMiddleware } from "~/middlewares/permission-middleware"
+import { PERMS } from "~/config/permissions"
 
 export function meta() {
   return [{ title: "Asignar developer" }]
 }
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.WORK_ITEM_ASSIGN_DEVELOPER], {
+    flashMessage: "No tienes permiso para asignar developers.",
+  }),
+];
 
 type LoaderData = {
   employees: EmployeeResultResponseDTO[]

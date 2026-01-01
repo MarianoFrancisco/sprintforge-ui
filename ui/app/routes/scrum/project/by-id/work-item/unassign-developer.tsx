@@ -9,6 +9,7 @@ import {
   useLoaderData,
   useNavigate,
   useNavigation,
+  type MiddlewareFunction,
 } from "react-router"
 import { Loader2, UserMinus } from "lucide-react"
 
@@ -26,10 +27,18 @@ import {
 import { Button } from "~/components/ui/button"
 
 import type { WorkItemResultResponseDTO } from "~/types/scrum/work-item"
+import { PERMS } from "~/config/permissions"
+import { permissionMiddleware } from "~/middlewares/permission-middleware"
 
 export function meta() {
   return [{ title: "Desasignar developer" }]
 }
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.WORK_ITEM_UNASSIGN_DEVELOPER], {
+    flashMessage: "No tienes permiso para desasignar developers.",
+  }),
+];
 
 type LoaderData = {
   projectId: string

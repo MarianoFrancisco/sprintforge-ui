@@ -1,6 +1,7 @@
 // ~/routes/scrum/project/by-id/work-item/work-item-delete.tsx
 import {
   type ActionFunctionArgs,
+  type MiddlewareFunction,
   redirect,
 } from "react-router";
 
@@ -9,10 +10,18 @@ import { requireIdentity } from "~/auth.server";
 import { workItemService } from "~/services/scrum/work-item-service";
 import type { DeleteWorkItemRequestDTO } from "~/types/scrum/work-item";
 import { commitAuthSession, getAuthSession } from "~/sessions.server";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
+import { PERMS } from "~/config/permissions";
 
 export function meta() {
   return [{ title: "Eliminar historia de usuario" }];
 }
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.WORK_ITEM_DELETE], {
+    flashMessage: "No tienes permiso para eliminar historias de usuario.",
+  }),
+];
 
 export async function action({ request, context, params }: ActionFunctionArgs) {
   const session = await getAuthSession(request);
