@@ -3,6 +3,7 @@ import {
   useLoaderData,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
+  type MiddlewareFunction,
 } from "react-router";
 import type {
   PositionResponseDTO,
@@ -12,13 +13,21 @@ import { positionService } from "~/services/employees/position-service";
 import { PositionForm } from "~/components/employees/positions/position-form";
 import type { Route } from "../../+types/home";
 import { commitAuthSession, getAuthSession } from "~/sessions.server";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
+import { PERMS } from "~/config/permissions";
 
 export function meta({ }: Route.MetaArgs) {
-  return [{ title: "Editar cargo" }];
+  return [{ title: "Editar puesto" }];
 }
 
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.POSITION_VIEW, PERMS.POSITION_EDIT], {
+    flashMessage: "No tienes permiso para editar puestos."
+  }),
+];
+
 export async function loader({ params }: LoaderFunctionArgs) {
-  if (!params.id) throw new Error("No se proporcionó el ID del cargo");
+  if (!params.id) throw new Error("No se proporcionó el ID del puesto");
 
   try {
     const position = await positionService.getById(params.id);

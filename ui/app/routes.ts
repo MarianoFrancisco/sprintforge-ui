@@ -36,6 +36,8 @@ export default [
                 index("routes/employees/positions/index-position.tsx"),
                 route("create", "routes/employees/positions/create-position.tsx"),
                 route(":id/edit", "routes/employees/positions/edit-position.tsx"),
+                route(":id/deactivate", "routes/employees/positions/deactivate-position.tsx"),
+                route(":id/activate", "routes/employees/positions/activate-position.tsx"),
             ]),
         ]),
         ...prefix("identity", [
