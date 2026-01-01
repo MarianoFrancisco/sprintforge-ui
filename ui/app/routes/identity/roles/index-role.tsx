@@ -1,8 +1,10 @@
 // ~/routes/roles/index.tsx
-import { Link, useLoaderData } from "react-router";
+import { Link, useLoaderData, type MiddlewareFunction } from "react-router";
 import { RoleFilter } from "~/components/identity/roles/role-filters";
 import { RolesTable } from "~/components/identity/roles/roles-table";
 import { Button } from "~/components/ui/button";
+import { PERMS } from "~/config/permissions";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
 import { roleService } from "~/services/identity/role-service";
 import type { FindRolesRequest, RoleResponseDTO } from "~/types/identity/role";
 
@@ -11,6 +13,12 @@ export function meta() {
     { title: "Roles" },
   ];
 }
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.ROLE_VIEW], {
+    flashMessage: "No tienes permiso para ver Roles.",
+  }),
+];
 
 export async function loader({ request }: { request: Request }) {
   const url = new URL(request.url);

@@ -5,13 +5,22 @@ import {
   useLoaderData,
   useActionData,
   useNavigate,
+  type MiddlewareFunction,
 } from "react-router";
 import { toast } from "sonner";
 import type { Permission } from "~/components/identity/permission/permission-selector";
 import { RoleForm } from "~/components/identity/roles/role-form";
+import { PERMS } from "~/config/permissions";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
 import { permissionService } from "~/services/identity/permission-service";
 import { roleService } from "~/services/identity/role-service";
 import type { CreateRoleRequest } from "~/types/identity/role";
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.ROLE_CREATE], {
+    flashMessage: "No tienes permiso para crear Roles.",
+  }),
+];
 
 // Loader: obtiene permisos desde la base de datos
 export async function loader({}: LoaderFunctionArgs) {

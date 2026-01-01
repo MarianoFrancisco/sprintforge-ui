@@ -1,8 +1,11 @@
 // routes/identity/roles/activate-role.tsx
 import {
   type ActionFunctionArgs,
+  type MiddlewareFunction,
   redirect,
 } from "react-router";
+import { PERMS } from "~/config/permissions";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
 
 import { roleService } from "~/services/identity/role-service";
 import { commitAuthSession, getAuthSession } from "~/sessions.server";
@@ -10,6 +13,11 @@ import { commitAuthSession, getAuthSession } from "~/sessions.server";
 export function meta() {
   return [{ title: "Activar rol" }];
 }
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.ROLE_VIEW, PERMS.ROLE_ACTIVATE], {
+    flashMessage: "No tienes permiso para activar Roles.",
+  }),
+];
 
 // Action: petición POST para activar el rol
 export async function action({ request, params }: ActionFunctionArgs) {

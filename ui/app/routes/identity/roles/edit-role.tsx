@@ -6,6 +6,7 @@ import {
   useLoaderData,
   useActionData,
   useNavigate,
+  type MiddlewareFunction,
 } from "react-router";
 import { toast } from "sonner";
 import { ApiError } from "~/lib/api-client";
@@ -17,10 +18,17 @@ import { permissionService } from "~/services/identity/permission-service";
 import { roleService } from "~/services/identity/role-service";
 
 import type { UpdateRoleRequest, RoleResponseDTO } from "~/types/identity/role";
+import { PERMS } from "~/config/permissions";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
 
 export function meta() {
   return [{ title: "Editar rol" }];
 }
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.ROLE_VIEW, PERMS.ROLE_EDIT], {
+    flashMessage: "No tienes permiso para editar Roles.",
+  }),
+];
 
 // Loader: obtiene permisos + rol por id
 export async function loader({ params }: LoaderFunctionArgs) {
