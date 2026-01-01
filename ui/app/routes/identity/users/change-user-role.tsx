@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
+  type MiddlewareFunction,
   useActionData,
   useLoaderData,
   useNavigate,
@@ -19,10 +20,18 @@ import type { RoleResponseDTO } from "~/types/identity/role";
 import type { EmployeeResponseDTO } from "~/types/employees/employee";
 import type { UserResponseDTO } from "~/types/identity/user";
 import { ChangeUserRoleForm } from "~/components/identity/users/change-user-role-form";
+import { PERMS } from "~/config/permissions";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
 
 export function meta() {
   return [{ title: "Cambiar rol de usuario" }];
 }
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.USER_VIEW, PERMS.USER_CHANGE_ROLE], {
+    flashMessage: "No tienes permiso para cambiar el rol de Usuarios.",
+  }),
+];
 
 type LoaderData = {
   employee: EmployeeResponseDTO;

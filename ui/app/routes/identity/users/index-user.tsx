@@ -1,7 +1,9 @@
 // ~/routes/identity/users/index.tsx
-import { useLoaderData } from "react-router";
+import { useLoaderData, type MiddlewareFunction } from "react-router";
 import { UserFilter } from "~/components/identity/users/user-filters";
 import { UsersTable } from "~/components/identity/users/users-table";
+import { PERMS } from "~/config/permissions";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
 import { userService } from "~/services/identity/user-service";
 import type { GetAllUsersQuery } from "~/types/identity/user";
 import type { UserResponseDTO } from "~/types/identity/user";
@@ -12,10 +14,11 @@ export function meta() {
     { name: "description", content: "Gestión de usuarios del sistema" },
   ];
 }
-
-export const handle = {
-  crumb: "Listado de usuarios",
-};
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.USER_VIEW], {
+    flashMessage: "No tienes permiso para ver Usuarios.",
+  }),
+];
 
 export async function loader({ request }: { request: Request }) {
   const url = new URL(request.url);

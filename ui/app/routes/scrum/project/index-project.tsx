@@ -1,5 +1,5 @@
 // ~/routes/project/index.tsx
-import { Link, useLoaderData, useActionData, useNavigate } from "react-router"
+import { Link, useLoaderData, useActionData, useNavigate, type MiddlewareFunction } from "react-router"
 import { useEffect } from "react"
 import { toast } from "sonner"
 
@@ -8,6 +8,8 @@ import type { FindProjectsRequestDTO, ProjectResponseDTO } from "~/types/scrum/p
 import { projectService } from "~/services/scrum/project-service"
 import { ProjectFilter } from "~/components/scrum/project/project-filters"
 import { ProjectsTable } from "~/components/scrum/project/project-table"
+import { PERMS } from "~/config/permissions"
+import { permissionMiddleware } from "~/middlewares/permission-middleware"
 
 
 export function meta() {
@@ -17,9 +19,11 @@ export function meta() {
   ]
 }
 
-export const handle = {
-  crumb: "Listado de proyectos",
-}
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.PROJECT_VIEW], {
+    flashMessage: "No tienes permiso para ver todos los Proyectos.",
+  }),
+];
 
 export async function loader({ request }: { request: Request }) {
   const url = new URL(request.url)
