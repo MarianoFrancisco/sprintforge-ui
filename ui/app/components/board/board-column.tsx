@@ -7,7 +7,7 @@ import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import type { BoardColumnUI } from "~/types/scrum/board-column";
 import { SortableWorkItem } from "./sortable-work-item";
 import { useNavigate, useRouteLoaderData } from "react-router";
-import type {loader as BoardLayout} from "~/layouts/board-layout"
+import type { loader as BoardLayout } from "~/layouts/board-layout";
 import { ColumnActions } from "./column-actions";
 
 interface BoardColumnProps {
@@ -17,22 +17,25 @@ interface BoardColumnProps {
 export function BoardColumn({ column }: BoardColumnProps) {
   const itemIds = column.items.map((i) => i.id);
   const data = useRouteLoaderData<typeof BoardLayout>("layouts/board-layout");
-  const {project, sprintId } =data!;
-  
+  const { project, sprintId } = data!;
+
   const navigate = useNavigate();
 
   return (
     <Card className="w-[320px] shrink-0 rounded-2xl">
       <CardHeader className="py-3 px-4">
-        <div className="flex items-center justify-between gap-2">
-          <div className="min-w-0">
+        <div className="flex items-center gap-2">
+          {/* Izquierda: título + contador */}
+          <div className="min-w-0 flex-1">
             <p className="truncate font-semibold">{column.name}</p>
             <p className="text-xs text-muted-foreground">
               {column.items.length} items
             </p>
           </div>
-          <div className="text-xs text-muted-foreground">#{column.position}</div>
-          <div className="shrink-0">
+
+          {/* Derecha: posición + acciones (alineado a la derecha) */}
+          <div className="ml-auto flex items-center gap-2">
+            <div className="text-xs text-muted-foreground">#{column.position}</div>
             <ColumnActions
               column={{
                 id: column.id,
@@ -55,7 +58,11 @@ export function BoardColumn({ column }: BoardColumnProps) {
           type="button"
           variant="secondary"
           className="mt-3 w-full justify-center gap-2 rounded-xl"
-          onClick={() => {navigate("/projects/" + project.id + "/work-items/create/" + sprintId + "/" + column.id)}}
+          onClick={() => {
+            navigate(
+              "/projects/" + project.id + "/work-items/create/" + sprintId + "/" + column.id
+            );
+          }}
         >
           <PlusIcon className="h-4 w-4" />
           Agregar historia
