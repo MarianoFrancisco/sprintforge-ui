@@ -41,6 +41,8 @@ export function mergeBoardColumnsWithWorkItems(
       position: item.position, // 0-based
       title: item.title,
       storyPoints: item.storyPoints ?? null,
+      developerId: item.developerId ?? null,
+      productOwnerId: item.productOwnerId ?? null,
       priority: item.priority,
       isDeleted: item.isDeleted,
     });

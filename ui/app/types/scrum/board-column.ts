@@ -22,6 +22,8 @@ export interface BoardColumnItemUI {
   position: number;
   title: string;
   storyPoints?: number | null;
+  developerId?: string | null;
+  productOwnerId?: string | null;
   priority: number;
   isDeleted: boolean;
 }
