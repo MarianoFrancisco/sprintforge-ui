@@ -8,6 +8,7 @@ import {
   redirect,
   useLoaderData,
   useNavigate,
+  type MiddlewareFunction,
 } from "react-router";
 
 import { requireIdentity } from "~/auth.server";
@@ -25,10 +26,18 @@ import { Label } from "~/components/ui/label";
 import { Combobox, type ComboboxOption } from "~/components/common/combobox-option";
 
 import type { BoardColumnResponseDTO } from "~/types/scrum/board-column";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
+import { PERMS } from "~/config/permissions";
 
 export function meta() {
   return [{ title: "Eliminar columna" }];
 }
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.BOARD_COLUMN_DELETE], {
+    flashMessage: "No tienes permiso para eliminar columnas."
+  }),
+];
 
 type LoaderData = {
   projectId: string;

@@ -1,8 +1,16 @@
 // ~/routes/scrum/project/by-id/sprint/board/move-column.tsx
-import { redirect, type ActionFunctionArgs } from "react-router";
+import { redirect, type ActionFunctionArgs, type MiddlewareFunction } from "react-router";
 import { requireIdentity } from "~/auth.server";
+import { PERMS } from "~/config/permissions";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
 import { boardColumnService } from "~/services/scrum/board-column-service";
 import type { MoveBoardColumnRequestDTO } from "~/types/scrum/board-column";
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.BOARD_COLUMN_MOVE], {
+    flashMessage: "No tienes permiso para mover columnas."
+  }),
+];
 
 export async function action({ request, params }: ActionFunctionArgs) {
   console.log("MoveColumn action called", params);

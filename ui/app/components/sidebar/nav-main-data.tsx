@@ -59,7 +59,7 @@ export const navMainData: NavItem[] = [
     title: "Reportes",
     url: "#",
     icon: FileDown,
-    // permission: PERMS.PROJECT_VIEW,
+    permission: PERMS.REPORT_PROJECT_PROGRESS,
     items: [
       {title: "Avance de proyectos", url: "/reports/project-progress", permission: PERMS.REPORT_PROJECT_PROGRESS},
       { title: "Productividad", url: "/reports/employee-productivity", permission: PERMS.REPORT_EMPLOYEE_PRODUCTIVITY },

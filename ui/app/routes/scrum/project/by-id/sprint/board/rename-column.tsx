@@ -8,6 +8,7 @@ import {
   redirect,
   useLoaderData,
   useNavigate,
+  type MiddlewareFunction,
 } from "react-router";
 
 import { requireIdentity } from "~/auth.server";
@@ -23,10 +24,18 @@ import {
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
+import { PERMS } from "~/config/permissions";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
 
 export function meta() {
   return [{ title: "Renombrar columna" }];
 }
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.BOARD_COLUMN_RENAME], {
+    flashMessage: "No tienes permiso para renombrar columnas."
+  }),
+];
 
 type LoaderData = {
   projectId: string;

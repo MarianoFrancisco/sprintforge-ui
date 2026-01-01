@@ -3,6 +3,7 @@ import { useState } from "react"
 import {
   type ActionFunctionArgs,
   data,
+  type MiddlewareFunction,
   redirect,
   useNavigate,
 } from "react-router"
@@ -20,10 +21,18 @@ import {
 // Ajusta este import al path real de tu servicio
 import { boardColumnService } from "~/services/scrum/board-column-service"
 import { BoardColumnForm } from "~/components/scrum/sprint/board-column-form"
+import { PERMS } from "~/config/permissions"
+import { permissionMiddleware } from "~/middlewares/permission-middleware"
 
 export function meta() {
   return [{ title: "Crear columna" }]
 }
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.BOARD_COLUMN_CREATE], {
+    flashMessage: "No tienes permiso para crear columnas."
+  }),
+];
 
 export async function action({ request, params }: ActionFunctionArgs) {
   const session = await getAuthSession(request)
