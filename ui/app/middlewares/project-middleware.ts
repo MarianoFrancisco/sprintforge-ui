@@ -1,6 +1,9 @@
 // ~/middlewares/project-middleware.ts
 import { redirect, type LoaderFunctionArgs } from "react-router";
 import { projectContext, type SprintTypeContext } from "~/context/project-context";
+import { userContext } from "~/context/user-context";
+import { userProjectsContext } from "~/context/user-project-context";
+import { isEmployeeInProject } from "~/lib/is-employee-in-project";
 import { projectService } from "~/services/scrum/project-service";
 import { sprintService } from "~/services/scrum/sprint-service";
 import { getAuthSession, commitAuthSession } from "~/sessions.server";
@@ -20,6 +23,14 @@ export function projectMiddleware(opts: ProjectMiddlewareOptions = {}) {
 
   return async ({ context, request, params }: LoaderFunctionArgs) => {
     const session = await getAuthSession(request);
+    const user = context.get(userContext);
+
+    if (!user) {
+      session.flash("error", "No se pudo validar tu sesión.");
+      throw redirect(redirectTo, {
+        headers: { "Set-Cookie": await commitAuthSession(session) },
+      });
+    }
 
     // Se asume que authMiddleware ya corrió
     const projectId =
@@ -37,6 +48,13 @@ export function projectMiddleware(opts: ProjectMiddlewareOptions = {}) {
 
       if (!project) {
         session.flash("error", flashMessage);
+        throw redirect(redirectTo, {
+          headers: { "Set-Cookie": await commitAuthSession(session) },
+        });
+      }
+
+      if (!isEmployeeInProject(project, user.employeeId)){
+        session.flash("error", "No tienes permiso para ver este proyecto.");
         throw redirect(redirectTo, {
           headers: { "Set-Cookie": await commitAuthSession(session) },
         });
