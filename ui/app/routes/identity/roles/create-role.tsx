@@ -6,6 +6,8 @@ import {
   useActionData,
   useNavigate,
   type MiddlewareFunction,
+  redirect,
+  data,
 } from "react-router";
 import { toast } from "sonner";
 import type { Permission } from "~/components/identity/permission/permission-selector";
@@ -14,6 +16,7 @@ import { PERMS } from "~/config/permissions";
 import { permissionMiddleware } from "~/middlewares/permission-middleware";
 import { permissionService } from "~/services/identity/permission-service";
 import { roleService } from "~/services/identity/role-service";
+import { commitAuthSession, getAuthSession } from "~/sessions.server";
 import type { CreateRoleRequest } from "~/types/identity/role";
 
 export const middleware: MiddlewareFunction[] = [
@@ -34,6 +37,7 @@ export async function loader({}: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
+  const session = await getAuthSession(request);
   const formData = await request.formData();
 
   const payload: CreateRoleRequest = {
@@ -46,9 +50,22 @@ export async function action({ request }: ActionFunctionArgs) {
     ),
   };
 
-  await roleService.create(payload);
-
-  return {success: "Rol creado exitosamente"};
+  try {
+    await roleService.create(payload);
+    session.flash("success", "Rol creado exitosamente.");
+    return redirect("/identity/roles", {
+      headers: {
+        "Set-Cookie": await commitAuthSession(session),
+      },
+    });
+  } catch (error: any) {
+    session.flash("error", error?.response?.detail || "Error al crear el rol.");
+    return data({errors: error?.response?.errors || {}}, {
+      headers: {
+        "Set-Cookie": await commitAuthSession(session),
+      },
+    });
+  }
 }
 
 

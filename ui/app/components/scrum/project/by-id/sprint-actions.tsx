@@ -1,6 +1,6 @@
 // ~/components/sprints/sprint-actions.tsx
 import { Form, useNavigate } from "react-router"
-import { Ellipsis, Play, CheckCircle2, Trash2, History } from "lucide-react"
+import { Ellipsis, Play, CheckCircle2, Trash2, History, Eye } from "lucide-react"
 
 import {
   DropdownMenu,
@@ -43,6 +43,11 @@ export function SprintActions({ sprint }: SprintActionsProps) {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-44">
+        {/* Ver detalle */}
+        <DropdownMenuItem onClick={() => navigate(`${id}`)}>
+          <Eye className="mr-2 h-4 w-4" />
+          Ver detalle
+        </DropdownMenuItem>
         {/* Iniciar */}
         <Form method="post" action={`${id}/start`}>
           <DropdownMenuItem asChild disabled={!canStart(status)}>

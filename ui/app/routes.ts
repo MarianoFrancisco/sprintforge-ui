@@ -85,6 +85,7 @@ export default [
                         route("work-items/:workItemId/unassign/product-owner", "routes/scrum/project/by-id/work-item/unassign-product-owner.tsx"),
 
                         route("create", "routes/scrum/project/by-id/sprint/create-sprint.tsx"),
+                        route(":sprintId", "routes/scrum/project/by-id/sprint/view-sprint.tsx"),
                         route(":sprintId/start", "routes/scrum/project/by-id/sprint/start-sprint.tsx"),
                         route(":sprintId/complete", "routes/scrum/project/by-id/sprint/complete-sprint.tsx"),
                         route(":sprintId/delete", "routes/scrum/project/by-id/sprint/delete-sprint.tsx"),

@@ -24,7 +24,7 @@ function toWorkItemSprint(s: SprintResponseDTO): WorkItemSprint {
 export function groupWorkItemsBySprint(
   workItems: WorkItemResponseDTO[],
   sprints: SprintResponseDTO[] = [],
-  allowedStatuses: SprintStatus[] = ["CREATED", "STARTED"]
+  allowedStatuses: SprintStatus[] = ["CREATED", "STARTED", "COMPLETED"]
 ): GroupedWorkItems {
   const allowed = new Set<SprintStatus>(allowedStatuses)
 

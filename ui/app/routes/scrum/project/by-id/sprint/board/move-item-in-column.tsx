@@ -1,8 +1,16 @@
 // ~/routes/scrum/project/by-id/sprint/board/move-item-in-column.tsx
-import { redirect, type ActionFunctionArgs } from "react-router";
+import { redirect, type ActionFunctionArgs, type MiddlewareFunction } from "react-router";
 import { requireIdentity } from "~/auth.server";
+import { PERMS } from "~/config/permissions";
+import { permissionMiddleware } from "~/middlewares/permission-middleware";
 import { workItemService } from "~/services/scrum/work-item-service";
 import type { MoveWorkItemInBoardColumnRequestDTO } from "~/types/scrum/work-item";
+
+export const middleware: MiddlewareFunction[] = [
+  permissionMiddleware([PERMS.WORK_ITEM_MOVE_IN_COLUMN], {
+    flashMessage: "No tienes permiso para mover items dentro de la columna.",
+  }),
+];
 
 export async function action({ request, params }: ActionFunctionArgs) {
     console.log("MoveItemInColumn action called");
