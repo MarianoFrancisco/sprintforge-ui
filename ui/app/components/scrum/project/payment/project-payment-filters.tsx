@@ -1,50 +1,30 @@
 // ~/components/projects/payments/project-payment-filters.tsx
-import { GenericFilter } from "~/components/filters/generic-filter";
-import type { FilterConfig } from "~/types/filters";
-import type { ProjectResponseDTO } from "~/types/scrum/project";
-import type { PaymentResponseDTO } from "~/types/scrum/project-payment";
+import { GenericFilter } from "~/components/filters/generic-filter"
+import type { FilterConfig } from "~/types/filters"
+import type { ProjectResponseDTO } from "~/types/scrum/project"
 
-export type PaymentMethod = "CASH" | "TRANSFER";
+export type PaymentMethod = "CASH" | "TRANSFER"
 
 interface ProjectPaymentFiltersProps {
-  payments: PaymentResponseDTO[];
+  projects: ProjectResponseDTO[]
 }
 
-/**
- * Construye opciones únicas de proyectos a partir del arreglo de pagos.
- * (Sin depender de que te pasen proyectos por separado)
- */
-function buildProjectOptionsFromPayments(payments: PaymentResponseDTO[]) {
-  const map = new Map<string, ProjectResponseDTO>();
-
-  for (const p of payments) {
-    if (p.project?.id) {
-      map.set(p.project.id, p.project);
-    }
-  }
-
-  // Ordena por projectKey luego por nombre
-  return Array.from(map.values())
-    .sort((a, b) => {
-      const ka = a.projectKey ?? "";
-      const kb = b.projectKey ?? "";
-      const keyCmp = ka.localeCompare(kb);
-      if (keyCmp !== 0) return keyCmp;
-      return (a.name ?? "").localeCompare(b.name ?? "");
-    })
-    .map((proj) => ({
-      value: proj.id,
-      label: `${proj.projectKey} — ${proj.name}`,
-    }));
+function buildProjectOptions(projects: ProjectResponseDTO[]) {
+  return projects
+    .map((p) => ({
+      value: p.id,
+      label: p.name,
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label))
 }
 
 const methodOptions = [
   { value: "CASH", label: "Efectivo" },
   { value: "TRANSFER", label: "Transferencia" },
-] as const;
+] as const
 
-export function ProjectPaymentFilters({ payments }: ProjectPaymentFiltersProps) {
-  const projectOptions = buildProjectOptionsFromPayments(payments);
+export function ProjectPaymentFilters({ projects }: ProjectPaymentFiltersProps) {
+  const projectOptions = buildProjectOptions(projects)
 
   const projectPaymentFilters: FilterConfig[] = [
     {
@@ -59,7 +39,7 @@ export function ProjectPaymentFilters({ payments }: ProjectPaymentFiltersProps) 
       label: "Método",
       type: "select",
       placeholder: "Selecciona método",
-      options: methodOptions as any, // si tu FilterConfig no tipa "as const", puedes quitar esto ajustando types
+      options: methodOptions as any,
     },
     {
       name: "fromDate",
@@ -73,12 +53,12 @@ export function ProjectPaymentFilters({ payments }: ProjectPaymentFiltersProps) 
       type: "date",
       placeholder: "YYYY-MM-DD",
     },
-  ];
+  ]
 
   return (
     <GenericFilter
       filters={projectPaymentFilters}
-      searchPlaceholder="Buscar por KEY, nombre del proyecto o cliente"
+      searchPlaceholder="Buscar por nombre del proyecto"
     />
-  );
+  )
 }

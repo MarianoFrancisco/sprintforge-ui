@@ -5,6 +5,7 @@ import { ProjectPaymentsTable } from "~/components/scrum/project/payment/project
 import { PERMS } from "~/config/permissions";
 import { permissionMiddleware } from "~/middlewares/permission-middleware";
 import { projectPaymentService } from "~/services/scrum/project-payment-service";
+import { projectService } from "~/services/scrum/project-service";
 import type { GetAllPaymentsQuery, PaymentMethod } from "~/types/scrum/project-payment";
 
 export const middleware: MiddlewareFunction[] = [
@@ -36,16 +37,17 @@ export async function loader({ request }: { request: Request }) {
     };
 
     const payments = await projectPaymentService.getAll(filters);
+    const projects = await projectService.getAll();
 
-    return { payments, filters };
+    return { payments, projects, filters };
   } catch (error) {
     console.error("Error al cargar pagos de proyectos:", error);
-    return { payments: [], filters: {} };
+    return { projects: [], payments: [], filters: {} };
   }
 }
 
 export default function ProjectPaymentsHistoryPage() {
-  const { payments } = useLoaderData<typeof loader>();
+  const { payments, projects } = useLoaderData<typeof loader>();
 
   return (
     <section className="space-y-6">
@@ -60,7 +62,7 @@ export default function ProjectPaymentsHistoryPage() {
       {/* Filtros */}
       <div className="flex flex-col lg:flex-row lg:items-end lg:gap-4 w-full">
         <div className="flex-1">
-          <ProjectPaymentFilters payments={payments} />
+          <ProjectPaymentFilters projects={projects} />
         </div>
 
         {/* Acciones adicionales (opcional) */}
