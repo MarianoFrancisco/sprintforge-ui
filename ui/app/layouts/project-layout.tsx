@@ -16,6 +16,7 @@ import type { ProjectOutletContext } from "~/hooks/use-project";
 import { projectMiddleware } from "~/middlewares/project-middleware";
 import { projectContext } from "~/context/project-context";
 import { ProjectActions } from "~/components/scrum/project/project-actions";
+import { ProjectEmployeeActions } from "~/components/scrum/project/project-employee-actions";
 
 export const middleware: MiddlewareFunction[] = [
   projectMiddleware({ flashMessage: "Proyecto no encontrado o sin acceso." }),
@@ -57,8 +58,19 @@ export default function ProjectLayout() {
 </div>
 
 
-        {/* Avatares debajo del título, alineados a la izquierda */}
-        <EmployeesAvatarStack employees={project.employees} size="md" />
+        {/* Empleados: acciones + avatares */}
+<div className="flex items-center gap-2">
+  <ProjectEmployeeActions
+    projectId={project.id}
+    assignedCount={project.employees.length}
+  />
+
+  <EmployeesAvatarStack
+    employees={project.employees}
+    size="md"
+  />
+</div>
+
       </div>
 
       {/* Tabs */}

@@ -68,6 +68,9 @@ export default [
                 layout("layouts/project-layout.tsx", [
                     index("routes/scrum/project/by-id/project-home.tsx"),
                     route("details", "routes/scrum/project/project-details.tsx"),
+                    route("assign-employees", "routes/scrum/project/assign-project-employees.tsx"),
+                    route("unassign-employees", "routes/scrum/project/unassign-project-employees.tsx"),
+
                     route("work-items/create/:sprintId?/:boardColumnId?", "routes/scrum/project/by-id/work-item/create-work-item.tsx"),
                     // route("sprint/:sprintId/board", "routes/scrum/project/by-id/sprint/sprint-board.tsx"),
                     route("board", "routes/scrum/project/by-id/board-redirect.tsx"),

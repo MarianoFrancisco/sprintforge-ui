@@ -32,7 +32,8 @@ interface EmployeeSelectorProps {
   placeholder?: string
   className?: string
   disabled?: boolean
-  maxSelected?: number
+  maxSelected?: number,
+  buttonText?: string
 }
 
 export function EmployeeSelector({
@@ -43,6 +44,7 @@ export function EmployeeSelector({
   className,
   disabled,
   maxSelected,
+  buttonText = "Buscar",
 }: EmployeeSelectorProps) {
   const [open, setOpen] = React.useState(false)
 
@@ -91,7 +93,7 @@ export function EmployeeSelector({
               className="h-8 shrink-0"
             >
               <AtSign className="mr-2 h-4 w-4" />
-              Agregar
+              {buttonText}
             </Button>
           </PopoverTrigger>
 

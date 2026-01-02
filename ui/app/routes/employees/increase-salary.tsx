@@ -3,21 +3,18 @@ import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
   useLoaderData,
-  useActionData,
-  useNavigate,
   type MiddlewareFunction,
 } from "react-router";
 import { ApiError } from "~/lib/api-client";
 import { employeeService } from "~/services/employees/employee-service";
 import { EmployeeHistoryChangeForm } from "~/components/employees/employee-history-change-form";
-import { useEffect } from "react";
-import { toast } from "sonner";
 import type { EmployeeResponseDTO } from "~/types/employees/employee";
 import { EmployeeCard } from "~/components/employees/cards/employee-card";
 import { PERMS } from "~/config/permissions";
 import { permissionMiddleware } from "~/middlewares/permission-middleware";
+import { commitAuthSession, getAuthSession } from "~/sessions.server";
 
-export function meta({}: any) {
+export function meta({ }: any) {
   return [{ title: "Aumentar salario" }];
 }
 export const middleware: MiddlewareFunction[] = [
@@ -40,6 +37,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
 // Action: enviar request de aumento de salario
 export async function action({ request, params }: ActionFunctionArgs) {
+  const session = await getAuthSession(request);
   const { id } = params;
   if (!id) throw new Error("ID del empleado no proporcionado");
 
@@ -59,7 +57,14 @@ export async function action({ request, params }: ActionFunctionArgs) {
       date,
       notes,
     });
-    return { success: "Salario aumentado correctamente" };
+
+    session.flash("success", "Salario aumentado correctamente.");
+    return redirect(`/employees/history?searchTerm=${id}`, {
+      headers: {
+        "Set-Cookie": await commitAuthSession(session),
+      }
+    }
+    )
   } catch (error: any) {
     if (error instanceof ApiError && error.response) {
       const err = error.response as any;
@@ -75,37 +80,26 @@ export async function action({ request, params }: ActionFunctionArgs) {
 // Página
 export default function IncreaseSalaryPage() {
   const data = useLoaderData<typeof loader>();
-  const actionData = useActionData();
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (actionData?.error) {
-      toast.error(actionData.error);
-    }
-    if (actionData?.success) {
-      toast.success(actionData.success);
-    }
-  }, [actionData, navigate, data.employee]);
+  return (
+    <section className="p-6">
+      <h2 className="text-lg font-semibold mb-4 text-center md:text-left">
+        Aumento salarial
+      </h2>
 
-return (
-  <section className="p-6">
-    <h2 className="text-lg font-semibold mb-4 text-center md:text-left">
-      Aumento salarial
-    </h2>
+      <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6">
+        {/* Card del empleado */}
+        <div className="flex-1 max-w-sm w-full">
+          <EmployeeCard employee={data.employee} />
+        </div>
 
-    <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6">
-      {/* Card del empleado */}
-      <div className="flex-1 max-w-sm w-full">
-        <EmployeeCard employee={data.employee} />
+        {/* Formulario para aumentar salario */}
+        <div className="flex-1 max-w-sm w-full">
+          <EmployeeHistoryChangeForm type="SALARY_INCREASE" />
+        </div>
       </div>
-
-      {/* Formulario para aumentar salario */}
-      <div className="flex-1 max-w-sm w-full">
-        <EmployeeHistoryChangeForm type="SALARY_INCREASE" />
-      </div>
-    </div>
-  </section>
-);
+    </section>
+  );
 
 
 }

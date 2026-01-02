@@ -51,7 +51,7 @@ export function ProjectActions({ project }: ProjectActionsProps) {
           </Form>
         ) : (
           <>
-                      <DropdownMenuItem
+            <DropdownMenuItem
               onClick={() => navigate(`/projects/${id}/payment`)}
             >
               <BanknoteArrowUp className="mr-2 h-4 w-4" />
