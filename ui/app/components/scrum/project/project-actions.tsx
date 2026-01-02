@@ -34,9 +34,9 @@ export function ProjectActions({ project }: ProjectActionsProps) {
 
       <DropdownMenuContent align="end" className="w-48">
         {/* Ver proyecto */}
-        <DropdownMenuItem onClick={() => navigate(`/projects/${id}`)}>
+        <DropdownMenuItem onClick={() => navigate(`/projects/${id}/details`)}>
           <Eye className="mr-2 h-4 w-4" />
-          Ver
+          Ver detalle
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         {/* Abrir / Cerrar */}

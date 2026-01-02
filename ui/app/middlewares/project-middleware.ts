@@ -1,9 +1,11 @@
 // ~/middlewares/project-middleware.ts
 import { redirect, type LoaderFunctionArgs } from "react-router";
+import { PERMS } from "~/config/permissions";
 import { projectContext, type SprintTypeContext } from "~/context/project-context";
 import { userContext } from "~/context/user-context";
 import { userProjectsContext } from "~/context/user-project-context";
 import { isEmployeeInProject } from "~/lib/is-employee-in-project";
+import { hasPermissions } from "~/lib/permissions";
 import { projectService } from "~/services/scrum/project-service";
 import { sprintService } from "~/services/scrum/sprint-service";
 import { getAuthSession, commitAuthSession } from "~/sessions.server";
@@ -53,7 +55,15 @@ export function projectMiddleware(opts: ProjectMiddlewareOptions = {}) {
         });
       }
 
-      if (!isEmployeeInProject(project, user.employeeId)){
+      const canViewAllProjects = hasPermissions(
+        user.permissions,
+        [PERMS.PROJECT_VIEW],
+        "all"
+      );
+
+      const isInProject = isEmployeeInProject(project, user.employeeId);
+
+      if (!isInProject && !canViewAllProjects) {
         session.flash("error", "No tienes permiso para ver este proyecto.");
         throw redirect(redirectTo, {
           headers: { "Set-Cookie": await commitAuthSession(session) },
