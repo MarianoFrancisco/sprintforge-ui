@@ -89,7 +89,7 @@ export function SprintBacklog({ sprint, workItems }: SprintBacklogProps) {
         icon: CheckCircle2,
         action: "complete",
         dialogTitle: "¿Completar sprint?",
-        dialogDescription: "Al completar el sprint, todas las historias se marcarán según su estado final. ¿Estás seguro de que deseas completar este sprint?",
+        dialogDescription: "Al completar el sprint, todas las historias no completadas se irán al backlog. ¿Estás seguro de que deseas completar este sprint?",
         buttonText: "Completar",
       }
     }
