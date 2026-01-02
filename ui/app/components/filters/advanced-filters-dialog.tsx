@@ -19,46 +19,43 @@ interface AdvancedFiltersDialogProps {
   title?: string;
 }
 
-export function AdvancedFiltersDialog({ 
-  filters, 
-  title = "Filtros avanzados" 
+export function AdvancedFiltersDialog({
+  filters,
+  title = "Filtros avanzados",
 }: AdvancedFiltersDialogProps) {
   const { activeFiltersCount } = useFilters();
+  const count = activeFiltersCount();
 
-  // Esta función se encarga de enviar el formulario principal PARPADEO
   const handleApplyFilters = () => {
-    // Encontrar y enviar el formulario principal
     const form = document.querySelector('form[method="get"]') as HTMLFormElement;
-    if (form) {
-      form.requestSubmit();
-    }
+    if (form) form.requestSubmit();
   };
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button 
-          variant="outline" 
-          className="flex items-center gap-2 relative"
-        >
+        <Button variant="outline" className="flex items-center gap-2 relative">
           <Filter className="h-4 w-4" />
-          Filtros
-          {activeFiltersCount() > 0 && (
+
+          {/* Responsive: texto solo desde sm */}
+          <span className="hidden sm:inline">Filtros</span>
+
+          {/* Badge contador */}
+          {count > 0 && (
             <span className="absolute -top-2 -right-2 h-5 w-5 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center">
-              {activeFiltersCount()}
+              {count}
             </span>
           )}
         </Button>
       </DialogTrigger>
-      
+
       <DialogContent className="sm:max-w-md max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
-        
-        {/* NO usar Form aquí, solo controles */}
+
         <FilterControls filters={filters} />
-        
+
         <DialogFooter className="gap-2 pt-4">
           <DialogClose asChild>
             <Button type="button" variant="outline">
@@ -66,10 +63,7 @@ export function AdvancedFiltersDialog({
             </Button>
           </DialogClose>
           <DialogClose asChild>
-            <Button 
-              type="button" 
-              onClick={handleApplyFilters}
-            >
+            <Button type="button" onClick={handleApplyFilters}>
               Aplicar filtros
             </Button>
           </DialogClose>

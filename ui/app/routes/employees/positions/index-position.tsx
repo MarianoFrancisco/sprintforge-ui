@@ -1,3 +1,4 @@
+import { Plus } from "lucide-react";
 import { data, Link, useLoaderData } from "react-router";
 import { PositionFilter } from "~/components/employees/positions/position-filter";
 import { PositionsTable } from "~/components/employees/positions/position-table";
@@ -51,23 +52,20 @@ export default function PositionsPage() {
         </p>
       </div>
 
-      {/* Filtros + botón crear */}
-      <div className="flex flex-col lg:flex-row lg:items-end lg:gap-4 w-full">
-        <div className="flex-1">
-          <PositionFilter />
-        </div>
+      {/* Filtros */}
+      <div>
+        <PositionFilter />
+      </div>
 
-        <div className="flex lg:justify-start justify-end">
-          <Button asChild>
-            <Link to="/employees/positions/create">Nuevo Puesto</Link>
-          </Button>
-        </div>
+      {/* Acción principal */}
+      <div className="flex justify-end">
+        <Button asChild>
+          <Link to="/employees/positions/create"> <Plus /> Nuevo Puesto</Link>
+        </Button>
       </div>
 
       {/* Tabla */}
-      <PositionsTable
-        data={positions}
-      />
+      <PositionsTable data={positions} />
     </section>
   );
 }

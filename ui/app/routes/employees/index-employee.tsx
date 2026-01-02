@@ -7,6 +7,7 @@ import { EmployeeFilter } from "~/components/employees/employee-filters";
 import type { EmployeeStatus, EmployeeWorkloadType } from "~/types/employees/employee";
 import { permissionMiddleware } from "~/middlewares/permission-middleware";
 import { PERMS } from "~/config/permissions";
+import { UserPlus } from "lucide-react";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -71,7 +72,7 @@ export default function EmployeesPage() {
 
         <div className="flex lg:justify-start justify-end mt-4 lg:mt-0">
           <Button asChild>
-            <Link to="/employees/hire">Contratar empleado</Link>
+            <Link to="/employees/hire"> <UserPlus /> Contratar empleado</Link>
           </Button>
         </div>
       </div>

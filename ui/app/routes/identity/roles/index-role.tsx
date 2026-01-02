@@ -1,4 +1,5 @@
 // ~/routes/roles/index.tsx
+import { Plus } from "lucide-react";
 import { Link, useLoaderData, type MiddlewareFunction } from "react-router";
 import { RoleFilter } from "~/components/identity/roles/role-filters";
 import { RolesTable } from "~/components/identity/roles/roles-table";
@@ -56,17 +57,19 @@ export default function RolesPage() {
         </p>
       </div>
 
-      {/* Filtros + botón crear */}
-      <div className="flex flex-col lg:flex-row lg:items-end lg:gap-4 w-full">
-        <div className="flex-1">
-          <RoleFilter />
-        </div>
+      {/* Filtros */}
+      <div>
+        <RoleFilter />
+      </div>
 
-        <div className="flex lg:justify-start justify-end">
-          <Button asChild>
-            <Link to="/identity/roles/create">Nuevo Rol</Link>
-          </Button>
-        </div>
+      {/* Acción principal */}
+      <div className="flex justify-end">
+        <Button asChild>
+          <Link to="/identity/roles/create">
+            <Plus />
+            Nuevo Rol
+          </Link>
+        </Button>
       </div>
 
       {/* Tabla */}

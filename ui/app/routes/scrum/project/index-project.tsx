@@ -10,6 +10,7 @@ import { ProjectFilter } from "~/components/scrum/project/project-filters"
 import { ProjectsTable } from "~/components/scrum/project/project-table"
 import { PERMS } from "~/config/permissions"
 import { permissionMiddleware } from "~/middlewares/permission-middleware"
+import { Plus } from "lucide-react"
 
 
 export function meta() {
@@ -79,7 +80,7 @@ export default function ProjectsPage() {
 
         <div className="flex justify-end lg:justify-start">
           <Button asChild>
-            <Link to="/projects/create">Nuevo Proyecto</Link>
+            <Link to="/projects/create"> <Plus /> Nuevo Proyecto</Link>
           </Button>
         </div>
       </div>
