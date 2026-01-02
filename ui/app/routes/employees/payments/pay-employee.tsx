@@ -6,6 +6,8 @@ import {
   useActionData,
   useNavigate,
   type MiddlewareFunction,
+  redirect,
+  data,
 } from "react-router";
 import { useEffect } from "react";
 import { toast } from "sonner";
@@ -21,6 +23,7 @@ import { EmployeeCard } from "~/components/employees/cards/employee-card";
 import { EmployeePaymentForm } from "~/components/employees/payments/employee-payment-form";
 import { PERMS } from "~/config/permissions";
 import { permissionMiddleware } from "~/middlewares/permission-middleware";
+import { commitAuthSession, getAuthSession } from "~/sessions.server";
 
 export function meta() {
   return [{ title: "Realizar pago" }];
@@ -45,8 +48,8 @@ export async function loader({ params }: LoaderFunctionArgs) {
   }
 }
 
-// Action: envía la petición de pago usando el CUI del param (sin validaciones frontend)
 export async function action({ request, params }: ActionFunctionArgs) {
+  const session = await getAuthSession(request);
   const { cui } = params;
   if (!cui) throw new Error("cui del empleado no proporcionado");
 
@@ -67,24 +70,21 @@ export async function action({ request, params }: ActionFunctionArgs) {
     };
 
     await employeePaymentService.payEmployee(cui, payload);
-    return { success: "Pago realizado correctamente" };
+    session.flash("success", "Pago realizado correctamente.");
+
+    return redirect(`/employees/payments?searchTerm=${cui}`, {
+      headers: {
+        "Set-Cookie": await commitAuthSession(session),
+      },
+    });
   } catch (error: any) {
     console.log("error en action pay employee", error);
-
-    if (error instanceof ApiError && error.response) {
-      try {
-        const errorData = (error.response as any).data || error.response;
-
-        return {
-          errors: errorData.errors || {},
-          error: errorData.detail || errorData.message || `Error ${error.status}`,
-        };
-      } catch (parseError) {
-        return { error: `Error ${error.status}: No se pudo procesar la respuesta` };
-      }
-    }
-
-    return { error: error.message || "Error al realizar el pago" };
+    session.flash("error", error?.response?.detail || "Error al realizar el pago.");
+    return data({errors: error?.response?.errors || {}}, {
+      headers: {
+        "Set-Cookie": await commitAuthSession(session),
+      },
+    });
   }
 }
 

@@ -1,5 +1,14 @@
 import { useNavigate } from "react-router";
-import { BanknoteArrowUp, Ellipsis, Pencil, UserCheck, UserMinus, UserX, Wallet } from "lucide-react";
+import {
+  BanknoteArrowUp,
+  Ellipsis,
+  Pencil,
+  UserCheck,
+  UserMinus,
+  UserX,
+  Wallet,
+  History,
+} from "lucide-react";
 
 import {
   DropdownMenu,
@@ -24,13 +33,15 @@ export function EmployeeActions({ employee }: EmployeeActionsProps) {
   const isSuspended = status === "SUSPENDED";
   const isTerminated = status === "TERMINATED";
 
+  const goToHistory = () =>
+    navigate(`/employees/history?searchTerm=${cui}`);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
           size="icon"
-          disabled={isTerminated}
           className="data-[state=open]:bg-muted text-muted-foreground"
         >
           <Ellipsis />
@@ -38,69 +49,77 @@ export function EmployeeActions({ employee }: EmployeeActionsProps) {
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" className="w-52">
-        {/* Siempre permitido */}
-        {/* <DropdownMenuItem onClick={() => navigate(`/employees/${cui}`)}>
-          Ver detalle
-        </DropdownMenuItem> */}
+      <DropdownMenuContent align="end" className="w-56">
+        {/* HISTORIAL LABORAL — siempre disponible */}
+        <DropdownMenuItem onClick={goToHistory}>
+          <History className="mr-2 h-4 w-4" />
+          Historial laboral
+        </DropdownMenuItem>
 
-        {/* Solo ACTIVE */}
-        {isActive && (
-          <>
-            <DropdownMenuItem
-              onClick={() => navigate(`/employees/${id}/edit`)}
-            >
-              <Pencil className="mr-2 h-4 w-4" />
-              Editar datos personales
-            </DropdownMenuItem>
-
-            <DropdownMenuItem
-              onClick={() => navigate(`/employees/${cui}/salary/increase`)}
-            >
-            <BanknoteArrowUp className="mr-2 h-4 w-4" />
-              Aumentar salario
-            </DropdownMenuItem>
-
-            <DropdownMenuItem
-              onClick={() => navigate(`/employees/${cui}/pay`)}
-            >
-            <Wallet className="mr-2 h-4 w-4" />
-              Realizar pago
-            </DropdownMenuItem>
-          </>
-        )}
-
-        {/* Cambios de estado */}
-        {isActive && (
-          <DropdownMenuItem
-            onClick={() => navigate(`/employees/${employee.cui}/suspend`)}
-          >
-            <UserX className="mr-2 h-4 w-4" />
-            Suspender
-          </DropdownMenuItem>
-        )}
-
-        {isSuspended && (
-          <DropdownMenuItem
-            onClick={() => navigate(`/employees/${employee.cui}/reinstate`)}
-          >
-            <UserCheck className="mr-2 h-4 w-4" />
-            Reincorporar
-          </DropdownMenuItem>
-        )}
-
-        {(isActive || isSuspended) && (
+        {/* Si está TERMINATED, no mostrar nada más */}
+        {isTerminated ? null : (
           <>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              variant="destructive"
-              onClick={() =>
-                navigate(`/employees/${employee.cui}/terminate`)
-              }
-            >
-              <UserMinus className="mr-2 h-4 w-4" />
-              Terminar
-            </DropdownMenuItem>
+
+            {/* Solo ACTIVE */}
+            {isActive && (
+              <>
+                <DropdownMenuItem
+                  onClick={() => navigate(`/employees/${id}/edit`)}
+                >
+                  <Pencil className="mr-2 h-4 w-4" />
+                  Editar datos personales
+                </DropdownMenuItem>
+
+                <DropdownMenuItem
+                  onClick={() => navigate(`/employees/${cui}/salary/increase`)}
+                >
+                  <BanknoteArrowUp className="mr-2 h-4 w-4" />
+                  Aumentar salario
+                </DropdownMenuItem>
+
+                <DropdownMenuItem
+                  onClick={() => navigate(`/employees/${cui}/pay`)}
+                >
+                  <Wallet className="mr-2 h-4 w-4" />
+                  Realizar pago
+                </DropdownMenuItem>
+              </>
+            )}
+
+            {/* Cambios de estado */}
+            {isActive && (
+              <DropdownMenuItem
+                onClick={() => navigate(`/employees/${cui}/suspend`)}
+              >
+                <UserX className="mr-2 h-4 w-4" />
+                Suspender
+              </DropdownMenuItem>
+            )}
+
+            {isSuspended && (
+              <DropdownMenuItem
+                onClick={() => navigate(`/employees/${cui}/reinstate`)}
+              >
+                <UserCheck className="mr-2 h-4 w-4" />
+                Reincorporar
+              </DropdownMenuItem>
+            )}
+
+            {(isActive || isSuspended) && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  variant="destructive"
+                  onClick={() =>
+                    navigate(`/employees/${cui}/terminate`)
+                  }
+                >
+                  <UserMinus className="mr-2 h-4 w-4" />
+                  Terminar
+                </DropdownMenuItem>
+              </>
+            )}
           </>
         )}
       </DropdownMenuContent>

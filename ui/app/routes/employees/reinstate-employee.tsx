@@ -5,16 +5,16 @@ import {
   useActionData,
   useNavigate,
   type MiddlewareFunction,
+  redirect,
+  data,
 } from "react-router";
-import { ApiError } from "~/lib/api-client";
 import { employeeService } from "~/services/employees/employee-service";
 import { EmployeeHistoryChangeForm } from "~/components/employees/employee-history-change-form";
-import { useEffect } from "react";
-import { toast } from "sonner";
 import type { EmployeeResponseDTO } from "~/types/employees/employee";
 import { EmployeeCard } from "~/components/employees/cards/employee-card";
 import { permissionMiddleware } from "~/middlewares/permission-middleware";
 import { PERMS } from "~/config/permissions";
+import { commitAuthSession, getAuthSession } from "~/sessions.server";
 
 export function meta({}: any) {
   return [{ title: "Reincorporar empleado" }];
@@ -41,6 +41,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
 // Action: enviar request de aumento de salario
 export async function action({ request, params }: ActionFunctionArgs) {
+  const session = await getAuthSession(request);
   const { cui } = params;
   if (!cui) throw new Error("CUI del empleado no proporcionado");
 
@@ -54,34 +55,29 @@ export async function action({ request, params }: ActionFunctionArgs) {
       date,
       notes,
     });
-    return { success: "Empleado reincorporado correctamente" };
+    session.flash("success", "Empleado reincorporado correctamente.");
+    return redirect(`/employees`, {
+      headers: {
+        "Set-Cookie": await commitAuthSession(session),
+      },
+    });
   } catch (error: any) {
-    if (error instanceof ApiError && error.response) {
-      const err = error.response as any;
-      return {
-        errors: err.errors || {},
-        error: err.detail || err.message || `Error ${error.status}`,
-      };
-    }
-    return { error: error.message || "Error al reincorporar empleado" };
+    console.log("error en action reinstate employee", error);
+    session.flash(
+      "error",
+      error?.response?.detail || "Error al reincorporar empleado."
+    );
+    return data({errors: error?.response?.errors || {}}, {
+      headers: {
+        "Set-Cookie": await commitAuthSession(session),
+      },
+    });
   }
 }
 
 // Página
 export default function ReinstateEmployeePage() {
   const data = useLoaderData<typeof loader>();
-  const actionData = useActionData();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (actionData?.error) {
-      toast.error(actionData.error);
-    }
-    if (actionData?.success) {
-      toast.success(actionData.success);
-      navigate(`/employees`);
-    }
-  }, [actionData, navigate, data.employee]);
 
 return (
   <section className="p-6">

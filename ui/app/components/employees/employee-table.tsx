@@ -22,6 +22,7 @@ import type { EmployeeResponseDTO, EmployeeStatus } from "~/types/employees/empl
 import { EmployeeActions } from "./employee-actions";
 import { EmployeeStatusBadge } from "./employee-status-badge";
 import { MoneyCell } from "../common/money-cell";
+import { Badge } from "../ui/badge";
 
 interface EmployeesTableProps {
   data: EmployeeResponseDTO[];
@@ -89,7 +90,9 @@ export function EmployeesTable({ data }: EmployeesTableProps) {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Puesto" icon={<Briefcase />} />
       ),
-      cell: ({ row }) => row.original.position?.name ?? "—",
+      cell: ({ row }) => (
+        <Badge variant="secondary">{row.original.position?.name ?? "—"}</Badge>
+      ),
     },
 
     // Salario

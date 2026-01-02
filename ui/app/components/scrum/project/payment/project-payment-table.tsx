@@ -15,6 +15,8 @@ import {
   DialogTrigger,
 } from "~/components/ui/dialog";
 import type { PaymentResponseDTO } from "~/types/scrum/project-payment";
+import { PaymentMethodBadge } from "./payment-method-badge";
+import type { PaymentMethod } from "./project-payment-filters";
 
 interface ProjectPaymentsTableProps {
   data: PaymentResponseDTO[];
@@ -83,6 +85,15 @@ function methodLabel(method: unknown) {
 
 export function ProjectPaymentsTable({ data }: ProjectPaymentsTableProps) {
   const columns: ColumnDef<PaymentResponseDTO>[] = [
+    // Fecha
+    {
+      accessorKey: "date",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Fecha" />,
+      cell: ({ getValue }) => {
+        const date = getValue() as string;
+        return date || "—";
+      },
+    },
     // KEY (Project Key)
     {
       id: "projectKey",
@@ -126,15 +137,16 @@ export function ProjectPaymentsTable({ data }: ProjectPaymentsTableProps) {
         <DataTableColumnHeader column={column} title="Método de pago" />
       ),
       cell: ({ getValue }) => (
-        <Badge variant="secondary">{methodLabel(getValue())}</Badge>
+        <PaymentMethodBadge method={getValue() as PaymentMethod} />
       ),
+
     },
 
     // Amount
     {
       accessorKey: "amount",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Amount" />
+        <DataTableColumnHeader column={column} title="Cantidad" />
       ),
       cell: ({ getValue }) => (
         <MoneyCell value={Number(getValue() ?? 0)} className="font-semibold" />

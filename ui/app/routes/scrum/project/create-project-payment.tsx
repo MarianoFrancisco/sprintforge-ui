@@ -3,13 +3,10 @@ import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
   useLoaderData,
-  useActionData,
-  useNavigate,
   type MiddlewareFunction,
+  redirect,
+  data,
 } from "react-router";
-import { useEffect } from "react";
-import { toast } from "sonner";
-import { ApiError } from "~/lib/api-client";
 import { requireIdentity } from "~/auth.server";
 import type { ProjectResultResponseDTO } from "~/types/scrum/project";
 import { projectService } from "~/services/scrum/project-service";
@@ -19,6 +16,7 @@ import { ProjectCard } from "~/components/scrum/project/project-card";
 import { ProjectPaymentForm } from "~/components/scrum/project/payment/project-payment-form";
 import { permissionMiddleware } from "~/middlewares/permission-middleware";
 import { PERMS } from "~/config/permissions";
+import { commitAuthSession, getAuthSession } from "~/sessions.server";
 
 export function meta() {
   return [{ title: "Registrar pago de proyecto" }];
@@ -45,6 +43,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
 // Action: crea el pago (employeeId viene de la session)
 export async function action({ request, params }: ActionFunctionArgs) {
+  const session = await getAuthSession(request);
       const {employeeId} = await requireIdentity(request, {
         redirectTo: "/",
         flashMessage: "Debes iniciar sesión para crear un proyecto.",
@@ -70,54 +69,27 @@ export async function action({ request, params }: ActionFunctionArgs) {
       note: (((formData.get("note") as string) || "").trim() || undefined),
     };
 
-    // Ajusta la firma a tu servicio real
     await projectPaymentService.create(payload);
-
-    return { success: "Pago registrado correctamente" };
+    session.flash("success", "Pago registrado correctamente.");
+    return redirect(`/projects/${id}`, {
+      headers: {
+        "Set-Cookie": await commitAuthSession(session),
+      },
+    });
   } catch (error: any) {
     console.log("error en action create project payment", error);
-
-    if (error instanceof ApiError && error.response) {
-      try {
-        const errorData = (error.response as any).data || error.response;
-
-        return {
-          errors: errorData.errors || {},
-          error: errorData.detail || errorData.message || `Error ${error.status}`,
-        };
-      } catch {
-        return { error: `Error ${error.status}: No se pudo procesar la respuesta` };
-      }
-    }
-
-    return { error: error.message || "Error al registrar el pago" };
+    session.flash("error", error?.response?.detail || "Error al registrar el pago.");
+    return data({errors: error?.response?.errors || {}}, {
+      headers: {
+        "Set-Cookie": await commitAuthSession(session),
+      },
+    });
   }
 }
 
 // Página
 export default function CreateProjectPaymentPage() {
   const data = useLoaderData<typeof loader>();
-  const actionData = useActionData() as
-    | { error?: string; success?: string; errors?: Record<string, string> }
-    | undefined;
-
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (actionData?.error) toast.error(actionData.error);
-
-    if (actionData?.success) {
-      toast.success(actionData.success, {
-        action: {
-          label: "Ver pagos",
-          onClick: () => {
-            // Ajusta esta ruta a tu app real
-            navigate(`/projects/${data.project.id}/payments`);
-          },
-        },
-      });
-    }
-  }, [actionData, navigate, data.project.id]);
 
   return (
     <section className="p-6">

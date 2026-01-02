@@ -2,21 +2,19 @@ import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
   useLoaderData,
-  useActionData,
-  useNavigate,
   type MiddlewareFunction,
+  redirect,
+  data,
 } from "react-router";
-import { ApiError } from "~/lib/api-client";
 import { employeeService } from "~/services/employees/employee-service";
 import { EmployeeHistoryChangeForm } from "~/components/employees/employee-history-change-form";
-import { useEffect } from "react";
-import { toast } from "sonner";
 import type { EmployeeResponseDTO } from "~/types/employees/employee";
 import { EmployeeCard } from "~/components/employees/cards/employee-card";
 import { permissionMiddleware } from "~/middlewares/permission-middleware";
 import { PERMS } from "~/config/permissions";
+import { commitAuthSession, getAuthSession } from "~/sessions.server";
 
-export function meta({}: any) {
+export function meta({ }: any) {
   return [{ title: "Suspender empleado" }];
 }
 
@@ -41,6 +39,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
 // Action: enviar request de aumento de salario
 export async function action({ request, params }: ActionFunctionArgs) {
+  const session = await getAuthSession(request);
   const { cui } = params;
   if (!cui) throw new Error("CUI del empleado no proporcionado");
 
@@ -54,54 +53,47 @@ export async function action({ request, params }: ActionFunctionArgs) {
       date,
       notes,
     });
-    return { success: "Empleado suspendido correctamente" };
+    session.flash("success", "Empleado suspendido correctamente.");
+    return redirect(`/employees`, {
+      headers: {
+        "Set-Cookie": await commitAuthSession(session),
+      },
+    });
   } catch (error: any) {
-    if (error instanceof ApiError && error.response) {
-      const err = error.response as any;
-      return {
-        errors: err.errors || {},
-        error: err.detail || err.message || `Error ${error.status}`,
-      };
-    }
-    return { error: error.message || "Error al suspender empleado" };
+    console.log("error en action suspend employee", error);
+    session.flash(
+      "error",
+      error?.response?.detail || "Error al suspender empleado."
+    );
+    return data({ errors: error?.response?.errors || {} }, {
+      headers: {
+        "Set-Cookie": await commitAuthSession(session),
+      },
+    });
   }
 }
 
 // Página
 export default function SuspendEmployeePage() {
   const data = useLoaderData<typeof loader>();
-  const actionData = useActionData();
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (actionData?.error) {
-      toast.error(actionData.error);
-    }
-    if (actionData?.success) {
-      toast.success(actionData.success);
-      navigate(`/employees`);
-    }
-  }, [actionData, navigate, data.employee]);
+  return (
+    <section className="p-6">
+      <h2 className="text-lg font-semibold mb-4 text-center md:text-left">
+        Suspender empleado
+      </h2>
 
-return (
-  <section className="p-6">
-    <h2 className="text-lg font-semibold mb-4 text-center md:text-left">
-      Suspender empleado
-    </h2>
+      <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6">
+        {/* Card del empleado */}
+        <div className="flex-1 max-w-sm w-full">
+          <EmployeeCard employee={data.employee} />
+        </div>
 
-    <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6">
-      {/* Card del empleado */}
-      <div className="flex-1 max-w-sm w-full">
-        <EmployeeCard employee={data.employee} />
+        {/* Formulario para aumentar salario */}
+        <div className="flex-1 max-w-sm w-full">
+          <EmployeeHistoryChangeForm type="SUSPENSION" />
+        </div>
       </div>
-
-      {/* Formulario para aumentar salario */}
-      <div className="flex-1 max-w-sm w-full">
-        <EmployeeHistoryChangeForm type="SUSPENSION" />
-      </div>
-    </div>
-  </section>
-);
-
-
+    </section>
+  );
 }
